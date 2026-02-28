@@ -1,23 +1,19 @@
 const express = require("express");
-const cors = require("cors");
+const pool = require("./db");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send("Backend is running");
 });
 
-app.get("/api/products", (req, res) => {
-  res.json([
-    { id: 1, name: "RX-78-2" },
-    { id: 2, name: "Strike Freedom" }
-  ]);
+app.get("/testdb", async (req, res) => {
+  const result = await pool.query("SELECT NOW()");
+  res.json(result.rows);
 });
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log(`Server running on port ${PORT}`);
 });
