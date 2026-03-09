@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.send("Backend is running");
+  res.send("Backend đang hoạt động\n[1] GET /testdb: kiểm tra kết nối cơ sở dữ liệu\n[2] GET /users__getAll: lấy danh sách tất cả bản ghi trong bảng users");
 });
 
 app.get("/testdb", async (req, res) => {
