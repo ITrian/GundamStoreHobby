@@ -3,6 +3,9 @@ const pool = require("./db");
 
 const app = express();
 
+const cors = require("cors");
+app.use(cors()); // Thêm dòng này trước các route
+
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
