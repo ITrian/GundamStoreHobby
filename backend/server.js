@@ -14,6 +14,11 @@ app.get("/testdb", async (req, res) => {
   res.json(result.rows);
 });
 
+app.get("/users__getAll", async (req, res) => {
+  const result = await pool.query("SELECT * from users");
+  res.json(result.rows);
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
