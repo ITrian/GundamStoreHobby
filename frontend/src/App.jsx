@@ -10,23 +10,13 @@ function App() {
   const columns = [
     {
       name: 'ID',
-      selector: row => row.id,
+      selector: row => row.ID,
       sortable: true,
-      width: '80px'
+      width: '10vw'
     },
     {
-      name: 'Tên người dùng',
-      selector: row => row.username || 'N/A', // Đảm bảo khớp với field trong DB
-      sortable: true,
-    },
-    {
-      name: 'Email',
-      selector: row => row.email || 'Chưa cập nhật',
-      sortable: true,
-    },
-    {
-      name: 'Ngày tạo',
-      selector: row => row.created_at ? new Date(row.created_at).toLocaleDateString() : 'N/A',
+      name: 'Name',
+      selector: row => row.Name || 'N/A', // Đảm bảo khớp với field trong DB
       sortable: true,
     }
   ];
