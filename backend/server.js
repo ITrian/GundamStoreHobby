@@ -24,13 +24,13 @@ app.get("/users__getAll", async (req, res) => {
 
 app.get("/users__getById/:id", async (req, res) => {
   const { id } = req.params;
-  const result = await pool.query("SELECT * from users where id = $1", [id]);
+  const result = await pool.query("SELECT * from users where \"ID\" = $1", [id]);
   res.json(result.rows);
 });
 
 app.post("/users__create", async (req, res) => {
   const { id, name } = req.body;
-  const result = await pool.query("INSERT INTO users (id, name) VALUES ($1, $2) RETURNING *", [id, name]);
+  const result = await pool.query("INSERT INTO users (\"ID\", \"NAME\") VALUES ($1, $2) RETURNING *", [id, name]);
   res.json(result.rows[0]);
 });
 
