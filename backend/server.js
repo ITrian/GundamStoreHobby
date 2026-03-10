@@ -31,12 +31,16 @@ app.get("/users__getById/:id", async (req, res) => {
 });
 
 app.post("/users__create", async (req, res) => {
-  const { id, name } = req.body;
-  const result = await pool.query(
-    'INSERT INTO users ("ID", "NAME") VALUES ($1, $2) RETURNING *',
-    [id, name],
-  );
-  res.json(result.rows[0]);
+  try {
+    const { ID, Name } = req.body;
+    const result = await pool.query(
+      'INSERT INTO users ("ID", "Name") VALUES ($1, $2) RETURNING *',
+      [ID, Name]
+    );
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.put("/api/users/:id", async (req, res) => {
