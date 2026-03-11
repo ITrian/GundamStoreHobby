@@ -12,9 +12,16 @@ app.use(express.json()); // Thêm dòng này trước các route
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.send(
-    "Backend đang hoạt động\n[1] GET /testdb: kiểm tra kết nối cơ sở dữ liệu\n[2] GET /users__getAll: lấy danh sách tất cả bản ghi trong bảng users",
-  );
+  const functionsList = `
+    Backend đang hoạt động
+    [1] GET /users__getAll: lấy danh sách tất cả user
+    [2] DELETE /users__delete/:id : xóa một user theo ID
+    [3] POST /users__add  : thêm một user mới
+    [4] PUT /users__update/:id : cập nhật thông tin user theo ID
+    `;
+
+  res.type("text/plain");
+  res.send(functionsList);
 });
 
 app.get("/testdb", async (req, res) => {
