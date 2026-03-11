@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import Swal from 'sweetalert2'; // Thêm thư viện Popup
 import './App.css';
 
 function App() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // State cho Form
   const [formData, setFormData] = useState({ ID: '', Name: '' });
   const [searchId, setSearchId] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
-  // 1. Lấy tất cả users
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -27,7 +25,6 @@ function App() {
     }
   };
 
-  // 2. Tìm kiếm theo ID
   const handleSearch = async () => {
     if (!searchId) return fetchUsers();
     try {
@@ -36,13 +33,12 @@ function App() {
       const data = await response.json();
       setUsers(data);
     } catch (error) {
-      alert("Không tìm thấy user!");
+      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error'); // Popup báo lỗi
     } finally {
       setLoading(false);
     }
   };
 
-  // 3. Thêm hoặc Cập nhật
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
@@ -53,44 +49,90 @@ function App() {
         method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ID: formData.ID,    // Phải viết hoa ID nếu DB/Backend yêu cầu thế
-          Name: formData.Name // Phải viết hoa Name
+          ID: formData.ID,
+          Name: formData.Name
         }),
       });
 
       if (response.ok) {
-        alert(isEditing ? "Cập nhật thành công!" : "Thêm mới thành công!");
+        // Popup thành công
+        Swal.fire({
+          title: isEditing ? "Cập nhật thành công!" : "Thêm mới thành công!",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        });
+        
         setFormData({ ID: '', Name: '' });
         setIsEditing(false);
         fetchUsers();
+      } else {
+        // Xử lý lỗi 500 hoặc lỗi khác từ server
+        const errorData = await response.json();
+        Swal.fire('Thất bại', `Lỗi: ${errorData.error || 'Server không phản hồi'}`, 'error');
       }
     } catch (error) {
-      console.error("Lỗi:", error);
+      Swal.fire('Lỗi kết nối', 'Không thể kết nối tới server!', 'error');
     }
   };
 
-  // 4. Khi nhấn nút Sửa trên bảng
+  // Hàm xử lý Xóa (Bạn sẽ thêm API vào đây sau)
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Bạn có chắc chắn?",
+      text: `Muốn xóa User có ID: ${id} không?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Xóa ngay!",
+      cancelButtonText: "Hủy"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Gọi API xóa ở đây
+        Swal.fire("Thông báo", "Bạn cần thêm API xóa vào code để thực hiện thao tác này!", "info");
+      }
+    });
+  };
+
   const handleEditClick = (row) => {
     setFormData({ ID: row.ID, Name: row.Name });
     setIsEditing(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn lên đầu trang cho dễ sửa
   };
 
   useEffect(() => { fetchUsers(); }, []);
 
   const columns = [
-    { name: 'ID', selector: row => row.ID, sortable: true },
-    { name: 'Name', selector: row => row.Name, sortable: true },
+    { name: 'ID', selector: row => row.ID, sortable: true, width: '10vw' },
+    { name: 'Tên người dùng', selector: row => row.Name, sortable: true },
     {
       name: 'Thao tác',
-      cell: (row) => <button onClick={() => handleEditClick(row)}>Sửa</button>,
+      cell: (row) => (
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button 
+            style={{ backgroundColor: '#ffc107', color: '#000' }} 
+            onClick={() => handleEditClick(row)}
+          >
+            Sửa
+          </button>
+          <button 
+            style={{ backgroundColor: '#dc3545', color: '#fff' }} 
+            onClick={() => handleDelete(row.ID)}
+          >
+            Xóa
+          </button>
+        </div>
+      ),
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+      width: '180px'
     }
   ];
 
   return (
     <div className="table-container">
-      <h2>Quản lý người dùng</h2>
-
-      {/* Form Tìm kiếm */}
       <div className="search-box" style={{ marginBottom: '20px' }}>
         <input
           placeholder="Nhập ID cần tìm..."
@@ -98,27 +140,42 @@ function App() {
           onChange={(e) => setSearchId(e.target.value)}
         />
         <button onClick={handleSearch}>Tìm kiếm</button>
-        <button onClick={fetchUsers}>Reset</button>
+        <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
       </div>
 
-      {/* Form Thêm/Sửa */}
-      <form onSubmit={handleSubmit} className="form-container" style={{ marginBottom: '30px', border: '1px solid #ccc', padding: '15px' }}>
-        <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
-        <input
-          placeholder="ID"
-          value={formData.ID}
-          disabled={isEditing} // Không cho sửa ID khi đang ở chế độ Edit
-          onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
-          required
-        />
-        <input
-          placeholder="Tên người dùng"
-          value={formData.Name}
-          onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-          required
-        />
-        <button type="submit">{isEditing ? "Cập nhật" : "Lưu"}</button>
-        {isEditing && <button type="button" onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }}>Hủy</button>}
+      <form onSubmit={handleSubmit} className="form-container" style={{ marginBottom: '30px', border: '1px solid #646cff', padding: '20px', borderRadius: '8px' }}>
+        <h3>{isEditing ? "📝 Chỉnh sửa User" : "➕ Thêm User mới"}</h3>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+          <input
+            placeholder="ID (Ví dụ: 123)"
+            value={formData.ID}
+            disabled={isEditing}
+            onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
+            required
+            style={{ flex: 1 }}
+          />
+          <input
+            placeholder="Tên người dùng"
+            value={formData.Name}
+            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+            required
+            style={{ flex: 2 }}
+          />
+        </div>
+        <div style={{ marginTop: '15px' }}>
+          <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
+            {isEditing ? "Cập nhật" : "Thêm"}
+          </button>
+          {isEditing && (
+            <button 
+              type="button" 
+              onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }}
+              style={{ marginLeft: '10px', backgroundColor: '#6c757d' }}
+            >
+              Hủy
+            </button>
+          )}
+        </div>
       </form>
 
       <div className="card">
@@ -128,6 +185,7 @@ function App() {
           progressPending={loading}
           pagination
           highlightOnHover
+          responsive
         />
       </div>
     </div>
