@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import Swal from 'sweetalert2'; // Thêm thư viện Popup
+import Swal from 'sweetalert2'; 
 import './App.css';
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
       const data = await response.json();
       setUsers(data);
     } catch (error) {
-      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error'); // Popup báo lỗi
+      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error'); 
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,6 @@ function App() {
       });
 
       if (response.ok) {
-        // Popup thành công
         Swal.fire({
           title: isEditing ? "Cập nhật thành công!" : "Thêm mới thành công!",
           icon: "success",
@@ -67,7 +66,6 @@ function App() {
         setIsEditing(false);
         fetchUsers();
       } else {
-        // Xử lý lỗi 500 hoặc lỗi khác từ server
         const errorData = await response.json();
         Swal.fire('Thất bại', `Lỗi: ${errorData.error || 'Server không phản hồi'}`, 'error');
       }
@@ -76,21 +74,38 @@ function App() {
     }
   };
 
-  // Hàm xử lý Xóa (Bạn sẽ thêm API vào đây sau)
   const handleDelete = (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn?",
-      text: `Muốn xóa User có ID: ${id} không?`,
+      text: `Muốn xóa User có ID: ${id} không? Hành động này không thể hoàn tác!`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Xóa ngay!",
       cancelButtonText: "Hủy"
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        // Gọi API xóa ở đây
-        Swal.fire("Thông báo", "Bạn cần thêm API xóa vào code để thực hiện thao tác này!", "info");
+        try {
+
+          const response = await fetch(`${API_URL}/users__delete/${id}`, { // Đổi URL ở đây
+            method: 'DELETE',
+          });
+
+          if (response.ok) {
+            Swal.fire(
+              "Đã xóa!",
+              `User có ID ${id} đã được xóa khỏi hệ thống.`,
+              "success"
+            );
+            fetchUsers(); // Làm mới lại bảng data sau khi xóa
+          } else {
+            const errorData = await response.json();
+            Swal.fire('Thất bại', `Lỗi: ${errorData.error || 'Không thể xóa user do lỗi server'}`, 'error');
+          }
+        } catch (error) {
+          Swal.fire('Lỗi kết nối', 'Không thể kết nối tới server để xóa!', 'error');
+        }
       }
     });
   };
@@ -98,7 +113,7 @@ function App() {
   const handleEditClick = (row) => {
     setFormData({ ID: row.ID, Name: row.Name });
     setIsEditing(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn lên đầu trang cho dễ sửa
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
   useEffect(() => { fetchUsers(); }, []);
