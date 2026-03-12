@@ -119,8 +119,8 @@ function App() {
   useEffect(() => { fetchUsers(); }, []);
 
   const columns = [
-    { name: 'ID', selector: row => row.ID, sortable: true, width: '10vw' },
-    { name: 'Tên người dùng', selector: row => row.Name, sortable: true },
+    { name: 'ID', selector: row => row.ID, sortable: true, width: '25%' },
+    { name: 'Tên người dùng', selector: row => row.Name, sortable: true, width: '50%' },
     {
       name: 'Thao tác',
       cell: (row) => (
@@ -136,7 +136,7 @@ function App() {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
-      width: '180px'
+      width: '25%'
     }
   ];
 
@@ -186,7 +186,14 @@ function App() {
           )}
         </div>
       </form>
-
+      <div className="note-container">
+        <p>Nếu danh sách users tải quá lâu, <br />
+          truy cập trang web backend và đợi để khởi động server:<br />
+          <a href="https://gundamstorehobby.onrender.com" target="_blank" rel="noopener noreferrer">
+            https://gundamstorehobby.onrender.com
+          </a>
+        </p>
+      </div>
       <div className="card">
         <DataTable
           columns={columns}
@@ -197,14 +204,7 @@ function App() {
           responsive
         />
       </div>
-      <div className="note-container">
-        <p>Nếu danh sách users tải quá lâu, <br />
-          truy cập trang web backend và đợi để khởi động server:<br />
-          <a href="https://gundamstorehobby.onrender.com" target="_blank" rel="noopener noreferrer">
-            https://gundamstorehobby.onrender.com
-          </a>
-        </p>
-      </div>
+
     </div>
   );
 }

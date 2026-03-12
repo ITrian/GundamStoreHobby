@@ -1,3 +1,7 @@
+body {
+  background-color: #fff;
+}
+
 @keyframes rgb-blink {
   0% {
     color: #ff0000;
@@ -34,6 +38,13 @@
   }
 
   /* Quay lại Đỏ sáng */
+}
+
+.table-container {
+  border-radius: 30px;
+  border: 1px solid black;
+  background-color: azure;
+  width: 80vw;
 }
 
 #root {
@@ -83,14 +94,16 @@
 }
 
 .search-box {
+  width: 60%;
+  margin: 2vw auto;
   margin-bottom: 20px;
   display: flex;
   flex-wrap: wrap;
   gap: 2%;
   justify-content: center;
   align-items: center;
-  border: 1px solid #000;
   padding: 1vw;
+  border-radius: 30px;
 }
 
 .search-box input {
@@ -107,9 +120,11 @@
 
 .form-container {
   margin-bottom: 30px;
-  border: 1px solid #646cff;
+  border: 1px solid #000;
   padding: 20px;
   border-radius: 8px;
+  width: 60%;
+  margin: 0 auto;
 }
 
 .form-container>div:first-of-type {
@@ -152,11 +167,15 @@
   font-weight: bold;
 }
 
+input {
+  background-color: #fff;
+}
+
 @media (min-width: 768px) {
   .note-container {
-    position: absolute;
+    /* position: absolute;
     translate: -50% -50%;
     top: 50%;
-    left: 15%;
+    left: 15%; */
   }
 }
