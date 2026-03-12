@@ -7,40 +7,36 @@ const app = express();
 const cors = require("cors");
 
 app.use(cors()); 
-app.use(express.json()); // Thêm dòng này trước các route
+app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
-  const functionsList = `
+  const text = `
     Backend đang hoạt động
-    [1] GET /users__getAll: lấy danh sách tất cả user
-    [2] DELETE /users__delete/:id : xóa một user theo ID
-    [3] POST /users__add  : thêm một user mới
-    [4] PUT /users__update/:id : cập nhật thông tin user theo ID
+    [1] GET /users: lấy danh sách tất cả user
+    [2] GET /users/:id : tìm một user theo ID
+    [3] DELETE /users/delete/:id : xóa một user theo ID
+    [4] POST /users/create  : thêm một user mới
+    [5] PUT /users/update/:id : cập nhật thông tin user theo ID
     `;
 
   res.type("text/plain");
-  res.send(functionsList);
+  res.send(text);
 });
 
-app.get("/testdb", async (req, res) => {
-  const result = await pool.query("SELECT NOW()");
-  res.json(result.rows);
-});
-
-app.get("/users__getAll", async (req, res) => {
+app.get("/users", async (req, res) => {
   const result = await pool.query("SELECT * from users");
   res.json(result.rows);
 });
 
-app.get("/users__getById/:id", async (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   const result = await pool.query('SELECT * from users where "ID" = $1', [id]);
   res.json(result.rows);
 });
 
-app.post("/users__create", async (req, res) => {
+app.post("/users/create", async (req, res) => {
   try {
     const { ID, Name } = req.body;
     const result = await pool.query(
@@ -53,7 +49,7 @@ app.post("/users__create", async (req, res) => {
   }
 });
 
-app.put("/api/users/:id", async (req, res) => {
+app.put("/users/update/:id", async (req, res) => {
   const { id } = req.params;
   const { Name } = req.body;
 
@@ -81,7 +77,7 @@ app.put("/api/users/:id", async (req, res) => {
   }
 });
 
-app.delete("/users__delete/:id", async (req, res) => {
+app.delete("/users/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query('DELETE FROM users WHERE "ID" = $1 RETURNING *', [id]);
