@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import './App.css';
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
       const data = await response.json();
       setUsers(data);
     } catch (error) {
-      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error'); 
+      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error');
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ function App() {
           timer: 1500,
           showConfirmButton: false
         });
-        
+
         setFormData({ ID: '', Name: '' });
         setIsEditing(false);
         fetchUsers();
@@ -113,7 +113,7 @@ function App() {
   const handleEditClick = (row) => {
     setFormData({ ID: row.ID, Name: row.Name });
     setIsEditing(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => { fetchUsers(); }, []);
@@ -124,17 +124,11 @@ function App() {
     {
       name: 'Thao tác',
       cell: (row) => (
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button 
-            style={{ backgroundColor: '#ffc107', color: '#000' }} 
-            onClick={() => handleEditClick(row)}
-          >
+        <div className='action-buttons'>
+          <button onClick={() => handleEditClick(row)}>
             Sửa
           </button>
-          <button 
-            style={{ backgroundColor: '#dc3545', color: '#fff' }} 
-            onClick={() => handleDelete(row.ID)}
-          >
+          <button onClick={() => handleDelete(row.ID)}>
             Xóa
           </button>
         </div>
@@ -147,8 +141,9 @@ function App() {
   ];
 
   return (
+
     <div className="table-container">
-      <div className="search-box" style={{ marginBottom: '20px' }}>
+      <div className="search-box">
         <input
           placeholder="Nhập ID cần tìm..."
           value={searchId}
@@ -158,16 +153,15 @@ function App() {
         <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
       </div>
 
-      <form onSubmit={handleSubmit} className="form-container" style={{ marginBottom: '30px', border: '1px solid #646cff', padding: '20px', borderRadius: '8px' }}>
-        <h3>{isEditing ? "📝 Chỉnh sửa User" : "➕ Thêm User mới"}</h3>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      <form onSubmit={handleSubmit} className="form-container">
+        <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
+        <div>
           <input
-            placeholder="ID (Ví dụ: 123)"
+            placeholder="ID (Nhập đúng 10 ký tự, ví dụ: DH00000001)"
             value={formData.ID}
             disabled={isEditing}
             onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
             required
-            style={{ flex: 1 }}
           />
           <input
             placeholder="Tên người dùng"
@@ -177,15 +171,15 @@ function App() {
             style={{ flex: 2 }}
           />
         </div>
-        <div style={{ marginTop: '15px' }}>
+        <div>
           <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
             {isEditing ? "Cập nhật" : "Thêm"}
           </button>
           {isEditing && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }}
-              style={{ marginLeft: '10px', backgroundColor: '#6c757d' }}
+              style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}
             >
               Hủy
             </button>
@@ -202,6 +196,14 @@ function App() {
           highlightOnHover
           responsive
         />
+      </div>
+      <div className="note-container">
+        <p>Nếu danh sách users tải quá lâu, <br />
+          truy cập trang web backend và đợi để khởi động server:<br />
+          <a href="https://gundamstorehobby.onrender.com" target="_blank" rel="noopener noreferrer">
+            https://gundamstorehobby.onrender.com
+          </a>
+        </p>
       </div>
     </div>
   );

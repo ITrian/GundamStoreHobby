@@ -1,3 +1,41 @@
+@keyframes rgb-blink {
+  0% {
+    color: #ff0000;
+    opacity: 1;
+    text-shadow: 0 0 5px #ff0000;
+  }
+
+  /* Đỏ sáng */
+  25% {
+    color: #00ff00;
+    opacity: 0.3;
+    text-shadow: 0 0 5px #00ff00;
+  }
+
+  /* Xanh lá mờ (nháy) */
+  50% {
+    color: #0000ff;
+    opacity: 1;
+    text-shadow: 0 0 5px #0000ff;
+  }
+
+  /* Xanh dương sáng */
+  75% {
+    color: #ff00ff;
+    opacity: 0.3;
+    text-shadow: 0 0 5px #ff00ff;
+  }
+
+  /* Tím mờ (nháy) */
+  100% {
+    color: #ff0000;
+    opacity: 1;
+    text-shadow: 0 0 5px #ff0000;
+  }
+
+  /* Quay lại Đỏ sáng */
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -11,9 +49,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +62,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -39,4 +80,83 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.search-box {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  padding: 1vw;
+}
+
+.search-box input {
+  width: 80%;
+}
+
+.search-box button {
+  margin-top: 1%;
+}
+
+.search-box>button:first-of-type {
+  background-color: #ffc107;
+}
+
+.form-container {
+  margin-bottom: 30px;
+  border: 1px solid #646cff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.form-container>div:first-of-type {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.form-container>div:first-of-type>input:first-of-type {
+  flex: 1 1 100%;
+}
+
+.form-container>div:last-child {
+  margin-top: 15px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-buttons>button:first-child {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.action-buttons>button:last-child {
+  background-color: #dc3545;
+  color: #fff
+}
+
+.note-container {
+  /* animation: rgb-blink 2s linear infinite; */
+  text-align: center;
+  color: #ff0000;
+}
+
+.note-container a {
+  color: inherit;
+  font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  .note-container {
+    position: absolute;
+    translate: -50% -50%;
+    top: 50%;
+    left: 15%;
+  }
 }
