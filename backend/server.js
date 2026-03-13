@@ -80,7 +80,7 @@ app.put("/users/update/:id", async (req, res) => {
 app.delete("/users/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('DELETE FROM users WHERE "ID" = $1 RETURNING *', [id]);
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
     res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
