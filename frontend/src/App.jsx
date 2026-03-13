@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
 import './App.css';
@@ -15,7 +16,7 @@ function App() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/users__getAll`);
+      const response = await fetch(`${API_URL}/users`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -25,11 +26,13 @@ function App() {
     }
   };
 
+  useEffect(() => { fetchUsers(); }, []);
+
   const handleSearch = async () => {
     if (!searchId) return fetchUsers();
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/users__getById/${searchId}`);
+      const response = await fetch(`${API_URL}/users/${searchId}`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -42,7 +45,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const endpoint = isEditing ? `${API_URL}/api/users/${formData.ID}` : `${API_URL}/users__create`;
+    const endpoint = isEditing ? `${API_URL}/users/update/${formData.ID}` : `${API_URL}/users/create`;
 
     try {
       const response = await fetch(endpoint, {
@@ -88,7 +91,7 @@ function App() {
       if (result.isConfirmed) {
         try {
 
-          const response = await fetch(`${API_URL}/users__delete/${id}`, { // Đổi URL ở đây
+          const response = await fetch(`${API_URL}/users/delete/${id}`, { // Đổi URL ở đây
             method: 'DELETE',
           });
 
@@ -116,8 +119,6 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => { fetchUsers(); }, []);
-
   const columns = [
     { name: 'ID', selector: row => row.ID, sortable: true, width: '25%' },
     { name: 'Tên người dùng', selector: row => row.Name, sortable: true, width: '50%' },
@@ -125,73 +126,25 @@ function App() {
       name: 'Thao tác',
       cell: (row) => (
         <div className='action-buttons'>
-          <button onClick={() => handleEditClick(row)}>
-            Sửa
-          </button>
-          <button onClick={() => handleDelete(row.ID)}>
-            Xóa
-          </button>
+          <button onClick={() => handleEditClick(row)}>Sửa</button>
+          <button onClick={() => handleDelete(row.ID)}>Xóa</button>
         </div>
       ),
-      ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
       width: '25%'
     }
   ];
+  const columns2 = [
+    { name: 'ID', selector: row => row.ID, sortable: true, width: '25%' },
+    { name: 'Tên người dùng', selector: row => row.Name, sortable: true, width: '75%' }
+  ];
 
-  return (
-
-    <div className="table-container">
-      <div className="search-box">
-        <input
-          placeholder="Nhập ID cần tìm..."
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-        />
-        <button onClick={handleSearch}>Tìm kiếm</button>
-        <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="form-container">
-        <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
-        <div>
-          <input
-            placeholder="ID (Nhập đúng 10 ký tự, ví dụ: DH00000001)"
-            value={formData.ID}
-            disabled={isEditing}
-            onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
-            required
-          />
-          <input
-            placeholder="Tên người dùng"
-            value={formData.Name}
-            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-            required
-            style={{ flex: 2 }}
-          />
-        </div>
-        <div>
-          <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
-            {isEditing ? "Cập nhật" : "Thêm"}
-          </button>
-          {isEditing && (
-            <button
-              type="button"
-              onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }}
-              style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}
-            >
-              Hủy
-            </button>
-          )}
-        </div>
-      </form>
+  // Component con dành riêng cho Note và Table
+  const UserListSection = () => (
+    <>
       <div className="note-container">
         <p>Nếu danh sách users tải quá lâu, <br />
           truy cập trang web backend và đợi để khởi động server:<br />
-          <a href="https://gundamstorehobby.onrender.com" target="_blank" rel="noopener noreferrer">
-            https://gundamstorehobby.onrender.com
-          </a>
+          <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
         </p>
       </div>
       <div className="card">
@@ -204,8 +157,89 @@ function App() {
           responsive
         />
       </div>
+    </>
+  );
+  const UserListSection2 = () => (
+    <>
+      <div className="note-container">
+        <p>Nếu danh sách users tải quá lâu, <br />
+          truy cập trang web backend và đợi để khởi động server:<br />
+          <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
+        </p>
+      </div>
+      <div className="card">
+        <DataTable
+          columns={columns2}
+          data={users}
+          progressPending={loading}
+          pagination
+          highlightOnHover
+          responsive
+        />
+      </div>
+    </>
+  );
 
-    </div>
+  return (
+    <Router>
+      <div className="table-container">
+        {/* Thanh điều hướng đơn giản */}
+        <nav style={{ marginBottom: '20px' }}>
+          <Link to="/">Trang chủ</Link> | <Link to="/users">Chỉ xem danh sách</Link>
+        </nav>
+
+        <Routes>
+          {/* Đường dẫn mặc định: Có cả Form và Table */}
+          <Route path="/" element={
+            <>
+              <div className="search-box">
+                <input
+                  placeholder="Nhập ID cần tìm..."
+                  value={searchId}
+                  onChange={(e) => setSearchId(e.target.value)}
+                />
+                <button onClick={handleSearch}>Tìm kiếm</button>
+                <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="form-container">
+                <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
+                <div>
+                  <input
+                    placeholder="ID (Nhập đúng 10 ký tự)"
+                    value={formData.ID}
+                    disabled={isEditing}
+                    onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
+                    required
+                  />
+                  <input
+                    placeholder="Tên người dùng"
+                    value={formData.Name}
+                    onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+                    required
+                    style={{ flex: 2 }}
+                  />
+                </div>
+                <div style={{marginTop: '10px'}}>
+                  <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
+                    {isEditing ? "Cập nhật" : "Thêm"}
+                  </button>
+                  {isEditing && (
+                    <button type="button" onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }} style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}>
+                      Hủy
+                    </button>
+                  )}
+                </div>
+              </form>
+              <UserListSection />
+            </>
+          } />
+
+          {/* Đường dẫn /users: Chỉ hiện Note và Table */}
+          <Route path="/users" element={<UserListSection2 />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
