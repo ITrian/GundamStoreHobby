@@ -7,8 +7,8 @@ import './App.css';
 function App() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({ ID: '', Name: '' });
-  const [searchId, setSearchId] = useState('');
+  const [formData, setFormData] = useState({ id: '', name: '' });
+  const [searchid, setSearchid] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const API_URL = 'https://gundamstorehobby.onrender.com';
@@ -29,10 +29,10 @@ function App() {
   useEffect(() => { fetchUsers(); }, []);
 
   const handleSearch = async () => {
-    if (!searchId) return fetchUsers();
+    if (!searchid) return fetchUsers();
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/users/${searchId}`);
+      const response = await fetch(`${API_URL}/users/${searchid}`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {
@@ -45,15 +45,15 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isEditing ? 'PUT' : 'POST';
-    const endpoint = isEditing ? `${API_URL}/users/update/${formData.ID}` : `${API_URL}/users/create`;
+    const endpoint = isEditing ? `${API_URL}/users/update/${formData.id}` : `${API_URL}/users/create`;
 
     try {
       const response = await fetch(endpoint, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ID: formData.ID,
-          Name: formData.Name
+          id: formData.id,
+          name: formData.name
         }),
       });
 
@@ -65,7 +65,7 @@ function App() {
           showConfirmButton: false
         });
 
-        setFormData({ ID: '', Name: '' });
+        setFormData({ id: '', name: '' });
         setIsEditing(false);
         fetchUsers();
       } else {
@@ -80,7 +80,7 @@ function App() {
   const handleDelete = (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn?",
-      text: `Muốn xóa User có ID: ${id} không? Hành động này không thể hoàn tác!`,
+      text: `Muốn xóa User có id: ${id} không? Hành động này không thể hoàn tác!`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -98,7 +98,7 @@ function App() {
           if (response.ok) {
             Swal.fire(
               "Đã xóa!",
-              `User có ID ${id} đã được xóa khỏi hệ thống.`,
+              `User có id ${id} đã được xóa khỏi hệ thống.`,
               "success"
             );
             fetchUsers(); // Làm mới lại bảng data sau khi xóa
@@ -114,28 +114,28 @@ function App() {
   };
 
   const handleEditClick = (row) => {
-    setFormData({ ID: row.ID, Name: row.Name });
+    setFormData({ id: row.id, name: row.name });
     setIsEditing(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const columns = [
-    { name: 'ID', selector: row => row.ID, sortable: true, width: '25%' },
-    { name: 'Tên người dùng', selector: row => row.Name, sortable: true, width: '50%' },
+    { name: 'id', selector: row => row.id, sortable: true, width: '25%' },
+    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '50%' },
     {
       name: 'Thao tác',
       cell: (row) => (
         <div className='action-buttons'>
           <button onClick={() => handleEditClick(row)}>Sửa</button>
-          <button onClick={() => handleDelete(row.ID)}>Xóa</button>
+          <button onClick={() => handleDelete(row.id)}>Xóa</button>
         </div>
       ),
       width: '25%'
     }
   ];
   const columns2 = [
-    { name: 'ID', selector: row => row.ID, sortable: true, width: '25%' },
-    { name: 'Tên người dùng', selector: row => row.Name, sortable: true, width: '75%' }
+    { name: 'id', selector: row => row.id, sortable: true, width: '25%' },
+    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '75%' }
   ];
 
   // Component con dành riêng cho Note và Table
@@ -194,9 +194,9 @@ function App() {
             <>
               <div className="search-box">
                 <input
-                  placeholder="Nhập ID cần tìm..."
-                  value={searchId}
-                  onChange={(e) => setSearchId(e.target.value)}
+                  placeholder="Nhập id cần tìm..."
+                  value={searchid}
+                  onChange={(e) => setSearchid(e.target.value)}
                 />
                 <button onClick={handleSearch}>Tìm kiếm</button>
                 <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
@@ -206,16 +206,16 @@ function App() {
                 <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
                 <div>
                   <input
-                    placeholder="ID (Nhập đúng 10 ký tự)"
-                    value={formData.ID}
+                    placeholder="id (Nhập đúng 10 ký tự)"
+                    value={formData.id}
                     disabled={isEditing}
-                    onChange={(e) => setFormData({ ...formData, ID: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, id: e.target.value })}
                     required
                   />
                   <input
                     placeholder="Tên người dùng"
-                    value={formData.Name}
-                    onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                     style={{ flex: 2 }}
                   />
@@ -225,7 +225,7 @@ function App() {
                     {isEditing ? "Cập nhật" : "Thêm"}
                   </button>
                   {isEditing && (
-                    <button type="button" onClick={() => { setIsEditing(false); setFormData({ ID: '', Name: '' }) }} style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}>
+                    <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '' }) }} style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}>
                       Hủy
                     </button>
                   )}
