@@ -7,7 +7,7 @@ import './App.css';
 function App() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({ id: '', name: '' });
+  const [formData, setFormData] = useState({ id: '', name: '' }); // id vẫn giữ để dùng khi Edit
   const [searchid, setSearchid] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -34,7 +34,8 @@ function App() {
       setLoading(true);
       const response = await fetch(`${API_URL}/users/${searchid}`);
       const data = await response.json();
-      setUsers(data);
+      // Nếu API trả về object đơn lẻ thay vì array, bọc nó lại để DataTable hiển thị được
+      setUsers(Array.isArray(data) ? data : [data]);
     } catch (error) {
       Swal.fire('Lỗi', 'Không tìm thấy user!', 'error');
     } finally {
@@ -47,14 +48,16 @@ function App() {
     const method = isEditing ? 'PUT' : 'POST';
     const endpoint = isEditing ? `${API_URL}/users/update/${formData.id}` : `${API_URL}/users/create`;
 
+    // Khi thêm mới (POST), không gửi id vì server tự tăng
+    const bodyData = isEditing
+      ? { id: formData.id, name: formData.name }
+      : { name: formData.name };
+
     try {
       const response = await fetch(endpoint, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: formData.id,
-          name: formData.name
-        }),
+        body: JSON.stringify(bodyData),
       });
 
       if (response.ok) {
@@ -80,7 +83,7 @@ function App() {
   const handleDelete = (id) => {
     Swal.fire({
       title: "Bạn có chắc chắn?",
-      text: `Muốn xóa User có id: ${id} không? Hành động này không thể hoàn tác!`,
+      text: `Muốn xóa User có id: ${id} không?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -90,24 +93,18 @@ function App() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-
-          const response = await fetch(`${API_URL}/users/delete/${id}`, { // Đổi URL ở đây
+          const response = await fetch(`${API_URL}/users/delete/${id}`, {
             method: 'DELETE',
           });
 
           if (response.ok) {
-            Swal.fire(
-              "Đã xóa!",
-              `User có id ${id} đã được xóa khỏi hệ thống.`,
-              "success"
-            );
-            fetchUsers(); // Làm mới lại bảng data sau khi xóa
+            Swal.fire("Đã xóa!", `User ${id} đã bị xóa.`, "success");
+            fetchUsers();
           } else {
-            const errorData = await response.json();
-            Swal.fire('Thất bại', `Lỗi: ${errorData.error || 'Không thể xóa user do lỗi server'}`, 'error');
+            Swal.fire('Thất bại', 'Không thể xóa user.', 'error');
           }
         } catch (error) {
-          Swal.fire('Lỗi kết nối', 'Không thể kết nối tới server để xóa!', 'error');
+          Swal.fire('Lỗi kết nối', 'Lỗi server!', 'error');
         }
       }
     });
@@ -119,46 +116,21 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Cấu hình cột dùng chung cho id và name (viết thường)
   const columns = [
-    { name: 'id', selector: row => row.id, sortable: true, width: '25%' },
-    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '50%' },
+    { name: 'ID', selector: row => row.id, sortable: true, width: '20%' },
+    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '55%' },
     {
       name: 'Thao tác',
       cell: (row) => (
         <div className='action-buttons'>
           <button onClick={() => handleEditClick(row)}>Sửa</button>
-          <button onClick={() => handleDelete(row.id)}>Xóa</button>
+          <button onClick={() => handleDelete(row.id)} style={{ backgroundColor: '#dc3545' }}>Xóa</button>
         </div>
       ),
       width: '25%'
     }
   ];
-  const columns2 = [
-    { name: 'id', selector: row => row.id, sortable: true, width: '25%' },
-    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '75%' }
-  ];
-
-  // Component con dành riêng cho Note và Table
-  const UserListSection = () => (
-    <>
-      <div className="note-container">
-        <p>Nếu danh sách users tải quá lâu, <br />
-          truy cập trang web backend và đợi để khởi động server:<br />
-          <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
-        </p>
-      </div>
-      <div className="card">
-        <DataTable
-          columns={columns}
-          data={users}
-          progressPending={loading}
-          pagination
-          highlightOnHover
-          responsive
-        />
-      </div>
-    </>
-  );
   const UserListSection2 = () => (
     <>
       <div className="note-container">
@@ -179,50 +151,49 @@ function App() {
       </div>
     </>
   );
-
   return (
     <Router>
       <div className="table-container">
-        {/* Thanh điều hướng đơn giản */}
-        <nav style={{ marginBottom: '20px' }}>
-          <Link to="/">Trang chủ</Link> | <Link to="/users">Chỉ xem danh sách</Link>
+        <nav style={{ marginBottom: '20px', textAlign: 'center' }}>
+          <Link to="/">Quản lý</Link> | <Link to="/users">Xem danh sách</Link>
         </nav>
 
         <Routes>
-          {/* Đường dẫn mặc định: Có cả Form và Table */}
           <Route path="/" element={
             <>
               <div className="search-box">
                 <input
-                  placeholder="Nhập id cần tìm..."
+                  type="number"
+                  placeholder="Nhập ID số..."
                   value={searchid}
                   onChange={(e) => setSearchid(e.target.value)}
                 />
                 <button onClick={handleSearch}>Tìm kiếm</button>
-                <button onClick={fetchUsers} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
+                <button onClick={() => { fetchUsers(); setSearchid('') }} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
               </div>
 
               <form onSubmit={handleSubmit} className="form-container">
-                <h3>{isEditing ? "Chỉnh sửa User" : "Thêm User mới"}</h3>
-                <div>
+                <h3>{isEditing ? `Đang sửa ID: ${formData.id}` : "Thêm User mới"}</h3>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {/* Ô ID chỉ hiện khi đang sửa, và bị disabled */}
+                  {isEditing && (
+                    <input
+                      style={{ flex: 1, backgroundColor: '#e9ecef' }}
+                      value={formData.id}
+                      disabled
+                    />
+                  )}
                   <input
-                    placeholder="id (Nhập đúng 10 ký tự)"
-                    value={formData.id}
-                    disabled={isEditing}
-                    onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                    required
-                  />
-                  <input
-                    placeholder="Tên người dùng"
+                    placeholder="Nhập tên người dùng..."
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    style={{ flex: 2 }}
+                    style={{ flex: 3 }}
                   />
                 </div>
-                <div style={{marginTop: '10px'}}>
+                <div style={{ marginTop: '10px' }}>
                   <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
-                    {isEditing ? "Cập nhật" : "Thêm"}
+                    {isEditing ? "Cập nhật" : "Thêm mới"}
                   </button>
                   {isEditing && (
                     <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '' }) }} style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}>
@@ -231,12 +202,25 @@ function App() {
                   )}
                 </div>
               </form>
-              <UserListSection />
+              <div className="note-container">
+                <p>Nếu danh sách users tải quá lâu, <br />
+                  truy cập trang web backend và đợi để khởi động server:<br />
+                  <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
+                </p>
+              </div>
+              <div className="card">
+                <DataTable
+                  columns={columns}
+                  data={users}
+                  progressPending={loading}
+                  pagination
+                  highlightOnHover
+                />
+              </div>
             </>
           } />
 
-          {/* Đường dẫn /users: Chỉ hiện Note và Table */}
-          <Route path="/users" element={<UserListSection2 />} />
+        <Route path="/users" element={<UserListSection2 />} />
         </Routes>
       </div>
     </Router>
