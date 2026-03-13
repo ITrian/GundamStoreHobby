@@ -38,10 +38,10 @@ app.get("/users/:id", async (req, res) => {
 
 app.post("/users/create", async (req, res) => {
   try {
-    const { id, name } = req.body;
+    const { name } = req.body;
     const result = await pool.query(
-      'INSERT INTO users (id, name) VALUES ($1, $2) RETURNING *',
-      [id, name]
+      'INSERT INTO users name) VALUES ($1) RETURNING *',
+      [name]
     );
     res.json(result.rows[0]);
   } catch (error) {
