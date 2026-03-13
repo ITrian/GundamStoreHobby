@@ -32,7 +32,7 @@ app.get("/users", async (req, res) => {
 
 app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
-  const result = await pool.query('SELECT * from users where "ID" = $1', [id]);
+  const result = await pool.query('SELECT * from users where id = $1', [id]);
   res.json(result.rows);
 });
 
