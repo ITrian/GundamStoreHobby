@@ -9,7 +9,7 @@ const { update: updateCategory } = require("./route/category");
 const app = express();
 const cors = require("cors");
 
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
@@ -35,16 +35,16 @@ app.get("/users", async (req, res) => {
 
 app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
-  const result = await pool.query('SELECT * from users where id = $1', [id]);
+  const result = await pool.query("SELECT * from users where id = $1", [id]);
   res.json(result.rows);
 });
 
 app.post("/users/create", async (req, res) => {
   try {
-    const { ID, Name } = req.body;
+    const { name } = req.body;
     const result = await pool.query(
-      'INSERT INTO users ("ID", "Name") VALUES ($1, $2) RETURNING *',
-      [ID, Name]
+      "INSERT INTO users (name) VALUES ($1) RETURNING *",
+      [name],
     );
     res.json(result.rows[0]);
   } catch (error) {
@@ -54,24 +54,24 @@ app.post("/users/create", async (req, res) => {
 
 app.put("/users/update/:id", async (req, res) => {
   const { id } = req.params;
-  const { Name } = req.body;
+  const { name } = req.body;
 
-  console.log(`Đang yêu cầu sửa ID: ${id} thành Name: ${Name}`);
+  console.log(`Đang yêu cầu sửa ID: ${id} thành Name: ${name}`);
 
   try {
-    const query = 'UPDATE users SET "Name" = $1 WHERE "ID" = $2 RETURNING *';
-    const values = [Name, id];
+    const query = "UPDATE users SET name = $1 WHERE id = $2 RETURNING *";
+    const values = [name, id];
 
     const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
       return res
         .status(404)
-        .json({ message: "Không tìm thấy User này trên database Render!" });
+        .json({ message: "Không tìm thấy User này trên database!" });
     }
 
     res.json({
-      message: "Cập nhật thành công trực tiếp lên Render!",
+      message: "Cập nhật thành công!",
       data: result.rows[0],
     });
   } catch (err) {
@@ -83,7 +83,10 @@ app.put("/users/update/:id", async (req, res) => {
 app.delete("/users/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
+    const result = await pool.query(
+      "DELETE FROM users WHERE id = $1 RETURNING *",
+      [id],
+    );
     res.json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
