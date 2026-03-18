@@ -2,10 +2,11 @@ const express = require("express");
 const pool = require("./db");
 
 
-const { add: addCategory } = require("./route/category");
-const { getAll: getAllCategories } = require("./route/category");
-const { delete: deleteCategory } = require("./route/category");
-const { update: updateCategory } = require("./route/category");
+const {addCategory,
+  getAllCategories,
+  deleteCategory,
+  updateCategory
+} = require("./route/category");
 
 const { 
   addInvoice,

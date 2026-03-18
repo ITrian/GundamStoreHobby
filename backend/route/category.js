@@ -44,8 +44,8 @@ async function updateCategory(req, res) {
 }
 
 module.exports = {
-    add: addCategory,
-    getAll: getAllCategories,
-    delete: deleteCategory,
-    update: updateCategory,
+    addCategory,
+    getAllCategories,
+    deleteCategory,
+    updateCategory
 };
