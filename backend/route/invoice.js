@@ -56,8 +56,10 @@ async function getAllInvoice(req, res) {
     }
 }
 
-module.exports.add = addInvoice;
-module.exports.update = updateInvoice;
-module.exports.delete = deleteInvoice;
-module.exports.getById = getInvoiceById;
-module.exports.getAll = getAllInvoice;
+module.exports = {
+    addInvoice,
+    updateInvoice,
+    deleteInvoice,
+    getInvoiceById,
+    getAllInvoice
+};

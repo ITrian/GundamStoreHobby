@@ -1,16 +1,27 @@
 const express = require("express");
 const pool = require("./db");
 
-const { add: addCategory } = require("./route/category");
-const { getAll: getAllCategories } = require("./route/category");
-const { delete: deleteCategory } = require("./route/category");
-const { update: updateCategory } = require("./route/category");
+const { 
+  addCategory,
+  getAllCategories,
+  deleteCategory,
+  updateCategory
+} = require("./route/category");
 
-const { add: addInvoice } = require("./route/invoice");
-const { getAll: getAllInvoices } = require("./route/invoice");
-const { getById: getById } = require("./route/invoice");
-const { delete: deleteInvoice } = require("./route/invoice");
-const { update: updateInvoice } = require("./route/invoice");
+const { 
+  addInvoice,
+  updateInvoice,
+  deleteInvoice,
+  getInvoiceById,
+  getAllInvoice
+ } = require("./route/invoice");
+
+const { 
+  addInvoiceDetail,
+  updateInvoiceDetail,
+  deleteInvoiceDetail,
+  getInvoiceDetailById
+} = require("./route/invoiceDetail");
 
 const {
   insertProduct,
@@ -113,10 +124,15 @@ app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
 
 app.post("/invoice/insert", addInvoice);
-app.get("/invoice/all", getAllInvoices);
-app.get("/invoice/:id", getById);
+app.get("/invoice/all", getAllInvoice);
+app.get("/invoice/:id", getInvoiceById);
 app.delete("/invoice/delete/:id", deleteInvoice);
 app.patch("/invoice/update", updateInvoice);
+
+app.post("/invoiceDetail/add", addInvoiceDetail);
+app.patch("/invoiceDetail/update", updateInvoiceDetail);
+app.delete("/invoiceDetail/delete/:id", deleteInvoiceDetail);
+app.get("/invoiceDetail/getById/:id", getInvoiceDetailById);
 
 app.post("/product/insert", insertProduct);
 app.get("/product/all", getAllProducts);
