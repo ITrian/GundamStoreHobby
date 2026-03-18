@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-async function insertCategory(req, res) {
+async function addCategory(req, res) {
     try {
         const {name} = req.body;
         const result = await pool.query("INSERT INTO category (name) VALUES ($1) RETURNING *", [name]);
@@ -43,7 +43,9 @@ async function updateCategory(req, res) {
     }
 }
 
-module.exports.insert = insertCategory;
-module.exports.getAll = getAllCategories;
-module.exports.delete = deleteCategory;
-module.exports.update = updateCategory;
+module.exports = {
+    add: addCategory,
+    getAll: getAllCategories,
+    delete: deleteCategory,
+    update: updateCategory,
+};
