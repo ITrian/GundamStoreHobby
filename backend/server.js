@@ -1,12 +1,10 @@
 const express = require("express");
 const pool = require("./db");
 
-const { 
-  addCategory,
-  getAllCategories,
-  deleteCategory,
-  updateCategory
-} = require("./route/category");
+const { add: addCategory } = require("./route/category");
+const { getAll: getAllCategories } = require("./route/category");
+const { delete: deleteCategory } = require("./route/category");
+const { update: updateCategory } = require("./route/category");
 
 const { 
   addInvoice,
@@ -30,6 +28,14 @@ const {
   updateProduct,
   deleteProduct,
 } = require("./route/product");
+
+const {
+  insertImage,
+  getAllImages,
+  getImagesByProduct,
+  updateImage,
+  deleteImage,
+} = require("./route/image");
 
 const app = express();
 const cors = require("cors");
@@ -118,7 +124,7 @@ app.delete("/users/delete/:id", async (req, res) => {
   }
 });
 
-app.post("/category/insert", addCategory);
+app.post("/category/add", addCategory);
 app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
@@ -134,11 +140,17 @@ app.patch("/invoiceDetail/update", updateInvoiceDetail);
 app.delete("/invoiceDetail/delete/:id", deleteInvoiceDetail);
 app.get("/invoiceDetail/getById/:id", getInvoiceDetailById);
 
-app.post("/product/insert", insertProduct);
-app.get("/product/all", getAllProducts);
+app.post("/product/insertProduct", insertProduct);
+app.get("/product/getAllProducts", getAllProducts);
 app.get("/product/:id", getProductById);
-app.patch("/product/update", updateProduct);
-app.delete("/product/delete/:id", deleteProduct);
+app.patch("/product/updateProduct", updateProduct);
+app.delete("/product/deleteProduct/:id", deleteProduct);
+
+app.post("/image/insertImage", insertImage);
+app.get("/image/getAllImages", getAllImages);
+app.get("/image/product/:productid", getImagesByProduct);
+app.patch("/image/updateImage", updateImage);
+app.delete("/image/deleteImage/:productid", deleteImage);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
