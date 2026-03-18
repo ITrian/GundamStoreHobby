@@ -1,10 +1,17 @@
 const express = require("express");
 const pool = require("./db");
 
-const { insert: insertCategory } = require("./route/category");
+const { add: addCategory } = require("./route/category");
 const { getAll: getAllCategories } = require("./route/category");
 const { delete: deleteCategory } = require("./route/category");
 const { update: updateCategory } = require("./route/category");
+
+const { add: addInvoice } = require("./route/invoice");
+const { getAll: getAllInvoices } = require("./route/invoice");
+const { getById: getById } = require("./route/invoice");
+const { delete: deleteInvoice } = require("./route/invoice");
+const { update: updateInvoice } = require("./route/invoice");
+
 
 const app = express();
 const cors = require("cors");
@@ -93,10 +100,16 @@ app.delete("/users/delete/:id", async (req, res) => {
   }
 });
 
-app.post("/category/insert", insertCategory);
+app.post("/category/insert", addCategory);
 app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
+
+app.post("/invoice/insert", addInvoice);
+app.get("/invoice/all", getAllInvoices);
+app.get("/invoice/:id", getById);
+app.delete("/invoice/delete/:id", deleteInvoice);
+app.patch("/invoice/update", updateInvoice);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
