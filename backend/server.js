@@ -1,10 +1,43 @@
 const express = require("express");
 const pool = require("./db");
 
-const { insert: insertCategory } = require("./route/category");
-const { getAll: getAllCategories } = require("./route/category");
-const { delete: deleteCategory } = require("./route/category");
-const { update: updateCategory } = require("./route/category");
+
+const {addCategory,
+  getAllCategories,
+  deleteCategory,
+  updateCategory
+} = require("./route/category");
+
+const { 
+  addInvoice,
+  updateInvoice,
+  deleteInvoice,
+  getInvoiceById,
+  getAllInvoice
+ } = require("./route/invoice");
+
+const { 
+  addInvoiceDetail,
+  updateInvoiceDetail,
+  deleteInvoiceDetail,
+  getInvoiceDetailById
+} = require("./route/invoiceDetail");
+
+const {
+  insertProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} = require("./route/product");
+
+const {
+  insertImage,
+  getAllImages,
+  getImagesByProduct,
+  updateImage,
+  deleteImage,
+} = require("./route/image");
 
 const userController = require("./route/user");
 
@@ -95,7 +128,7 @@ app.delete("/users/delete/:id", async (req, res) => {
   }
 });
 
-app.post("/category/insert", insertCategory);
+app.post("/category/add", addCategory);
 app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
@@ -104,6 +137,28 @@ app.patch("/category/update", updateCategory);
 app.get("/user/getallUser", userController.getAllUsers);
 app.post("/user/insertUser", userController.registerUser);
 app.put("/user/updateUser/:id", userController.updateUser);
+app.post("/invoice/insert", addInvoice);
+app.get("/invoice/all", getAllInvoice);
+app.get("/invoice/:id", getInvoiceById);
+app.delete("/invoice/delete/:id", deleteInvoice);
+app.patch("/invoice/update", updateInvoice);
+
+app.post("/invoiceDetail/add", addInvoiceDetail);
+app.patch("/invoiceDetail/update", updateInvoiceDetail);
+app.delete("/invoiceDetail/delete/:id", deleteInvoiceDetail);
+app.get("/invoiceDetail/getById/:id", getInvoiceDetailById);
+
+app.post("/product/insertProduct", insertProduct);
+app.get("/product/getAllProducts", getAllProducts);
+app.get("/product/:id", getProductById);
+app.patch("/product/updateProduct", updateProduct);
+app.delete("/product/deleteProduct/:id", deleteProduct);
+
+app.post("/image/insertImage", insertImage);
+app.get("/image/getAllImages", getAllImages);
+app.get("/image/product/:productid", getImagesByProduct);
+app.patch("/image/updateImage", updateImage);
+app.delete("/image/deleteImage/:productid", deleteImage);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
