@@ -31,6 +31,14 @@ const {
   deleteProduct,
 } = require("./route/product");
 
+const {
+  insertImage,
+  getAllImages,
+  getImagesByProduct,
+  updateImage,
+  deleteImage,
+} = require("./route/image");
+
 const app = express();
 const cors = require("cors");
 
@@ -139,6 +147,12 @@ app.get("/product/all", getAllProducts);
 app.get("/product/:id", getProductById);
 app.patch("/product/update", updateProduct);
 app.delete("/product/delete/:id", deleteProduct);
+
+app.post("/image/insert", insertImage);
+app.get("/image/all", getAllImages);
+app.get("/image/product/:productid", getImagesByProduct);
+app.patch("/image/update", updateImage);
+app.delete("/image/delete/:productid", deleteImage);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
