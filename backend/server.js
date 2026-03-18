@@ -1,12 +1,10 @@
 const express = require("express");
 const pool = require("./db");
 
-const { 
-  addCategory,
-  getAllCategories,
-  deleteCategory,
-  updateCategory
-} = require("./route/category");
+const { add: addCategory } = require("./route/category");
+const { getAll: getAllCategories } = require("./route/category");
+const { delete: deleteCategory } = require("./route/category");
+const { update: updateCategory } = require("./route/category");
 
 const { 
   addInvoice,
@@ -126,7 +124,7 @@ app.delete("/users/delete/:id", async (req, res) => {
   }
 });
 
-app.post("/category/insert", addCategory);
+app.post("/category/add", addCategory);
 app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
