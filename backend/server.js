@@ -12,6 +12,13 @@ const { getById: getById } = require("./route/invoice");
 const { delete: deleteInvoice } = require("./route/invoice");
 const { update: updateInvoice } = require("./route/invoice");
 
+const {
+  insertProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} = require("./route/product");
 
 const app = express();
 const cors = require("cors");
@@ -110,6 +117,12 @@ app.get("/invoice/all", getAllInvoices);
 app.get("/invoice/:id", getById);
 app.delete("/invoice/delete/:id", deleteInvoice);
 app.patch("/invoice/update", updateInvoice);
+
+app.post("/product/insert", insertProduct);
+app.get("/product/all", getAllProducts);
+app.get("/product/:id", getProductById);
+app.patch("/product/update", updateProduct);
+app.delete("/product/delete/:id", deleteProduct);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
