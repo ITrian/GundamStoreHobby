@@ -6,6 +6,8 @@ const { getAll: getAllCategories } = require("./route/category");
 const { delete: deleteCategory } = require("./route/category");
 const { update: updateCategory } = require("./route/category");
 
+const userController = require("./route/user");
+
 const app = express();
 const cors = require("cors");
 
@@ -97,6 +99,11 @@ app.post("/category/insert", insertCategory);
 app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
+
+
+app.get("/user/getallUser", userController.getAllUsers);
+app.post("/user/insertUser", userController.registerUser);
+app.put("/user/updateUser/:id", userController.updateUser);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
