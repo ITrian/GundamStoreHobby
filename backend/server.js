@@ -142,17 +142,17 @@ app.patch("/invoiceDetail/update", updateInvoiceDetail);
 app.delete("/invoiceDetail/delete/:id", deleteInvoiceDetail);
 app.get("/invoiceDetail/getById/:id", getInvoiceDetailById);
 
-app.post("/product/insert", insertProduct);
-app.get("/product/all", getAllProducts);
+app.post("/product/insertProduct", insertProduct);
+app.get("/product/getAllProducts", getAllProducts);
 app.get("/product/:id", getProductById);
-app.patch("/product/update", updateProduct);
-app.delete("/product/delete/:id", deleteProduct);
+app.patch("/product/updateProduct", updateProduct);
+app.delete("/product/deleteProduct/:id", deleteProduct);
 
-app.post("/image/insert", insertImage);
-app.get("/image/all", getAllImages);
+app.post("/image/insertImage", insertImage);
+app.get("/image/getAllImages", getAllImages);
 app.get("/image/product/:productid", getImagesByProduct);
-app.patch("/image/update", updateImage);
-app.delete("/image/delete/:productid", deleteImage);
+app.patch("/image/updateImage", updateImage);
+app.delete("/image/deleteImage/:productid", deleteImage);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
