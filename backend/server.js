@@ -1,7 +1,10 @@
 const express = require("express");
 const pool = require("./db");
 
-
+const { insert: insertCategory } = require("./route/category");
+const { getAll: getAllCategories } = require("./route/category");
+const { delete: deleteCategory } = require("./route/category");
+const { update: updateCategory } = require("./route/category");
 
 const app = express();
 const cors = require("cors");
@@ -86,6 +89,11 @@ app.delete("/users/delete/:id", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+app.post("/category/insert", insertCategory);
+app.get("/category/all", getAllCategories);
+app.delete("/category/delete/:id", deleteCategory);
+app.patch("/category/update", updateCategory);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
