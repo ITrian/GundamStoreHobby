@@ -18,27 +18,43 @@ const HomePage = () => {
 
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
+// Fetch API Categories có bảo vệ
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${API_URL}/category/all`);
         const data = await response.json();
-        setCategories(data);
+        // Chỉ lưu vào state nếu data thực sự là một mảng
+        if (Array.isArray(data)) {
+          setCategories(data);
+        } else {
+          console.error("Dữ liệu Category không hợp lệ:", data);
+          setCategories([]); // Ép về mảng rỗng để không sập web
+        }
       } catch (error) {
         console.error("Lỗi fetch categories:", error);
+        setCategories([]);
       }
     };
     fetchCategories();
   }, []);
 
+  // Fetch API Products có bảo vệ
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(`${API_URL}/product/all`);
         const data = await response.json();
-        setProducts(data);
+        // Chỉ lưu vào state nếu data thực sự là một mảng
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error("Dữ liệu Product không hợp lệ:", data);
+          setProducts([]); // Ép về mảng rỗng để không sập web
+        }
       } catch (error) {
         console.error("Lỗi fetch products:", error);
+        setProducts([]);
       }
     };
     fetchProducts();
@@ -50,8 +66,10 @@ const HomePage = () => {
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  // Thêm một lớp bảo vệ an toàn (nếu products không may bị undefined thì coi như mảng rỗng)
+  const safeProducts = Array.isArray(products) ? products : [];
+  const currentProducts = safeProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(safeProducts.length / productsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
