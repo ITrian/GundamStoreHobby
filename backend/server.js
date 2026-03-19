@@ -1,10 +1,12 @@
 const express = require("express");
 const pool = require("./db");
 
-const { add: addCategory } = require("./route/category");
-const { getAll: getAllCategories } = require("./route/category");
-const { delete: deleteCategory } = require("./route/category");
-const { update: updateCategory } = require("./route/category");
+
+const {addCategory,
+  getAllCategories,
+  deleteCategory,
+  updateCategory
+} = require("./route/category");
 
 const { 
   addInvoice,
@@ -36,6 +38,8 @@ const {
   updateImage,
   deleteImage,
 } = require("./route/image");
+
+const userController = require("./route/user");
 
 const app = express();
 const cors = require("cors");
@@ -129,6 +133,10 @@ app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
 
+
+app.get("/user/getallUser", userController.getAllUsers);
+app.post("/user/insertUser", userController.registerUser);
+app.put("/user/updateUser/:id", userController.updateUser);
 app.post("/invoice/insert", addInvoice);
 app.get("/invoice/all", getAllInvoice);
 app.get("/invoice/:id", getInvoiceById);
