@@ -13,12 +13,28 @@ const getAllUsers = async (req, res) => {
 
 const registerUser = async (req, res) => {
   const { name, dateOfBirth, email, address, username, password } = req.body;
+
+  if (!name || !username || !password) {
+    return res.status(400).json({ error: "Thông tin không hợp lệ!" });
+  }
+
   const client = await pool.connect();
   try {
+    const checkUser = await client.query(
+      "SELECT username FROM account WHERE username = $1",
+      [username],
+    );
+    if (checkUser.rows.length > 0) {
+      return res.status(400).json({ error: "Tên đăng nhập đã tồn tại!" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPass = await bcrypt.hash(password, salt);
+
     await client.query("BEGIN");
 
     const userSql = `INSERT INTO "user" (name, dateofbirth, email, address, isadmin) 
-                         VALUES ($1, $2, $3, $4, false) RETURNING id`;
+                     VALUES ($1, $2, $3, $4, false) RETURNING id`;
 
     const userRes = await client.query(userSql, [
       name,
@@ -28,18 +44,16 @@ const registerUser = async (req, res) => {
     ]);
     const newId = userRes.rows[0].id;
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(password, salt);
-
     const accSql = `INSERT INTO account (userid, username, password, isactived) 
-                        VALUES ($1, $2, $3, true)`;
+                    VALUES ($1, $2, $3, true)`;
     await client.query(accSql, [newId, username, hashedPass]);
 
     await client.query("COMMIT");
     res.status(201).json({ message: "Đăng ký thành công!", userId: newId });
   } catch (error) {
     await client.query("ROLLBACK");
-    res.status(500).json({ error: error.message });
+    console.error("Lỗi đăng ký:", error.message);
+    res.status(500).json({ error: "Có lỗi xảy ra, vui lòng thử lại." });
   } finally {
     client.release();
   }
@@ -62,6 +76,7 @@ const updateUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 module.exports = {
   getAllUsers,

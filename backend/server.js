@@ -1,26 +1,26 @@
 const express = require("express");
 const pool = require("./db");
 
-
-const {addCategory,
+const {
+  addCategory,
   getAllCategories,
   deleteCategory,
-  updateCategory
+  updateCategory,
 } = require("./route/category");
 
-const { 
+const {
   addInvoice,
   updateInvoice,
   deleteInvoice,
   getInvoiceById,
-  getAllInvoice
- } = require("./route/invoice");
+  getAllInvoice,
+} = require("./route/invoice");
 
-const { 
+const {
   addInvoiceDetail,
   updateInvoiceDetail,
   deleteInvoiceDetail,
-  getInvoiceDetailById
+  getInvoiceDetailById,
 } = require("./route/invoiceDetail");
 
 const {
@@ -133,10 +133,10 @@ app.get("/category/all", getAllCategories);
 app.delete("/category/delete/:id", deleteCategory);
 app.patch("/category/update", updateCategory);
 
-
 app.get("/user/getallUser", userController.getAllUsers);
-app.post("/user/insertUser", userController.registerUser);
+app.post("/user/registerUser", userController.registerUser);
 app.put("/user/updateUser/:id", userController.updateUser);
+
 app.post("/invoice/insert", addInvoice);
 app.get("/invoice/all", getAllInvoice);
 app.get("/invoice/:id", getInvoiceById);
