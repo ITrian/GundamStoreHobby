@@ -14,7 +14,7 @@ async function insertProduct(req, res) {
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Lỗi thêm sản phẩm" });
+    res.status(500).json({ error: err.message });
   }
 }
 
@@ -26,7 +26,7 @@ async function getAllProducts(req, res) {
     res.json(result.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Lỗi lấy sản phẩm" });
+    res.status(500).json({ error: err.message });
   }
 }
 

@@ -56,7 +56,11 @@ async function updateImage(req, res) {
       [detail, link, productid]
     );
 
-    res.json(result.rows);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Image không tồn tại" });
+    }
+
+    res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -67,12 +71,16 @@ async function deleteImage(req, res) {
   try {
     const { productid } = req.params;
 
-    await pool.query(
+    const result = await pool.query(
       "DELETE FROM image WHERE productid=$1",
       [productid]
     );
 
-    res.json({ message: "Xóa image theo product thành công" });
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Image không tồn tại" });
+    }
+
+    res.json({ message: "Xóa image theo product thành công", deleted: result.rowCount });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
