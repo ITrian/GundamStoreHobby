@@ -35,7 +35,7 @@ const HomePage = () => {
       <header className="main-header">
         <div className="header-top">
           <div className="logo-container">
-            <img src="https://placehold.co/400x160?text=The+Liems's+STOREHOBBY" alt="Logo" className="logo" />
+            <img src="./src/assets/Theliems.jpg" alt="Logo" className="logo" />
           </div>
           
           <div className="header-actions">
@@ -128,7 +128,7 @@ const HomePage = () => {
       <footer className="main-footer">
         <div className="footer-columns">
           <div className="footer-col">
-            <img src="https://placehold.co/150x60?text=LOGO+FOOTER" alt="Logo Footer" className="footer-logo" />
+            <img src="./src/assets/Theliems.jpg" alt="Logo Footer" className="footer-logo" />
             <p><strong>The Liems's STOREHOBBY</strong></p>
             <p><strong>Địa chỉ:</strong> 180 Đường Cao Lỗ Quận 8</p>
             <p><strong>Email:</strong> contact@anhobbystore.com</p>

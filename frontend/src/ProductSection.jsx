@@ -35,7 +35,7 @@ const ProductSection = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_URL}/product/all`);
+        const response = await fetch(`${API_URL}/product/getAllProducts`);
         if (!response.ok) throw new Error('Lỗi khi tải dữ liệu');
         const data = await response.json();
         setProducts(data);
