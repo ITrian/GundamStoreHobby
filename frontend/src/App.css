@@ -1,6 +1,6 @@
-body {
+/* body {
   background-color: #fff;
-}
+} */
 
 @keyframes rgb-blink {
   0% {
@@ -141,7 +141,7 @@ body {
 
 .action-buttons>button:last-child {
   background-color: #dc3545;
-  color: #fff
+  color: #fff;
 }
 
 .note-container {
@@ -160,11 +160,11 @@ input {
   color:#000;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .note-container {
-    /* position: absolute;
-    translate: -50% -50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
     top: 50%;
-    left: 15%; */
+    left: 15%;
   }
-}
+} */
