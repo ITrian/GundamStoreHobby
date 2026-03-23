@@ -41,6 +41,8 @@ const {
 
 const userController = require("./route/user");
 
+const accountController = require("./route/account");
+
 const app = express();
 const cors = require("cors");
 
@@ -159,6 +161,10 @@ app.get("/image/getAllImages", getAllImages);
 app.get("/image/product/:productid", getImagesByProduct);
 app.patch("/image/updateImage", updateImage);
 app.delete("/image/deleteImage/:productid", deleteImage);
+
+app.post("/account/login", accountController.login);
+app.post("/account/logout", accountController.logout);
+app.put("/account/changePassword", accountController.changePassword);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
