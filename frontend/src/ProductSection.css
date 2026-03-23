@@ -53,6 +53,7 @@
   transform: translateY(-0.2vw);
 }
 
+/* Container chứa ảnh phải có position relative */
 .product-image-container {
   position: relative;
   width: 100%;
@@ -60,23 +61,50 @@
   overflow: hidden;
   border-radius: 0.2vw;
   margin-bottom: 1vw;
+  background-color: #f8f8f8; /* Nền mờ dự phòng khi ảnh load */
 }
 
+/* Base style cho cả 2 ảnh: Nằm đè lên nhau */
 .product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
-.product-card:hover .product-image {
-  transform: scale(1.03); /* Zoom nhẹ ảnh khi hover */
+/* Ảnh Thumb mặc định sẽ hiện */
+.img-thumb {
+  opacity: 1;
+  z-index: 1;
 }
 
-/* Hiệu ứng Nút MUA NGAY */
+/* Ảnh Hover mặc định sẽ ẩn */
+.img-hover {
+  opacity: 0;
+  z-index: 2;
+}
+
+/* HIỆU ỨNG KHI HOVER VÀO PRODUCT CARD */
+
+/* 1. Ảnh Thumb mờ dần đi và zoom nhẹ */
+.product-card:hover .img-thumb {
+  opacity: 0;
+  transform: scale(1.05);
+}
+
+/* 2. Ảnh Hover rõ dần lên và zoom nhẹ tạo cảm giác chuyển động */
+.product-card:hover .img-hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Hiệu ứng Nút MUA NGAY (Giữ nguyên của bạn) */
 .buy-now-btn {
   position: absolute;
-  bottom: -3vw; /* Giấu nút xuống dưới */
+  bottom: -3vw;
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
@@ -90,15 +118,16 @@
   opacity: 0;
   transition: all 0.3s ease;
   white-space: nowrap;
+  z-index: 3; /* Nút mua ngay phải nằm cao nhất */
 }
 
 .product-card:hover .buy-now-btn {
-  bottom: 1vw; /* Trượt nút lên */
-  opacity: 1;  /* Hiện nút */
+  bottom: 1vw;
+  opacity: 1;
 }
 
 .buy-now-btn:hover {
-  background-color: #e50000; /* Đổi màu đỏ khi hover thẳng vào nút */
+  background-color: #e50000;
 }
 
 .product-info {
