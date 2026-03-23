@@ -37,6 +37,7 @@ const {
   getImagesByProduct,
   updateImage,
   deleteImage,
+  deleteSingleImage,
 } = require("./route/image");
 
 const userController = require("./route/user");
@@ -159,6 +160,7 @@ app.get("/image/getAllImages", getAllImages);
 app.get("/image/product/:productid", getImagesByProduct);
 app.patch("/image/updateImage", updateImage);
 app.delete("/image/deleteImage/:productid", deleteImage);
+app.delete("/image/deleteSingleImage/:id", deleteSingleImage);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

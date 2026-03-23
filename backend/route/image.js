@@ -87,10 +87,31 @@ async function deleteImage(req, res) {
   }
 }
 
+async function deleteSingleImage(req, res) {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      "DELETE FROM image WHERE id=$1",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Image không tồn tại" });
+    }
+
+    res.json({ message: "Xóa image thành công", deleted: result.rowCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   insertImage,
   getAllImages,
   getImagesByProduct,
   updateImage,
   deleteImage,
+  deleteSingleImage,
 };
