@@ -162,7 +162,7 @@ app.get("/image/getAllImages", getAllImages);
 app.get("/image/product/:productid", getImagesByProduct);
 app.patch("/image/updateImage", updateImage);
 app.delete("/image/deleteImage/:productid", deleteImage);
-app.delete("/image/deleteSingleImage/:id", deleteSingleImage);
+app.delete("/image/deleteSingleImage/:productid/:detail", deleteSingleImage);
 
 app.post("/account/login", accountController.login);
 app.post("/account/logout", accountController.logout);

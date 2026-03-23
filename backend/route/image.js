@@ -89,11 +89,11 @@ async function deleteImage(req, res) {
 
 async function deleteSingleImage(req, res) {
   try {
-    const { id } = req.params;
+    const { productid, detail } = req.params;
 
     const result = await pool.query(
-      "DELETE FROM image WHERE id=$1",
-      [id]
+      "DELETE FROM image WHERE productid=$1 AND detail=$2",
+      [productid, detail]
     );
 
     if (result.rowCount === 0) {
