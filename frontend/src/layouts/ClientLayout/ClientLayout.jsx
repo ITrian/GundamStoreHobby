@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import ProductSection from './ProductSection';
-import './HomePage.css'; // File CSS giữ nguyên như bản Mobile-First trước đó
+import { Link } from 'react-router-dom';
+import '../../pages/Home/HomePage.css'; // Load styles từ HomePage
 
-const HomePage = () => {
+const ClientLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
-  // Gọi API lấy danh mục sản phẩm từ server Render
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -35,17 +29,19 @@ const HomePage = () => {
       <header className="main-header">
         <div className="header-top">
           <div className="logo-container">
-            <img src="./src/assets/Theliems.jpg" alt="Logo" className="logo" />
+            <Link to="/">
+              <img src="/src/assets/Theliems.jpg" alt="Logo" className="logo" />
+            </Link>
           </div>
           
           <div className="header-actions">
-            <div className="action-item hide-on-mobile">
+            <Link to="/login" className="action-item hide-on-mobile" style={{ textDecoration: 'none', color: 'inherit' }}>
               <span className="icon">👤</span>
               <div className="action-text">
                 <p>Tài khoản</p>
                 <strong>Đăng nhập</strong>
               </div>
-            </div>
+            </Link>
             <div className="action-item cart-item">
               <span className="icon">🛒</span>
               <span className="cart-count">0</span>
@@ -84,9 +80,9 @@ const HomePage = () => {
       <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <div className="sidebar-account">
+          <Link to="/login" className="sidebar-account" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => setIsSidebarOpen(false)}>
             👤 <strong>Đăng nhập</strong>
-          </div>
+          </Link>
           <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>✕</button>
         </div>
         <ul className="sidebar-menu">
@@ -98,37 +94,16 @@ const HomePage = () => {
         </ul>
       </aside>
 
-      {/* 4. KHU VỰC BANNERS */}
-      <main className="main-content">
-        <div className="banner-section">
-          <div className="main-banner">
-            <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              navigation
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 3000 }}
-              loop={true}
-            >
-              <SwiperSlide><img src="https://placehold.co/1200x600/1a2b4c/FFF?text=BANNER+CHINH+1+-+GUNDAM" alt="Banner 1" className="banner-img" /></SwiperSlide>
-              <SwiperSlide><img src="https://placehold.co/1200x600/8b0000/FFF?text=BANNER+CHINH+2+-+SALE" alt="Banner 2" className="banner-img" /></SwiperSlide>
-            </Swiper>
-          </div>
-          <div className="sub-banners">
-            <img src="https://placehold.co/600x190/000/FFF?text=BLACK+FRIDAY" alt="Sub Banner 1" className="banner-img" />
-            <img src="https://placehold.co/600x190/8b0000/FFF?text=VOUCHER+30K" alt="Sub Banner 2" className="banner-img" />
-            <img src="https://placehold.co/600x190/333/FFF?text=PRE-ORDER" alt="Sub Banner 3" className="banner-img" />
-          </div>
-        </div>
-
-        {/* 5. KHU VỰC SẢN PHẨM */}
-        <ProductSection />
+      {/* 4. MAIN CONTENT */}
+      <main className="main-content" style={{ backgroundColor: '#f4f6f8' }}>
+        {children}
       </main>
 
-      {/* 6. FOOTER */}
+      {/* 5. FOOTER */}
       <footer className="main-footer">
         <div className="footer-columns">
           <div className="footer-col">
-            <img src="./src/assets/Theliems.jpg" alt="Logo Footer" className="footer-logo" />
+            <img src="/src/assets/Theliems.jpg" alt="Logo Footer" className="footer-logo" />
             <p><strong>The Liems's STOREHOBBY</strong></p>
             <p><strong>Địa chỉ:</strong> 180 Đường Cao Lỗ Quận 8</p>
             <p><strong>Email:</strong> contact@anhobbystore.com</p>
@@ -158,4 +133,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default ClientLayout;

@@ -3,13 +3,15 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Các Component của khách hàng
-import HomePage from './HomePage';
-import UserManagement from './UserManagement'; // Chứa code cũ của bạn
+import HomePage from './pages/Home/HomePage';
+import UserManagement from './pages/Admin/UserManagement'; // Chứa code cũ của bạn
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
 
 // Các Component của Admin (ĐẢM BẢO BẠN ĐÃ TẠO 2 FILE NÀY TRONG CÙNG THƯ MỤC)
-import AdminLayout from './AdminLayout';
-import AdminProducts from './AdminProducts';
-import AdminCategories from './AdminCategories';
+import AdminLayout from './layouts/AdminLayout/AdminLayout';
+import AdminProducts from './pages/Admin/AdminProducts';
+import AdminCategories from './pages/Admin/AdminCategories';
 
 import './App.css';
 
@@ -21,6 +23,8 @@ function App() {
             TRANG DÀNH CHO KHÁCH HÀNG 
             ========================================= */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/users" element={<UserManagement />} />
 
         {/* =========================================

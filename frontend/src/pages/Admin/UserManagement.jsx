@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
-import './App.css';
+import '../../App.css';
 
 function UserManagement() {
   const [users, setUsers] = useState([]);
