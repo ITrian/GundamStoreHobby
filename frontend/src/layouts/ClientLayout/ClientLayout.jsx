@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../pages/Home/HomePage.css';
 
+import logoImg from '../../assets/Theliems.jpg';
+
 const ClientLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -30,7 +32,7 @@ const ClientLayout = ({ children }) => {
         <div className="header-top">
           <div className="logo-container">
             <Link to="/">
-              <img src="/src/assets/Theliems.jpg" alt="Logo" className="logo" />
+              <img src={logoImg} alt="Logo" className="logo" />
             </Link>
           </div>
           
@@ -105,7 +107,7 @@ const ClientLayout = ({ children }) => {
       <footer className="main-footer">
         <div className="footer-columns">
           <div className="footer-col">
-            <img src="/src/assets/Theliems.jpg" alt="Logo Footer" className="footer-logo" />
+            <img src={logoImg} alt="Logo Footer" className="footer-logo" />
             <p><strong>The Liems's STOREHOBBY</strong></p>
             <p><strong>Địa chỉ:</strong> 180 Đường Cao Lỗ Quận 8</p>
             <p><strong>Email:</strong> contact@anhobbystore.com</p>
