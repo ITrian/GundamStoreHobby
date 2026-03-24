@@ -30,7 +30,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* 5. KHU VỰC SẢN PHẨM */}
       <div style={{ backgroundColor: '#fff' }}>
         <ProductSection />
       </div>

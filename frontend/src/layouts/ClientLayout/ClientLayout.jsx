@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import '../../pages/Home/HomePage.css'; // Load styles từ HomePage
+import '../../pages/Home/HomePage.css';
 
 const ClientLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,7 +25,7 @@ const ClientLayout = ({ children }) => {
 
   return (
     <div className="homepage-container">
-      {/* 1. HEADER CHÍNH */}
+      
       <header className="main-header">
         <div className="header-top">
           <div className="logo-container">
@@ -36,14 +36,14 @@ const ClientLayout = ({ children }) => {
           
           <div className="header-actions">
             <Link to="/login" className="action-item hide-on-mobile" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <span className="icon">👤</span>
+              <span className="icon"><i className="bi bi-person-circle"></i></span>
               <div className="action-text">
                 <p>Tài khoản</p>
                 <strong>Đăng nhập</strong>
               </div>
             </Link>
             <div className="action-item cart-item">
-              <span className="icon">🛒</span>
+              <span className="icon"><i className="bi bi-cart3"></i></span>
               <span className="cart-count">0</span>
             </div>
           </div>
@@ -51,15 +51,14 @@ const ClientLayout = ({ children }) => {
 
         <div className="search-bar">
           <input type="text" placeholder="Tìm theo tên sản phẩm..." />
-          <button className="search-btn">🔍</button>
+          <button className="search-btn"><i className="bi bi-search"></i></button>
         </div>
       </header>
 
-      {/* 2. THANH MENU ĐỎ (NAVBAR) */}
       <nav className="main-nav">
         <div className="nav-content">
           <button className="menu-toggle-btn" onClick={() => setIsSidebarOpen(true)}>
-            ☰ <span className="hide-on-mobile">DANH MỤC SẢN PHẨM</span>
+            <i className="bi bi-list"></i> <span className="hide-on-mobile">DANH MỤC SẢN PHẨM</span>
           </button>
           
           <ul className="nav-links hide-on-mobile">
@@ -71,35 +70,38 @@ const ClientLayout = ({ children }) => {
           </ul>
           
           <div className="hotline">
-            📞 <span className="hide-on-mobile">Hotline:</span> <strong>0349999943</strong>
+            <i className="bi bi-telephone-fill" style={{ marginRight: '0.5vw' }}></i> 
+            <span className="hide-on-mobile">Hotline:</span> <strong>0349999943</strong>
           </div>
         </div>
       </nav>
 
-      {/* 3. SIDEBAR (MENU BÊN TRÁI) */}
+      {/* --- SIDEBAR CHO MOBILE --- */}
       <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <Link to="/login" className="sidebar-account" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => setIsSidebarOpen(false)}>
-            👤 <strong>Đăng nhập</strong>
+            <i className="bi bi-person-circle" style={{ marginRight: '2vw' }}></i><strong>Đăng nhập</strong>
           </Link>
-          <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>✕</button>
+          <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>
+            <i className="bi bi-x-lg"></i>
+          </button>
         </div>
         <ul className="sidebar-menu">
           <li>TẤT CẢ SẢN PHẨM</li>
           {categories.map((cat) => (
-            <li key={`side-${cat.id}`}>{cat.name.toUpperCase()} <span className="arrow">›</span></li>
+            <li key={`side-${cat.id}`}>
+              {cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i>
+            </li>
           ))}
           <li>KIỂM TRA ĐƠN HÀNG</li>
         </ul>
       </aside>
 
-      {/* 4. MAIN CONTENT */}
       <main className="main-content" style={{ backgroundColor: '#f4f6f8' }}>
         {children}
       </main>
 
-      {/* 5. FOOTER */}
       <footer className="main-footer">
         <div className="footer-columns">
           <div className="footer-col">
@@ -125,7 +127,9 @@ const ClientLayout = ({ children }) => {
           </div>
           <div className="footer-col">
             <h4>Tổng đài hỗ trợ</h4>
-            <p className="footer-hotline">📞 0123.456.789</p>
+            <p className="footer-hotline">
+              <i className="bi bi-telephone-fill" style={{ marginRight: '1vw' }}></i> 0123.456.789
+            </p>
           </div>
         </div>
       </footer>

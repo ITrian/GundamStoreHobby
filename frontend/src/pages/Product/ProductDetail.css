@@ -1,0 +1,493 @@
+/* =========================================
+   BASE CSS - MOBILE FIRST
+   ========================================= */
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip;
+    /* Đổi 'hidden' thành 'clip' */
+}
+
+.product-detail-wrapper {
+    background-color: #f4f6f9;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+    min-height: 100vh;
+}
+
+.breadcrumb {
+    font-size: 3.5vw;
+    color: #666;
+    padding: 3vw 4vw;
+    background: #fff;
+    margin: 0;
+    border-bottom: 0.1vw solid #eee;
+}
+
+.breadcrumb span {
+    color: #333;
+    font-weight: bold;
+}
+
+/* KHUNG CHỨA TOÀN BỘ SẢN PHẨM TRÊN MOBILE: NỀN TRẮNG TỪ TRÊN XUỐNG DƯỚI */
+.product-main-layout {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+}
+
+/* Thủ thuật rã khối cha trên Mobile để lấy element con sắp xếp flex-order */
+.desktop-left-column {
+    display: contents;
+}
+
+/* SẮP XẾP THỨ TỰ TRÊN MOBILE (1: Ảnh -> 2: Thông tin -> 3: Tabs) */
+.detail-gallery {
+    order: 1;
+    padding: 4vw;
+    border-bottom: 0.2vw solid #eee;
+}
+
+.detail-info {
+    order: 2;
+    padding: 4vw;
+    border-bottom: 0.2vw solid #eee;
+}
+
+.detail-bottom-section {
+    order: 3;
+    padding: 4vw;
+}
+
+/* --- KHỐI HÌNH ẢNH --- */
+.main-image-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #f9f9f9;
+    border-radius: 2vw;
+    overflow: hidden;
+}
+
+.product-swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.thumbnail-list {
+    display: flex;
+    justify-content: flex-start;
+    gap: 2vw;
+    margin-top: 3vw;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 1vw;
+}
+
+.thumb-item {
+    width: 18vw;
+    height: 18vw;
+    flex-shrink: 0;
+    border: 0.2vw solid #eee;
+    border-radius: 1vw;
+    cursor: pointer;
+}
+
+.thumb-item.active {
+    border: 0.4vw solid #1a73e8;
+}
+
+.thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.share-section {
+    margin-top: 4vw;
+    font-size: 3.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2vw;
+}
+
+.share-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 8vw;
+    height: 8vw;
+    color: white;
+    border-radius: 50%;
+    font-size: 4vw;
+}
+
+.fb-icon {
+    background-color: #1877f2;
+}
+
+.mess-icon {
+    background-color: #00B2FF;
+}
+
+/* --- KHỐI THÔNG TIN --- */
+.product-title {
+    font-size: 5.5vw;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: 3vw;
+    color: #222;
+}
+
+.product-stats {
+    font-size: 3.2vw;
+    color: #555;
+    margin-bottom: 2vw;
+    line-height: 1.8;
+}
+
+.product-meta {
+    display: flex;
+    gap: 4vw;
+    font-size: 3.2vw;
+    color: #555;
+    margin-bottom: 4vw;
+    border-bottom: 0.1vw solid #eee;
+    padding-bottom: 4vw;
+}
+
+.meta-highlight {
+    font-weight: bold;
+    color: #333;
+}
+
+.product-price {
+    font-size: 7vw;
+    font-weight: bold;
+    color: #e50000;
+    margin-bottom: 4vw;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 3.5vw;
+    font-size: 3.5vw;
+    font-weight: bold;
+    border: none;
+    border-radius: 2vw;
+    margin-bottom: 4vw;
+}
+
+.add-to-cart {
+    background-color: #e50000;
+    color: #fff;
+}
+
+.out-of-stock {
+    background-color: #eee;
+    color: #555;
+}
+
+.policy-list {
+    list-style: none;
+    padding: 0;
+    font-size: 3.2vw;
+    color: #444;
+    line-height: 1.6;
+}
+
+.policy-list li {
+    margin-bottom: 2vw;
+    display: flex;
+    align-items: flex-start;
+}
+
+/* --- KHỐI VOUCHER VÀ TABS CHI TIẾT --- */
+.voucher-box {
+    background-color: #fffaf5;
+    border: 0.1vw solid #fce8d8;
+    padding: 3vw;
+    border-radius: 2vw;
+    margin-bottom: 5vw;
+}
+
+.voucher-title {
+    font-size: 3.2vw;
+    color: #e67e22;
+    display: block;
+    margin-bottom: 2vw;
+}
+
+.voucher-list {
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+    overflow-x: auto;
+}
+
+.voucher-tag {
+    background-color: #fff;
+    border: 0.1vw solid #e67e22;
+    color: #333;
+    padding: 1.5vw 2.5vw;
+    font-size: 3vw;
+    border-radius: 1vw;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.voucher-arrow {
+    color: #999;
+    font-size: 4vw;
+    margin-left: auto;
+    padding-right: 2vw;
+}
+
+.tabs-header {
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 0.1vw solid #ddd;
+    margin-bottom: 4vw;
+    gap: 2%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tab-btn {
+    padding: 2vw 0;
+    font-size: 2vw;
+    font-weight: bold;
+    color: #666;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    width: 32%;
+}
+
+.tab-btn.active {
+    color: #1a73e8;
+    border-bottom: 0.5vw solid #1a73e8;
+}
+
+.tab-content {
+    font-size: 3.5vw;
+    line-height: 1.6;
+    color: #444;
+}
+
+.policy-content h4 {
+    font-size: 4vw;
+    color: #222;
+    margin-top: 3vw;
+    margin-bottom: 1vw;
+}
+
+.policy-content p {
+    margin-bottom: 2vw;
+}
+
+/* =========================================
+   DESKTOP STYLES (Cột Trái 1 khối - Cột Phải 1 khối)
+   ========================================= */
+@media (min-width: 768px) {
+    .product-detail-wrapper {
+        padding: 1vw 5vw 3vw 5vw;
+    }
+
+    .breadcrumb {
+        font-size: 0.9vw;
+        padding: 0;
+        background: transparent;
+        margin-bottom: 1.5vw;
+        border: none;
+    }
+
+    /* Bẻ khóa Flex column của Mobile -> Trở thành Grid 2 cột lộ nền xám ở giữa */
+    .product-main-layout {
+        display: grid;
+        grid-template-columns: 55% 40%;
+        justify-content: space-between;
+        align-items: start;
+        background-color: transparent;
+    }
+
+    /* Kích hoạt lại khối bọc bên trái */
+    .desktop-left-column {
+        display: block;
+        background-color: #fff;
+        border-radius: 0.5vw;
+        box-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.05);
+        padding: 2vw;
+    }
+
+    /* Reset lại style mượn tạm của Mobile */
+    .detail-gallery {
+        order: unset;
+        padding: 0;
+        border-bottom: none;
+    }
+
+    .detail-bottom-section {
+        order: unset;
+        padding: 0;
+        margin-top: 2vw;
+        border-top: 0.1vw solid #eee;
+        padding-top: 2vw;
+    }
+
+    /* Cột phải sticky */
+    .detail-info {
+        order: unset;
+        background-color: #fff;
+        border-radius: 0.5vw;
+        box-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.05);
+        padding: 2vw;
+        border-bottom: none;
+
+        /* --- BỘ 4 LỆNH KÍCH HOẠT STICKY --- */
+        position: -webkit-sticky;
+        /* Hỗ trợ cho Safari */
+        position: sticky;
+        top: 5vw;
+        /* Điểm dừng cách mép trên trình duyệt (có thể chỉnh to hơn nếu vướng Header) */
+        align-self: start;
+        /* QUAN TRỌNG: Ép khối này trôi lên trên cùng của Grid */
+        height: max-content;
+        /* QUAN TRỌNG: Không cho khối này giãn chiều cao theo khối bên trái */
+        z-index: 10;
+    }
+
+    /* Kích thước font và margin cho Desktop */
+    .main-image-box {
+        border-radius: 0.5vw;
+    }
+
+    .thumbnail-list {
+        gap: 1vw;
+        margin-top: 1.5vw;
+        justify-content: center;
+    }
+
+    .thumb-item {
+        width: 5vw;
+        height: 5vw;
+        border-width: 0.1vw;
+        border-radius: 0.3vw;
+    }
+
+    .thumb-item.active {
+        border-width: 0.2vw;
+    }
+
+    .share-section {
+        margin-top: 1.5vw;
+        font-size: 1vw;
+        gap: 0.8vw;
+    }
+
+    .share-icon {
+        width: 2vw;
+        height: 2vw;
+        font-size: 1.1vw;
+    }
+
+    .product-title {
+        font-size: 1.5vw;
+        margin-bottom: 1vw;
+    }
+
+    .product-stats {
+        font-size: 0.9vw;
+        margin-bottom: 1vw;
+    }
+
+    .product-meta {
+        font-size: 0.9vw;
+        margin-bottom: 1vw;
+        padding-bottom: 1vw;
+        gap: 2vw;
+    }
+
+    .product-price {
+        font-size: 2vw;
+        margin-bottom: 2vw;
+    }
+
+    .action-btn {
+        padding: 1.2vw;
+        font-size: 1.1vw;
+        border-radius: 0.5vw;
+        margin-bottom: 2vw;
+        cursor: pointer;
+    }
+
+    .policy-list {
+        font-size: 0.9vw;
+    }
+
+    .policy-list li {
+        margin-bottom: 0.5vw;
+    }
+
+    .policy-list i {
+        font-size: 1.2vw;
+        margin-right: 0.5vw !important;
+    }
+
+    .voucher-box {
+        padding: 1.5vw;
+        border-radius: 0.5vw;
+        margin-bottom: 2vw;
+        display: flex;
+        align-items: center;
+    }
+
+    .voucher-title {
+        font-size: 1vw;
+        margin-bottom: 0;
+        margin-right: 2vw;
+    }
+
+    .voucher-list {
+        gap: 1vw;
+    }
+
+    .voucher-tag {
+        padding: 0.4vw 0.8vw;
+        font-size: 0.85vw;
+        border-radius: 0.2vw;
+    }
+
+    .voucher-arrow {
+        display: none;
+    }
+
+    .tabs-header {
+        margin-bottom: 2vw;
+    }
+
+    .tab-btn {
+        padding: 1vw 1vw;
+        font-size: 1vw;
+    }
+
+    .tab-btn.active {
+        border-bottom-width: 0.2vw;
+    }
+
+    .tab-content {
+        font-size: 1vw;
+    }
+
+    .policy-content h4 {
+        font-size: 1.1vw;
+        margin-top: 1.5vw;
+    }
+}

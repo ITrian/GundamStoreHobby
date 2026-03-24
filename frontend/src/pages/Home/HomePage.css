@@ -1,5 +1,5 @@
 /* =========================================
-   BASE CSS - MOBILE FIRST (Màn hình nhỏ)
+   BASE LAYOUT & MOBILE FIRST
    ========================================= */
 #root {
   theme-color: white;
@@ -10,8 +10,7 @@
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
-  /* Ngăn chặn cuộn ngang (horizontal scroll) */
+  overflow-x: clip;
 }
 
 .homepage-container {
@@ -31,12 +30,11 @@ body {
   background-color: #f8f8f8;
 }
 
-/* Các phần tử cần giấu trên Mobile */
 .hide-on-mobile {
   display: none !important;
 }
 
-/* HEADER - MOBILE */
+/* --- HEADER --- */
 .main-header {
   background-color: #fff;
   padding: 3vw 4vw;
@@ -54,14 +52,12 @@ body {
 
 .logo {
   width: 35vw;
-  /* Logo to hơn trên mobile */
   height: auto;
 }
 
 .search-bar {
   display: flex;
   width: 100%;
-  /* Full màn hình mobile */
   border: 0.3vw solid #e50000;
   border-radius: 5vw;
   overflow: hidden;
@@ -90,7 +86,6 @@ body {
 
 .cart-item {
   font-size: 6vw;
-  /* Icon giỏ hàng to trên mobile */
   position: relative;
 }
 
@@ -106,7 +101,7 @@ body {
   font-weight: bold;
 }
 
-/* NAVBAR (Thanh đỏ) - MOBILE */
+/* --- NAVIGATION --- */
 .main-nav {
   background-color: #e50000;
   color: #fff;
@@ -124,15 +119,17 @@ body {
   color: #fff;
   border: none;
   font-size: 6vw;
-  /* Hamburger icon to */
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hotline {
   font-size: 4vw;
 }
 
-/* SIDEBAR - MOBILE (Mặc định 75% màn hình) */
+/* --- SIDEBAR --- */
 .sidebar-overlay {
   position: fixed;
   top: 0;
@@ -155,9 +152,7 @@ body {
   position: fixed;
   top: 0;
   left: -80vw;
-  /* Ẩn ra ngoài */
   width: 75vw;
-  /* Chiếm 75% trên mobile */
   height: 100vh;
   background: #fff;
   z-index: 999;
@@ -198,11 +193,10 @@ body {
   justify-content: space-between;
 }
 
-/* BANNERS - MOBILE (Xếp dọc) */
+/* --- BANNERS --- */
 .banner-section {
   display: grid;
   grid-template-columns: 1fr;
-  /* 1 Cột trên mobile */
   gap: 2vw;
   padding: 3vw 4vw;
 }
@@ -210,7 +204,6 @@ body {
 .sub-banners {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /* 3 banner nhỏ nằm ngang nhau trên mobile */
   gap: 2vw;
 }
 
@@ -221,7 +214,7 @@ body {
   border-radius: 1vw;
 }
 
-/* FOOTER - MOBILE (Xếp dọc 1 cột) */
+/* --- FOOTER --- */
 .main-footer {
   background-color: #fff;
   border-top: 0.5vw solid #e50000;
@@ -229,7 +222,6 @@ body {
   margin-top: 4vw;
 }
 
-/* Cập nhật trong phần BASE CSS (Mobile First) */
 .footer-col {
   display: flex;
   flex-direction: column;
@@ -247,14 +239,11 @@ body {
   padding: 0;
   margin: 0;
   display: block;
-  /* Ép danh sách thành khối dọc */
 }
 
 .footer-col ul li {
   display: block;
-  /* Không cho nằm ngang */
   list-style-type: none;
-  /* Bỏ dấu chấm đen mặc định */
   margin-bottom: 0.8vw;
   text-align: left;
 }
@@ -277,15 +266,13 @@ body {
 }
 
 /* =========================================
-   DESKTOP STYLES (Màn hình >= 768px)
+   DESKTOP STYLES
    ========================================= */
 @media (min-width: 768px) {
   .hide-on-mobile {
     display: flex !important;
-    /* Hiện lại các phần tử Desktop */
   }
 
-  /* HEADER - DESKTOP */
   .main-header {
     flex-direction: row;
     align-items: center;
@@ -303,7 +290,6 @@ body {
 
   .search-bar {
     width: 40vw;
-    /* Thu nhỏ search bar, nhét vào giữa */
     border-width: 0.15vw;
     border-radius: 2vw;
     position: absolute;
@@ -343,12 +329,10 @@ body {
     font-size: 0.8vw;
   }
 
-  /* NAVBAR - DESKTOP */
   .nav-content {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    /* Dồn các menu item sang trái */
     height: 3vw;
   }
 
@@ -358,18 +342,15 @@ body {
     list-style: none;
     margin-left: 2vw;
     gap: 2vw;
-    /* Khoảng cách giữa các menu item */
   }
 
   .nav-links li {
     display: block;
     white-space: nowrap;
-    /* Tránh việc menu bị rớt dòng */
   }
 
   .hotline {
     margin-left: auto;
-    /* Tự động đẩy hotline sát mép phải */
     display: flex;
     align-items: center;
   }
@@ -385,6 +366,7 @@ body {
 
   .nav-links li:hover {
     color: #ffcccc;
+    cursor: pointer;
   }
 
   .hotline {
@@ -392,7 +374,6 @@ body {
     margin-left: auto;
   }
 
-  /* SIDEBAR - DESKTOP */
   .sidebar {
     width: 20vw;
     left: -25vw;
@@ -419,10 +400,8 @@ body {
     cursor: pointer;
   }
 
-  /* BANNERS - DESKTOP */
   .banner-section {
     grid-template-columns: 72% 27%;
-    /* Trở lại layout 2 cột */
     gap: 1vw;
     padding: 1.5vw 5vw;
   }
@@ -438,7 +417,6 @@ body {
     border-radius: 0.3vw;
   }
 
-  /* FOOTER - DESKTOP */
   .main-footer {
     border-top-width: 0.2vw;
     padding: 3vw 5vw;
@@ -448,10 +426,8 @@ body {
   .footer-columns {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1.5fr;
-    /* Chỉnh tỉ lệ cột cho đẹp */
     gap: 2vw;
     align-items: start;
-    /* Bắt các khối bắt đầu từ trên cùng của grid */
   }
 
   .footer-col h4 {

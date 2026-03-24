@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProductSection.css';
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate(); 
   const defaultPlaceholder = `https://via.placeholder.com/400x400/f0f0f0/333333?text=${product.name.replace(/ /g, '+')}`;
   
-  // State lưu 2 ảnh: Ảnh mặc định (Thumb) và Ảnh khi Hover
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
   const [hoverImg, setHoverImg] = useState(defaultPlaceholder);
 
@@ -17,11 +18,9 @@ const ProductCard = ({ product }) => {
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {
-            // Lọc tìm ảnh chứa chữ "thumb" và "-1" trong tên file (cột detail)
             const thumbData = data.find(img => img.detail && img.detail.toLowerCase().includes('thumb'));
             const hoverData = data.find(img => img.detail && img.detail.toLowerCase().includes('-1'));
 
-            // Fallback: Nếu không tìm thấy tên chuẩn, lấy ảnh đầu tiên làm Thumb, ảnh thứ 2 làm Hover
             const finalThumb = thumbData ? thumbData.link : data[0].link;
             const finalHover = hoverData ? hoverData.link : (data.length > 1 ? data[1].link : finalThumb);
 
@@ -42,11 +41,22 @@ const ProductCard = ({ product }) => {
     currency: 'VND'
   }).format(product.price || 0);
 
+  // --- HÀM XỬ LÝ CHUYỂN TRANG ---
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`); 
+  };
+
+  // --- HÀM XỬ LÝ NÚT MUA NGAY ---
+  const handleBuyNow = (e) => {
+    e.stopPropagation(); // QUAN TRỌNG: Ngăn không cho sự kiện click lan ra thẻ cha, tránh bị chuyển trang
+    alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
+    // Sau này sẽ viết logic gọi API giỏ hàng ở đây
+  };
+
   return (
-    <div className="product-card">
+    <div className="product-card" onClick={handleCardClick}>
       <div className="product-image-container">
         
-        {/* ẢNH THUMB (Mặc định hiện) */}
         <img
           src={thumbImg}
           alt={`${product.name} thumb`}
@@ -59,11 +69,10 @@ const ProductCard = ({ product }) => {
           src={hoverImg}
           alt={`${product.name} hover`}
           className="product-image img-hover"
-          // Nếu lỗi, fallback về lại ảnh thumb để tránh bị chớp trắng
           onError={(e) => { e.target.onerror = null; e.target.src = thumbImg; }}
         />
 
-        <button className="buy-now-btn">MUA NGAY</button>
+        <button className="buy-now-btn" onClick={handleBuyNow}>MUA NGAY</button>
       </div>
       <div className="product-info">
         <h3 className="product-name" title={product.name}>{product.name}</h3>
@@ -73,7 +82,6 @@ const ProductCard = ({ product }) => {
   );
 };
 
-// COMPONENT CHA
 const ProductSection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
