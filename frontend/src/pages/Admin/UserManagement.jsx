@@ -1,221 +1,231 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import DataTable from 'react-data-table-component';
-import Swal from 'sweetalert2';
-import '../../App.css';
+import React, { useState, useEffect } from 'react';
+import './UserManagement.css'; 
 
-function UserManagement() {
+const UserManagement = () => {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({ id: '', name: '' }); // id vẫn giữ để dùng khi Edit
-  const [searchid, setSearchid] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [formData, setFormData] = useState({
+    id: null,
+    name: '',
+    dateOfBirth: '',
+    email: '',
+    address: '',
+    username: '', 
+    password: ''  
+  });
+
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
+  const [alertDialog, setAlertDialog] = useState({ isOpen: false, message: '' });
 
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const fetchUsers = async () => {
     try {
-      setLoading(true);
-      const response = await fetch(`${API_URL}/users`);
-      const data = await response.json();
+      const res = await fetch(`${API_URL}/user/getallUser`);
+      if (!res.ok) throw new Error("Lỗi tải danh sách người dùng");
+      const data = await res.json();
       setUsers(data);
-    } catch (error) {
-      console.error("Lỗi fetch:", error);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error(e);
     }
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  const showAlert = (message) => setAlertDialog({ isOpen: true, message });
+  const showConfirm = (message, onConfirmCallback) => {
+    setConfirmDialog({ isOpen: true, message, onConfirm: onConfirmCallback });
+  };
+  const closeConfirm = () => setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
 
-  const handleSearch = async () => {
-    if (!searchid) return fetchUsers();
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_URL}/users/${searchid}`);
-      const data = await response.json();
-      // Nếu API trả về object đơn lẻ thay vì array, bọc nó lại để DataTable hiển thị được
-      setUsers(Array.isArray(data) ? data : [data]);
-    } catch (error) {
-      Swal.fire('Lỗi', 'Không tìm thấy user!', 'error');
-    } finally {
-      setLoading(false);
+  const handleOpenModal = (user = null) => {
+    if (user) {
+      const formattedDate = user.dateofbirth ? new Date(user.dateofbirth).toISOString().split('T')[0] : '';
+      setFormData({
+        id: user.id,
+        name: user.name || '',
+        dateOfBirth: formattedDate,
+        email: user.email || '',
+        address: user.address || '',
+        username: '', 
+        password: ''
+      });
+    } else {
+      setFormData({ id: null, name: '', dateOfBirth: '', email: '', address: '', username: '', password: '' });
     }
+    setIsModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
-    const endpoint = isEditing ? `${API_URL}/users/update/${formData.id}` : `${API_URL}/users/create`;
+    setIsSubmitting(true);
 
-    // Khi thêm mới (POST), không gửi id vì server tự tăng
-    const bodyData = isEditing
-      ? { id: formData.id, name: formData.name }
-      : { name: formData.name };
+    const isEditMode = !!formData.id;
+    const url = isEditMode 
+      ? `${API_URL}/user/updateUser/${formData.id}` 
+      : `${API_URL}/user/registerUser`;
+    
+    const method = isEditMode ? 'PUT' : 'POST';
+
+    const payload = isEditMode 
+      ? { name: formData.name, dateofbirth: formData.dateOfBirth, email: formData.email, address: formData.address }
+      : { name: formData.name, dateOfBirth: formData.dateOfBirth, email: formData.email, address: formData.address, username: formData.username, password: formData.password };
 
     try {
-      const response = await fetch(endpoint, {
+      const res = await fetch(url, {
         method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
+        body: JSON.stringify(payload)
       });
 
-      if (response.ok) {
-        Swal.fire({
-          title: isEditing ? "Cập nhật thành công!" : "Thêm mới thành công!",
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false
-        });
+      const data = await res.json();
 
-        setFormData({ id: '', name: '' });
-        setIsEditing(false);
-        fetchUsers();
-      } else {
-        const errorData = await response.json();
-        Swal.fire('Thất bại', `Lỗi: ${errorData.error || 'Server không phản hồi'}`, 'error');
+      if (!res.ok) {
+        showAlert(data.error || "Có lỗi xảy ra khi lưu!");
+        setIsSubmitting(false);
+        return;
       }
+
+      showAlert(isEditMode ? "Cập nhật thành công!" : "Tạo tài khoản thành công!");
+      setIsModalOpen(false);
+      fetchUsers();
     } catch (error) {
-      Swal.fire('Lỗi kết nối', 'Không thể kết nối tới server!', 'error');
+      console.error(error);
+      showAlert("Lỗi kết nối mạng!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleDelete = (id) => {
-    Swal.fire({
-      title: "Bạn có chắc chắn?",
-      text: `Muốn xóa User có id: ${id} không?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Xóa ngay!",
-      cancelButtonText: "Hủy"
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await fetch(`${API_URL}/users/delete/${id}`, {
-            method: 'DELETE',
-          });
-
-          if (response.ok) {
-            Swal.fire("Đã xóa!", `User ${id} đã bị xóa.`, "success");
-            fetchUsers();
-          } else {
-            Swal.fire('Thất bại', 'Không thể xóa user.', 'error');
-          }
-        } catch (error) {
-          Swal.fire('Lỗi kết nối', 'Lỗi server!', 'error');
-        }
-      }
+  const handleDeleteUser = (id) => {
+    showConfirm('Bạn có chắc chắn muốn xóa người dùng này? (Cần cập nhật API Backend để hoạt động)', async () => {
+      showAlert("Chức năng Xóa đang chờ Backend cập nhật API xóa liên kết (Account + User).");
     });
   };
 
-  const handleEditClick = (row) => {
-    setFormData({ id: row.id, name: row.name });
-    setIsEditing(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Cấu hình cột dùng chung cho id và name (viết thường)
-  const columns = [
-    { name: 'ID', selector: row => row.id, sortable: true, width: '20%' },
-    { name: 'Tên người dùng', selector: row => row.name, sortable: true, width: '55%' },
-    {
-      name: 'Thao tác',
-      cell: (row) => (
-        <div className='action-buttons'>
-          <button onClick={() => handleEditClick(row)}>Sửa</button>
-          <button onClick={() => handleDelete(row.id)} style={{ backgroundColor: '#dc3545' }}>Xóa</button>
-        </div>
-      ),
-      width: '25%'
-    }
-  ];
-  const UserListSection2 = () => (
-    <>
-      <div className="note-container">
-        <p>Nếu danh sách users tải quá lâu, <br />
-          truy cập trang web backend và đợi để khởi động server:<br />
-          <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
-        </p>
-      </div>
-      <div className="card">
-        <DataTable
-          columns={columns2}
-          data={users}
-          progressPending={loading}
-          pagination
-          highlightOnHover
-          responsive
-        />
-      </div>
-    </>
-  );
   return (
-      <div className="table-container">
-        <nav style={{ marginBottom: '20px', textAlign: 'center' }}>
-          <Link to="/">Quản lý</Link> | <Link to="/users">Xem danh sách</Link>
-        </nav>
-            <>
-              <div className="search-box">
-                <input
-                  type="number"
-                  placeholder="Nhập ID số..."
-                  value={searchid}
-                  onChange={(e) => setSearchid(e.target.value)}
-                />
-                <button onClick={handleSearch}>Tìm kiếm</button>
-                <button onClick={() => { fetchUsers(); setSearchid('') }} style={{ backgroundColor: '#6c757d' }}>Làm mới</button>
+    <div>
+      <h2>Quản lý Tài khoản (Users)</h2>
+      <button className="btn-add" onClick={() => handleOpenModal()}>+ Thêm Tài Khoản</button>
+      
+      <table className="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Họ Tên</th>
+            <th>Email</th>
+            <th>Ngày sinh</th>
+            <th>Địa chỉ</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(u => (
+            <tr key={u.id}>
+              <td>{u.id}</td>
+              <td className="text-bold">{u.name}</td>
+              <td>{u.email || 'Chưa cập nhật'}</td>
+              <td>{u.dateofbirth ? new Date(u.dateofbirth).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}</td>
+              <td>{u.address || 'Chưa cập nhật'}</td>
+              <td>
+                <span className={`role-badge ${u.isadmin ? 'role-admin' : 'role-client'}`}>
+                  {u.isadmin ? 'Admin' : 'Khách hàng'}
+                </span>
+              </td>
+              <td>
+                <button className="btn-edit" onClick={() => handleOpenModal(u)}>Sửa</button>
+                <button className="btn-delete" onClick={() => handleDeleteUser(u.id)} disabled={u.isadmin}>
+                  Xóa
+                </button>
+              </td>
+            </tr>
+          ))}
+          {users.length === 0 && (
+            <tr><td colSpan="7" className="text-center p-2vw">Chưa có người dùng nào</td></tr>
+          )}
+        </tbody>
+      </table>
+
+      {isModalOpen && (
+        <div className="admin-modal">
+          <div className="modal-content modal-md">
+            <h3>{formData.id ? 'Sửa thông tin User' : 'Thêm Tài khoản mới'}</h3>
+            <form onSubmit={handleSubmit}>
+              
+              <div className="form-group">
+                <label>Họ và Tên:</label>
+                <input type="text" placeholder="Nhập họ tên" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} required disabled={isSubmitting} />
               </div>
 
-              <form onSubmit={handleSubmit} className="form-container">
-                <h3>{isEditing ? `Đang sửa ID: ${formData.id}` : "Thêm User mới"}</h3>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  {/* Ô ID chỉ hiện khi đang sửa, và bị disabled */}
-                  {isEditing && (
-                    <input
-                      style={{ flex: 1, backgroundColor: '#e9ecef' }}
-                      value={formData.id}
-                      disabled
-                    />
-                  )}
-                  <input
-                    placeholder="Nhập tên người dùng..."
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    style={{ flex: 3 }}
-                  />
-                </div>
-                <div style={{ marginTop: '10px' }}>
-                  <button type="submit" style={{ backgroundColor: isEditing ? '#ffc107' : '#28a745', color: isEditing ? '#000' : '#fff' }}>
-                    {isEditing ? "Cập nhật" : "Thêm mới"}
-                  </button>
-                  {isEditing && (
-                    <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: '', name: '' }) }} style={{ backgroundColor: '#6c757d', marginLeft: '10px' }}>
-                      Hủy
-                    </button>
-                  )}
-                </div>
-              </form>
-              <div className="note-container">
-                <p>Nếu danh sách users tải quá lâu, <br />
-                  truy cập trang web backend và đợi để khởi động server:<br />
-                  <a href={API_URL} target="_blank" rel="noopener noreferrer">{API_URL}</a>
-                </p>
+              <div className="form-group">
+                <label>Email:</label>
+                <input type="email" placeholder="Nhập email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required disabled={isSubmitting} />
               </div>
-              <div className="card">
-                <DataTable
-                  columns={columns}
-                  data={users}
-                  progressPending={loading}
-                  pagination
-                  highlightOnHover
-                />
+
+              <div className="form-group">
+                <label>Ngày sinh:</label>
+                <input type="date" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} disabled={isSubmitting} />
               </div>
-            </>
-      </div>
+
+              <div className="form-group">
+                <label>Địa chỉ:</label>
+                <input type="text" placeholder="Nhập địa chỉ" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} disabled={isSubmitting} />
+              </div>
+
+              {!formData.id && (
+                <>
+                  <hr className="modal-divider"/>
+                  <div className="form-group">
+                    <label>Tên đăng nhập (Username):</label>
+                    <input type="text" placeholder="Nhập tên đăng nhập" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} required disabled={isSubmitting} />
+                  </div>
+                  <div className="form-group">
+                    <label>Mật khẩu:</label>
+                    <input type="password" placeholder="Nhập mật khẩu" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required disabled={isSubmitting} />
+                  </div>
+                </>
+              )}
+
+              <div className="modal-footer">
+                <button type="submit" className="btn-save" disabled={isSubmitting}>
+                  {isSubmitting ? 'Đang xử lý...' : 'Lưu lại'}
+                </button>
+                <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)} disabled={isSubmitting}>Hủy</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {confirmDialog.isOpen && (
+        <div className="admin-modal top-layer">
+          <div className="modal-content modal-sm">
+            <h3 className="modal-title-danger">Xác nhận</h3>
+            <p className="modal-message">{confirmDialog.message}</p>
+            <div className="modal-footer" style={{ marginTop: '0' }}>
+              <button className="btn-delete btn-px" onClick={() => { if (confirmDialog.onConfirm) confirmDialog.onConfirm(); closeConfirm(); }}>Đồng ý</button>
+              <button className="btn-cancel btn-px" onClick={closeConfirm}>Hủy</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {alertDialog.isOpen && (
+        <div className="admin-modal top-layer">
+          <div className="modal-content modal-sm">
+            <h3 className="modal-title-info">Thông báo</h3>
+            <p className="modal-message">{alertDialog.message}</p>
+            <button className="btn-save btn-px" onClick={() => setAlertDialog({ isOpen: false, message: '' })}>OK</button>
+          </div>
+        </div>
+      )}
+    </div>
   );
-}
+};
 
 export default UserManagement;

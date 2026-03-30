@@ -40,6 +40,14 @@ function App() {
             </AdminLayout>
           }
         />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminLayout>
+              <UserManagement />
+            </AdminLayout>
+          }
+        />
 
         <Route path="/admin" element={<Navigate to="/admin/products" replace />} />
         <Route path="/product/:id" element={<ProductDetail />} />
