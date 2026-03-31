@@ -12,7 +12,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  const { name, dateOfBirth, email, address, username, password } = req.body;
+  const { name, dateOfBirth, email, address, username, password, isadmin } = req.body;
 
   if (!name || !username || !password) {
     return res.status(400).json({ error: "Thông tin không hợp lệ!" });
@@ -34,13 +34,14 @@ const registerUser = async (req, res) => {
     await client.query("BEGIN");
 
     const userSql = `INSERT INTO "user" (name, dateofbirth, email, address, isadmin) 
-                     VALUES ($1, $2, $3, $4, false) RETURNING id`;
+                     VALUES ($1, $2, $3, $4, $5) RETURNING id`;
 
     const userRes = await client.query(userSql, [
       name,
       dateOfBirth,
       email,
       address,
+      isadmin !== undefined ? isadmin : false,
     ]);
     const newId = userRes.rows[0].id;
 
@@ -61,17 +62,41 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, dateofbirth, email, address } = req.body;
+  const { name, dateofbirth, email, address, isadmin } = req.body;
   try {
-    const query = `UPDATE "user" SET name=$1, dateofbirth=$2, email=$3, address=$4 WHERE id=$5 RETURNING *`;
+    const query = `UPDATE "user" SET name=$1, dateofbirth=$2, email=$3, address=$4, isadmin=$5 WHERE id=$6 RETURNING *`;
     const { rows } = await pool.query(query, [
       name,
       dateofbirth,
       email,
       address,
+      isadmin !== undefined ? isadmin : false,
       id,
     ]);
     res.status(200).json({ message: "Cập nhật thành công", data: rows[0] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Hàm cập nhật isadmin riêng (dành cho admin)
+const updateUserAdmin = async (req, res) => {
+  const { id } = req.params;
+  const { isadmin } = req.body;
+  
+  if (isadmin === undefined) {
+    return res.status(400).json({ error: "isadmin không được cung cấp" });
+  }
+
+  try {
+    const query = `UPDATE "user" SET isadmin=$1 WHERE id=$2 RETURNING id, name, email, isadmin`;
+    const { rows } = await pool.query(query, [isadmin, id]);
+    
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Người dùng không tồn tại" });
+    }
+
+    res.status(200).json({ message: "Cập nhật quyền admin thành công", data: rows[0] });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -82,4 +107,5 @@ module.exports = {
   getAllUsers,
   registerUser,
   updateUser,
+  updateUserAdmin,
 };
