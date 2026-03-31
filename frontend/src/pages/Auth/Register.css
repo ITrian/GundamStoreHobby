@@ -1,10 +1,7 @@
 /* Register.css */
-
 .register-container {
-  padding: 40px 0;
+  padding: 4vw 0;
   min-height: 60vh;
-  background-color: #f4f6f8;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
 }
@@ -14,102 +11,193 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 2vw;
 }
 
 .register-box {
   background-color: #ffffff;
   width: 100%;
-  max-width: 500px;
-  padding: 40px 50px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  max-width: 650px; /* Nới rộng một chút cho 2 cột mật khẩu */
+  padding: 3vw 4vw;
+  border-radius: 0.5vw;
+  box-shadow: 0 0.5vw 1.5vw rgba(0, 0, 0, 0.05);
   text-align: center;
 }
 
 .register-title {
-  font-size: 26px;
-  font-weight: 600;
+  font-size: 2vw;
+  font-weight: bold;
   color: #000;
-  margin-bottom: 10px;
+  margin-bottom: 1vw;
   margin-top: 0;
 }
 
 .register-subtitle {
-  font-size: 14px;
+  font-size: 1vw;
   color: #333;
-  margin-bottom: 25px;
+  margin-bottom: 2vw;
 }
 
 .register-subtitle .login-link {
   color: #333;
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: bold;
 }
 
 .register-subtitle .login-link:hover {
-  color: #e50000; 
+  color: #000080;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #e50000;
+  padding: 1vw;
+  border-radius: 0.3vw;
+  margin-bottom: 1.5vw;
+  font-size: 0.9vw;
+  border: 0.1vw solid #e50000;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 20px;
+  font-size: 1.2vw;
+  font-weight: bold;
+  color: #1a73e8;
+  margin-bottom: 1.5vw;
+  text-align: left;
+}
+
+.divider {
+  border: 0;
+  border-top: 0.1vw solid #eee;
+  margin: 2vw 0;
 }
 
 .register-form {
   text-align: left;
 }
 
+.form-group-row {
+  /* display: flex; */
+  gap: 2vw;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5vw;
 }
 
 .form-group label {
   display: block;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+  font-size: 0.9vw;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 0.5vw;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 15px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
+  padding: 0.8vw 1vw;
+  font-size: 0.95vw;
+  border: 0.1vw solid #ddd;
+  border-radius: 0.3vw;
   outline: none;
   transition: border-color 0.2s;
-  background-color: #fff;
-  color: #000;
+  font-family: inherit;
 }
 
 .form-group input:focus {
+  border-color: #000080;
+}
+
+/* =========================================
+   STYLE CHO PHẦN BÁO LỖI INPUT
+   ========================================= */
+.register-container .form-group input.input-error {
   border-color: #e50000;
+  background-color: #fffafa;
+}
+
+.register-container .input-error-msg {
+  display: block;
+  color: #e50000;
+  font-size: 0.8vw;
+  margin-top: 0.4vw;
+  font-weight: bold;
 }
 
 .register-btn {
   width: 100%;
-  padding: 14px;
-  background-color: #e50000;
+  padding: 1vw;
+  background-color: #000080;
   color: #fff;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1.1vw;
+  font-weight: bold;
   border: none;
-  border-radius: 30px;
+  border-radius: 2vw;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-top: 10px;
+  margin-top: 1vw;
 }
 
-.register-btn:hover {
-  background-color: #cc0000;
+.register-btn:hover:not(:disabled) {
+  background-color: #000080;
+  opacity: 0.9;
 }
 
-@media (max-width: 600px) {
+.register-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE CHO MOBILE */
+@media (max-width: 768px) {
   .register-box {
-    padding: 30px 20px;
+    padding: 6vw;
+  }
+
+  .register-title {
+    font-size: 6vw;
+  }
+
+  .register-subtitle {
+    font-size: 3.5vw;
+  }
+
+  .error-message {
+    font-size: 3.5vw;
+    padding: 3vw;
+  }
+
+  .section-title {
+    font-size: 4.5vw;
+    margin-bottom: 4vw;
+  }
+
+  .form-group-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-group label {
+    font-size: 3.5vw;
+  }
+
+  .form-group input {
+    font-size: 4vw;
+    padding: 3vw;
+  }
+  
+  .register-container .input-error-msg {
+    font-size: 3vw;
+    margin-top: 1vw;
+  }
+
+  .register-btn {
+    font-size: 4vw;
+    padding: 3vw;
+    margin-top: 3vw;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../pages/Home/HomePage.css';
 
 import logoImg from '../../assets/Theliems.jpg';
@@ -7,10 +7,13 @@ import logoImg from '../../assets/Theliems.jpg';
 const ClientLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState(null); // State lưu thông tin user đăng nhập
   
+  const navigate = useNavigate();
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
   useEffect(() => {
+    // 1. Fetch Categories
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${API_URL}/category/all`); 
@@ -21,9 +24,25 @@ const ClientLayout = ({ children }) => {
         console.error('Lỗi fetch category:', error);
       }
     };
-
     fetchCategories();
+
+    // 2. Lấy thông tin user từ localStorage nếu đã đăng nhập
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Lỗi parse user:", error);
+      }
+    }
   }, []);
+
+  // Hàm xử lý Đăng xuất
+  const handleLogout = () => {
+    localStorage.removeItem('user'); // Xóa thông tin lưu trữ
+    setUser(null); // Xóa state
+    navigate('/'); // Đá về trang chủ
+  };
 
   return (
     <div className="homepage-container">
@@ -37,13 +56,28 @@ const ClientLayout = ({ children }) => {
           </div>
           
           <div className="header-actions">
-            <Link to="/login" className="action-item hide-on-mobile" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <span className="icon"><i className="bi bi-person-circle"></i></span>
-              <div className="action-text">
-                <p>Tài khoản</p>
-                <strong>Đăng nhập</strong>
+            
+            {/* KIỂM TRA ĐĂNG NHẬP Ở HEADER */}
+            {user ? (
+              // Nếu đã đăng nhập -> Hiện Tên và nút Đăng xuất
+              <div className="action-item hide-on-mobile no-underline" style={{ cursor: 'pointer' }} onClick={handleLogout}>
+                <span className="icon" style={{ color: '#e50000' }}><i className="bi bi-person-check-fill"></i></span>
+                <div className="action-text">
+                  <p style={{ fontWeight: 'bold', color: '#1a73e8' }}>{user.name || user.username}</p>
+                  <strong>Đăng xuất</strong>
+                </div>
               </div>
-            </Link>
+            ) : (
+              // Nếu CHƯA đăng nhập -> Hiện nút Đăng nhập
+              <Link to="/login" className="action-item hide-on-mobile no-underline">
+                <span className="icon"><i className="bi bi-person-circle"></i></span>
+                <div className="action-text">
+                  <p>Tài khoản</p>
+                  <strong>Đăng nhập</strong>
+                </div>
+              </Link>
+            )}
+
             <div className="action-item cart-item">
               <span className="icon"><i className="bi bi-cart3"></i></span>
               <span className="cart-count">0</span>
@@ -69,10 +103,14 @@ const ClientLayout = ({ children }) => {
               <li key={cat.id}>{cat.name.toUpperCase()}</li>
             ))}
             <li>KIỂM TRA ĐƠN HÀNG</li>
+            {/* Nút ẩn: Nếu là Admin mới hiện link vào trang Quản trị */}
+            {user && user.isAdmin && (
+              <li><Link to="/admin" style={{ color: '#fff', textDecoration: 'none', backgroundColor: '#333', padding: '0.3vw 1vw', borderRadius: '1vw' }}>VÀO TRANG ADMIN</Link></li>
+            )}
           </ul>
           
           <div className="hotline">
-            <i className="bi bi-telephone-fill" style={{ marginRight: '0.5vw' }}></i> 
+            <i className="bi bi-telephone-fill icon-mr-sm"></i> 
             <span className="hide-on-mobile">Hotline:</span> <strong>0349999943</strong>
           </div>
         </div>
@@ -82,9 +120,20 @@ const ClientLayout = ({ children }) => {
       <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
-          <Link to="/login" className="sidebar-account" style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => setIsSidebarOpen(false)}>
-            <i className="bi bi-person-circle" style={{ marginRight: '2vw' }}></i><strong>Đăng nhập</strong>
-          </Link>
+          
+          {/* KIỂM TRA ĐĂNG NHẬP Ở SIDEBAR */}
+          {user ? (
+            <div className="sidebar-account no-underline" style={{ cursor: 'pointer', color: '#e50000' }} onClick={() => { handleLogout(); setIsSidebarOpen(false); }}>
+              <i className="bi bi-box-arrow-right icon-mr-lg"></i>
+              <strong>Đăng xuất ({user.name || user.username})</strong>
+            </div>
+          ) : (
+            <Link to="/login" className="sidebar-account no-underline" onClick={() => setIsSidebarOpen(false)}>
+              <i className="bi bi-person-circle icon-mr-lg"></i>
+              <strong>Đăng nhập</strong>
+            </Link>
+          )}
+
           <button className="close-sidebar" onClick={() => setIsSidebarOpen(false)}>
             <i className="bi bi-x-lg"></i>
           </button>
@@ -97,10 +146,13 @@ const ClientLayout = ({ children }) => {
             </li>
           ))}
           <li>KIỂM TRA ĐƠN HÀNG</li>
+          {user && user.isAdmin && (
+            <li><Link to="/admin" style={{ color: '#e50000', textDecoration: 'none' }}>→ QUẢN TRỊ ADMIN</Link></li>
+          )}
         </ul>
       </aside>
 
-      <main className="main-content" style={{ backgroundColor: '#f4f6f8' }}>
+      <main className="main-content layout-bg">
         {children}
       </main>
 
@@ -130,7 +182,7 @@ const ClientLayout = ({ children }) => {
           <div className="footer-col">
             <h4>Tổng đài hỗ trợ</h4>
             <p className="footer-hotline">
-              <i className="bi bi-telephone-fill" style={{ marginRight: '1vw' }}></i> 0123.456.789
+              <i className="bi bi-telephone-fill icon-mr-md"></i> 0123.456.789
             </p>
           </div>
         </div>

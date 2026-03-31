@@ -58,7 +58,7 @@ body {
 .search-bar {
   display: flex;
   width: 100%;
-  border: 0.3vw solid #e50000;
+  border: 0.3vw solid #000080;
   border-radius: 5vw;
   overflow: hidden;
 }
@@ -72,7 +72,7 @@ body {
 }
 
 .search-btn {
-  background-color: #e50000;
+  background-color: #000080;
   color: #fff;
   border: none;
   padding: 0 4vw;
@@ -93,7 +93,7 @@ body {
   position: absolute;
   top: -1vw;
   right: -2vw;
-  background-color: #e50000;
+  background-color: #000080;
   color: white;
   padding: 0.5vw 1.5vw;
   border-radius: 50%;
@@ -103,7 +103,7 @@ body {
 
 /* --- NAVIGATION --- */
 .main-nav {
-  background-color: #e50000;
+  background-color: #000080;
   color: #fff;
   padding: 2vw 4vw;
 }
@@ -217,7 +217,7 @@ body {
 /* --- FOOTER --- */
 .main-footer {
   background-color: #fff;
-  border-top: 0.5vw solid #e50000;
+  border-top: 0.5vw solid #000080;
   padding: 6vw 4vw;
   margin-top: 4vw;
 }
@@ -356,7 +356,7 @@ body {
   }
 
   .menu-toggle-btn {
-    background-color: #cc0000;
+    background-color: #000080;
     height: 100%;
     padding: 0 2vw;
     font-size: 0.9vw;
@@ -396,7 +396,7 @@ body {
   }
 
   .sidebar-menu li:hover {
-    color: #e50000;
+    color: #000080;
     cursor: pointer;
   }
 
