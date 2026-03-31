@@ -11,10 +11,13 @@ const login = async (req, res) => {
   }
 
   try {
-    const result = await pool.query(
-      "SELECT * FROM account WHERE username = $1",
-      [username],
-    );
+    const query = `
+      SELECT a.*, u.name, u.isadmin 
+      FROM account a 
+      JOIN "user" u ON a.userid = u.id 
+      WHERE a.username = $1
+    `;
+    const result = await pool.query(query, [username]);
 
     if (result.rows.length === 0) {
       return res.status(401).json({ error: "Tên đăng nhập không tồn tại!" });
@@ -36,6 +39,8 @@ const login = async (req, res) => {
       message: "Đăng nhập thành công!",
       userId: account.userid,
       username: account.username,
+      name: account.name,       
+      isAdmin: account.isadmin  
     });
   } catch (error) {
     res.status(500).json({ error: error.message });

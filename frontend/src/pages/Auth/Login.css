@@ -1,129 +1,167 @@
-/* Login.css (Standard Layout) */
+/* Login.css */
 
 .login-container {
-  padding: 40px 0;
+  padding: 4vw 0;
   min-height: 60vh;
-  background-color: #f4f6f8;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
 }
 
-/* Khu vực bao ngoài form để căn giữa */
-.login-content {
+.login-container .login-content {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 2vw;
 }
 
-/* Khung trắng chứa form */
-.login-box {
+.login-container .login-box {
   background-color: #ffffff;
   width: 100%;
   max-width: 500px;
-  padding: 40px 50px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 3vw 4vw;
+  border-radius: 0.5vw;
+  box-shadow: 0 0.5vw 1.5vw rgba(0, 0, 0, 0.05);
   text-align: center;
 }
 
-.login-title {
-  font-size: 26px;
-  font-weight: 600;
+.login-container .login-title {
+  font-size: 2vw;
+  font-weight: bold;
   color: #000;
-  margin-bottom: 15px;
+  margin-bottom: 1vw;
   margin-top: 0;
 }
 
-.login-subtitle {
-  font-size: 14px;
+.login-container .login-subtitle {
+  font-size: 1vw;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 2vw;
 }
 
-.login-subtitle .register-link {
+.login-container .login-subtitle .register-link {
   color: #333;
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: bold;
 }
 
-.login-subtitle .register-link:hover {
-  color: #e50000; 
+.login-container .login-subtitle .register-link:hover {
+  color: #000080;
 }
 
-/* Form inputs */
-.login-form {
+.login-container .error-message {
+  background-color: #ffe6e6;
+  color: #000080;
+  padding: 1vw;
+  border-radius: 0.3vw;
+  margin-bottom: 1.5vw;
+  font-size: 0.9vw;
+  border: 0.1vw solid #000080;
+}
+
+.login-container .login-form {
   text-align: left;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.login-container .form-group {
+  margin-bottom: 1.5vw;
 }
 
-.form-group label {
+.login-container .form-group label {
   display: block;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+  font-size: 0.9vw;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 0.5vw;
+  width: 100%;
 }
 
-.form-group input {
+.login-container .form-group input {
   width: 100%;
-  padding: 12px 15px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
+  padding: 0.8vw 1vw;
+  font-size: 0.95vw;
+  border: 0.1vw solid #ddd;
+  border-radius: 0.3vw;
   outline: none;
   transition: border-color 0.2s;
-  background-color: #fff;
-  color: #000;
+  font-family: inherit;
 }
 
-.form-group input:focus {
-  border-color: #e50000;
+.login-container .form-group input:focus {
+  border-color: #000080;
 }
 
-/* Quên mật khẩu */
-.forgot-password {
-  font-size: 14px;
+.login-container .forgot-password {
+  font-size: 0.9vw;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 2vw;
 }
 
-.forgot-password a {
+.login-container .forgot-password a {
   color: #333;
   text-decoration: underline;
-  margin-left: 5px;
+  margin-left: 0.5vw;
 }
 
-.forgot-password a:hover {
-  color: #e50000;
+.login-container .forgot-password a:hover {
+  color: #000080;
 }
 
-/* Nút Submit */
-.login-btn {
+.login-container .login-btn {
   width: 100%;
-  padding: 14px;
-  background-color: #e50000;
+  padding: 1vw;
+  background-color: #000080;
   color: #fff;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1.1vw;
+  font-weight: bold;
   border: none;
-  border-radius: 30px;
+  border-radius: 2vw;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.login-btn:hover {
-  background-color: #cc0000;
+.login-container .login-btn:hover:not(:disabled) {
+  background-color: #000080;
 }
 
-/* Responsive cho Mobile */
-@media (max-width: 600px) {
-  .login-box {
-    padding: 30px 20px;
+.login-container .login-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .login-container .login-box {
+    padding: 6vw;
+  }
+
+  .login-container .login-title {
+    font-size: 6vw;
+  }
+
+  .login-container .login-subtitle {
+    font-size: 3.5vw;
+  }
+
+  .login-container .error-message {
+    font-size: 3.5vw;
+    padding: 3vw;
+  }
+
+  .login-container .form-group label {
+    font-size: 3.5vw;
+  }
+
+  .login-container .form-group input {
+    font-size: 4vw;
+    padding: 3vw;
+  }
+
+  .login-container .forgot-password {
+    font-size: 3.5vw;
+  }
+
+  .login-container .login-btn {
+    font-size: 4vw;
+    padding: 3vw;
   }
 }

@@ -13,7 +13,8 @@ const UserManagement = () => {
     email: '',
     address: '',
     username: '', 
-    password: ''  
+    password: '',
+    isAdmin: false 
   });
 
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
@@ -52,10 +53,11 @@ const UserManagement = () => {
         email: user.email || '',
         address: user.address || '',
         username: '', 
-        password: ''
+        password: '',
+        isAdmin: user.isadmin || false 
       });
     } else {
-      setFormData({ id: null, name: '', dateOfBirth: '', email: '', address: '', username: '', password: '' });
+      setFormData({ id: null, name: '', dateOfBirth: '', email: '', address: '', username: '', password: '', isAdmin: false });
     }
     setIsModalOpen(true);
   };
@@ -72,8 +74,8 @@ const UserManagement = () => {
     const method = isEditMode ? 'PUT' : 'POST';
 
     const payload = isEditMode 
-      ? { name: formData.name, dateofbirth: formData.dateOfBirth, email: formData.email, address: formData.address }
-      : { name: formData.name, dateOfBirth: formData.dateOfBirth, email: formData.email, address: formData.address, username: formData.username, password: formData.password };
+      ? { name: formData.name, dateofbirth: formData.dateOfBirth, email: formData.email, address: formData.address, isadmin: formData.isAdmin }
+      : { name: formData.name, dateOfBirth: formData.dateOfBirth, email: formData.email, address: formData.address, username: formData.username, password: formData.password, isadmin: formData.isAdmin };
 
     try {
       const res = await fetch(url, {
@@ -139,7 +141,8 @@ const UserManagement = () => {
               </td>
               <td>
                 <button className="btn-edit" onClick={() => handleOpenModal(u)}>Sửa</button>
-                <button className="btn-delete" onClick={() => handleDeleteUser(u.id)} disabled={u.isadmin}>
+                {/* Đã xóa thuộc tính disabled={u.isadmin} ở đây */}
+                <button className="btn-delete" onClick={() => handleDeleteUser(u.id)}>
                   Xóa
                 </button>
               </td>
@@ -167,9 +170,23 @@ const UserManagement = () => {
                 <input type="email" placeholder="Nhập email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required disabled={isSubmitting} />
               </div>
 
-              <div className="form-group">
-                <label>Ngày sinh:</label>
-                <input type="date" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} disabled={isSubmitting} />
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Ngày sinh:</label>
+                  <input type="date" value={formData.dateOfBirth} onChange={e => setFormData({...formData, dateOfBirth: e.target.value})} disabled={isSubmitting} />
+                </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label>Vai trò:</label>
+                  <select 
+                    value={formData.isAdmin ? 'true' : 'false'} 
+                    onChange={e => setFormData({...formData, isAdmin: e.target.value === 'true'})} 
+                    disabled={isSubmitting}
+                  >
+                    <option value="false">Khách hàng</option>
+                    <option value="true">Admin</option>
+                  </select>
+                </div>
               </div>
 
               <div className="form-group">
