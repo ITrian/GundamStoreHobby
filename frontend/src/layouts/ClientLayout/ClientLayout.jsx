@@ -57,14 +57,21 @@ const ClientLayout = ({ children }) => {
           
           <div className="header-actions">
             
-            {/* KIỂM TRA ĐĂNG NHẬP Ở HEADER */}
             {user ? (
-              // Nếu đã đăng nhập -> Hiện Tên và nút Đăng xuất
-              <div className="action-item hide-on-mobile no-underline" style={{ cursor: 'pointer' }} onClick={handleLogout}>
-                <span className="icon" style={{ color: '#e50000' }}><i className="bi bi-person-check-fill"></i></span>
+              // ĐÃ SỬA: Bọc bằng thẻ Link thay vì thẻ Div
+              <div className="action-item hide-on-mobile no-underline">
+                <Link to="/profile" className="icon" style={{ color: '#e50000', textDecoration: 'none' }}>
+                  <i className="bi bi-person-check-fill"></i>
+                </Link>
                 <div className="action-text">
-                  <p style={{ fontWeight: 'bold', color: '#1a73e8' }}>{user.name || user.username}</p>
-                  <strong>Đăng xuất</strong>
+                  {/* Link dẫn đến Profile */}
+                  <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '0.2vw' }}>
+                    {user.name || user.username}
+                  </Link>
+                  {/* Link dẫn đến Logout */}
+                  <Link to="/logout" style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none' }}>
+                    Đăng xuất
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -98,14 +105,13 @@ const ClientLayout = ({ children }) => {
           </button>
           
           <ul className="nav-links hide-on-mobile">
-            <li>TẤT CẢ SẢN PHẨM</li>
+            <li><Link to="#" >TẤT CẢ SẢN PHẨM</Link></li>
             {categories.map((cat) => (
               <li key={cat.id}>{cat.name.toUpperCase()}</li>
             ))}
-            <li>KIỂM TRA ĐƠN HÀNG</li>
             {/* Nút ẩn: Nếu là Admin mới hiện link vào trang Quản trị */}
             {user && user.isAdmin && (
-              <li><Link to="/admin" style={{ color: '#fff', textDecoration: 'none', backgroundColor: '#333', padding: '0.3vw 1vw', borderRadius: '1vw' }}>VÀO TRANG ADMIN</Link></li>
+              <li><Link to="/admin" >VÀO TRANG ADMIN</Link></li>
             )}
           </ul>
           
@@ -123,10 +129,14 @@ const ClientLayout = ({ children }) => {
           
           {/* KIỂM TRA ĐĂNG NHẬP Ở SIDEBAR */}
           {user ? (
-            <div className="sidebar-account no-underline" style={{ cursor: 'pointer', color: '#e50000' }} onClick={() => { handleLogout(); setIsSidebarOpen(false); }}>
-              <i className="bi bi-box-arrow-right icon-mr-lg"></i>
-              <strong>Đăng xuất ({user.name || user.username})</strong>
-            </div>
+             <div className="action-text">
+                <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '1vw' }}>
+                  <i className="bi bi-person-circle icon-mr-sm"></i> {user.name || user.username}
+                </Link>
+                <Link to="/logout" style={{ fontWeight: 'bold', color: '#e50000', textDecoration: 'none' }}>
+                  <i className="bi bi-box-arrow-right icon-mr-sm"></i> Đăng xuất
+                </Link>
+             </div>
           ) : (
             <Link to="/login" className="sidebar-account no-underline" onClick={() => setIsSidebarOpen(false)}>
               <i className="bi bi-person-circle icon-mr-lg"></i>

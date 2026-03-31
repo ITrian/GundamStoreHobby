@@ -21,7 +21,7 @@
 /* Sidebar */
 .admin-sidebar {
     width: 250px;
-    background-color: #343a40;
+    background-color: #000080;
     color: #fff;
     display: flex;
     flex-direction: column;
@@ -31,7 +31,7 @@
 
 .sidebar-header {
     padding: 20px;
-    background-color: #23272b;
+    background-color: #000080;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -64,9 +64,9 @@
     padding: 15px 20px;
     color: #fff;
     text-decoration: none;
-    border-bottom: 1px solid #454d55;
+    border: 1px solid #000;
     transition: background 0.2s;
-    background-color: #000;
+    background-color: #000080;
     min-width: 100%;
     text-align: center;
 }

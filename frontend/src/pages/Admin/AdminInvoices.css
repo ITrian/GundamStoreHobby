@@ -1,0 +1,334 @@
+/* AdminInvoices.css */
+
+.admin-invoices-container .admin-invoices-container {
+    padding: 1vw;
+}
+
+.admin-invoices-container .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5vw;
+}
+
+.admin-invoices-container .search-box {
+    position: relative;
+    width: 30vw;
+}
+
+.admin-invoices-container .search-box input {
+    width: 100%;
+    padding: 0.8vw 1vw 0.8vw 2.5vw;
+    font-size: 1vw;
+    border: 0.1vw solid #ccc;
+    border-radius: 0.4vw;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.admin-invoices-container .search-box input:focus {
+    border-color: #1a73e8;
+}
+
+.admin-invoices-container .search-icon {
+    position: absolute;
+    left: 1.8vw;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 1.vw;
+}
+
+.admin-invoices-container .total-orders {
+    font-size: 1.1vw;
+    color: #555;
+}
+
+.admin-invoices-container .clickable-id {
+    color: #1a73e8 !important;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.admin-invoices-container .clickable-id:hover {
+    color: #e50000 !important;
+}
+
+/* Status Dropdown Select */
+.admin-invoices-container .status-select {
+    padding: 0.4vw 0.8vw;
+    font-size: 0.9vw;
+    font-weight: bold;
+    border-radius: 0.3vw;
+    border: 0.1vw solid #ccc;
+    outline: none;
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.admin-invoices-container .status-select.pending {
+    color: #d39e00;
+    border-color: #ffeeba;
+}
+
+.admin-invoices-container .status-select.success {
+    color: #28a745;
+    border-color: #c3e6cb;
+}
+
+.admin-invoices-container .status-select.canceled {
+    color: #dc3545;
+    border-color: #f5c6cb;
+}
+
+/* Buttons */
+.admin-invoices-container .btn-view {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 0.5vw 1vw;
+    border-radius: 0.3vw;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 0.5vw;
+    transition: 0.3s;
+    font-size: 0.9vw;
+}
+.admin-invoices-container .btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5vw 1vw;
+    border-radius: 0.3vw;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.admin-invoices-container .btn-view:hover {
+    background-color: #138496;
+}
+
+/* Custom Modals */
+.admin-invoices-container .overlay-blur {
+    backdrop-filter: blur(0.2vw);
+}
+
+.admin-invoices-container .invoice-modal {
+    max-width: 50vw !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.admin-invoices-container .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 1vw 1.5vw;
+    border-bottom: 0.1vw solid #eee;
+}
+
+.admin-invoices-container .modal-header h3 {
+    margin: 0;
+    font-size: 1.2vw;
+    color: #333;
+}
+
+.admin-invoices-container .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2vw;
+    cursor: pointer;
+    color: #888;
+}
+
+.admin-invoices-container .close-btn:hover {
+    color: #dc3545;
+}
+
+.admin-invoices-container .modal-body {
+    padding: 1.5vw;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.admin-invoices-container .invoice-meta {
+    background-color: #f1f3f5;
+    padding: 1vw;
+    border-radius: 0.4vw;
+    margin-bottom: 1.5vw;
+    font-size: 1vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1vw;
+}
+
+.admin-invoices-container .invoice-meta p {
+    margin: 0;
+}
+
+.admin-invoices-container .detail-title {
+    margin-top: 0;
+    margin-bottom: 1vw;
+    font-size: 1.1vw;
+    color: #1a73e8;
+}
+
+.admin-invoices-container .details-table th,
+.details-table td {
+    padding: 0.8vw !important;
+}
+
+.admin-invoices-container .modal-footer {
+    padding: 1vw 1.5vw;
+    border-top: 0.1vw solid #eee;
+    text-align: right;
+    background-color: #f8f9fa;
+}
+
+/* Alert & Confirm Modals */
+.admin-invoices-container .alert-modal {
+    max-width: 25vw !important;
+    text-align: center;
+    padding: 2vw !important;
+}
+
+.admin-invoices-container .alert-title {
+    font-size: 1.5vw;
+    margin-bottom: 1vw;
+    margin-top: 0;
+}
+
+.admin-invoices-container .alert-title.danger {
+    color: #dc3545;
+}
+
+.admin-invoices-container .alert-title.success {
+    color: #28a745;
+}
+
+.admin-invoices-container .alert-title.error {
+    color: #dc3545;
+}
+
+.admin-invoices-container .alert-title.info {
+    color: #17a2b8;
+}
+
+.admin-invoices-container .alert-msg {
+    font-size: 1.1vw;
+    color: #444;
+    margin-bottom: 1.5vw;
+    line-height: 1.5;
+}
+
+.admin-invoices-container .center-footer {
+    display: flex;
+    justify-content: center;
+    gap: 1vw;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.admin-invoices-container .center-block {
+    display: block;
+    margin: 0 auto;
+}
+
+.admin-invoices-container .px-btn {
+    padding: 0.6vw 2vw !important;
+    font-size: 1vw !important;
+}
+
+.admin-invoices-container .empty-msg {
+    text-align: center !important;
+    padding: 2vw !important;
+    color: #666;
+    font-size: 1.1vw;
+}
+
+.admin-invoices-container .text-danger {
+    color: #dc3545;
+}
+
+.admin-invoices-container .loading-msg {
+    text-align: center;
+    color: #1a73e8;
+    font-size: 1vw;
+    padding: 2vw;
+}
+
+/* Responsive Mobile (Dịch vw sang kích thước to hơn) */
+@media (max-width: 768px) {
+    .admin-invoices-container .search-box {
+        width: 100%;
+        margin-bottom: 3vw;
+    }
+
+    .admin-invoices-container .search-box input {
+        font-size: 3.5vw;
+        padding: 2vw 2vw 2vw 8vw;
+    }
+
+    .admin-invoices-container .search-icon {
+        font-size: 4vw;
+        left: 2.5vw;
+    }
+
+    .admin-invoices-container .total-orders {
+        font-size: 3.5vw;
+    }
+
+    .admin-invoices-container .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-invoices-container .invoice-modal {
+        max-width: 90vw !important;
+    }
+
+    .admin-invoices-container .modal-header h3 {
+        font-size: 4vw;
+    }
+
+    .admin-invoices-container .close-btn {
+        font-size: 5vw;
+    }
+
+    .admin-invoices-container .invoice-meta {
+        grid-template-columns: 1fr;
+        font-size: 3.5vw;
+        gap: 2vw;
+    }
+
+    .admin-invoices-container .detail-title {
+        font-size: 4vw;
+    }
+
+    .admin-invoices-container .alert-modal {
+        max-width: 80vw !important;
+    }
+
+    .admin-invoices-container .alert-title {
+        font-size: 5vw;
+    }
+
+    .admin-invoices-container .alert-msg {
+        font-size: 3.5vw;
+    }
+
+    .admin-invoices-container .px-btn {
+        font-size: 3.5vw !important;
+        padding: 2vw 6vw !important;
+    }
+
+    .admin-invoices-container .btn-view, .admin-invoices-container .btn-delete
+    .status-select {
+        font-size: 3vw;
+        padding: 1.5vw;
+    }
+}

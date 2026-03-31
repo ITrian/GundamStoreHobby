@@ -65,7 +65,7 @@ const AdminCategories = () => {
   return (
     <div>
       <h2>Quản lý Danh mục</h2>
-      <button className="btn-add" onClick={() => handleOpenModal()}>+ Thêm Danh mục</button>
+      <button className="btn-add" onClick={() => handleOpenModal()}><i className="bi bi-plus-circle" style={{ marginRight: '0.5vw' }}></i>Thêm Danh mục</button>
       
       <table className="admin-table">
         <thead>

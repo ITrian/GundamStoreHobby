@@ -169,7 +169,7 @@ const ProductDetail = () => {
                       <h4>1. Đặt hàng dễ dàng</h4>
                       <p>Quý khách có thể lựa chọn sản phẩm yêu thích và thêm vào giỏ hàng trực tiếp trên website. Nhập thông tin nhận hàng và số điện thoại để hệ thống ghi nhận.</p>
                       <h4>2. Xác nhận và Thanh toán</h4>
-                      <p>An Hobby Store sẽ gọi điện xác nhận tình trạng hàng hóa và phí vận chuyển (nếu có). Chúng tôi hỗ trợ giao hàng thu tiền tận nơi (COD) hoặc chuyển khoản ngân hàng.</p>
+                      <p>The Liems Store sẽ gọi điện xác nhận tình trạng hàng hóa và phí vận chuyển (nếu có). Chúng tôi hỗ trợ giao hàng thu tiền tận nơi (COD) hoặc chuyển khoản ngân hàng.</p>
                     </div>
                   )}
 
