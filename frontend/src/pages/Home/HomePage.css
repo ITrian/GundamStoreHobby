@@ -348,6 +348,9 @@ body {
     display: block;
     white-space: nowrap;
   }
+  .nav-links li a{
+    color:#fff
+  }
 
   .hotline {
     margin-left: auto;
@@ -364,7 +367,7 @@ body {
     gap: 0.5vw;
   }
 
-  .nav-links li:hover {
+  .nav-links li a:hover {
     color: #ffcccc;
     cursor: pointer;
   }

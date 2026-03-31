@@ -1,0 +1,272 @@
+/* UserProfile.css */
+.profile-container {
+    padding: 3vw 5vw;
+    display: grid;
+    grid-template-columns: 35% 62%;
+    gap: 3%;
+    align-items: start;
+}
+
+.profile-card {
+    background-color: #fff;
+    border-radius: 0.5vw;
+    padding: 2vw;
+    box-shadow: 0 0.2vw 0.8vw rgba(0, 0, 0, 0.05);
+}
+
+.profile-title {
+    font-size: 1.5vw;
+    color: #1a73e8;
+    border-bottom: 0.1vw solid #eee;
+    padding-bottom: 1vw;
+    margin-top: 0;
+    margin-bottom: 1.5vw;
+    text-transform: uppercase;
+}
+
+/* Thông tin cá nhân */
+.info-group {
+    margin-bottom: 1.2vw;
+    font-size: 1.1vw;
+    display: flex;
+    align-items: center;
+}
+
+.info-label {
+    color: #666;
+    width: 12vw;
+    font-weight: bold;
+}
+
+.info-value {
+    color: #333;
+}
+
+/* Lịch sử đơn hàng */
+.order-search-box {
+    position: relative;
+    margin-bottom: 1.5vw;
+}
+
+.order-search-box input {
+    width: 100%;
+    padding: 0.8vw 1vw 0.8vw 2.5vw;
+    font-size: 1vw;
+    border: 0.1vw solid #ddd;
+    border-radius: 0.3vw;
+    outline: none;
+}
+
+.order-search-box input:focus {
+    border-color: #1a73e8;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1vw;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 1vw;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 1vw;
+    text-align: left;
+    border-bottom: 0.1vw solid #eee;
+    font-size: 0.95vw;
+}
+
+.orders-table th {
+    background-color: #f9f9f9;
+    color: #555;
+}
+
+.order-id {
+    color: #1a73e8;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.order-id:hover {
+    color: #e50000;
+}
+
+.order-price {
+    color: #e50000;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 0.3vw 0.8vw;
+    border-radius: 1vw;
+    font-size: 0.8vw;
+    font-weight: bold;
+}
+
+.status-badge.success {
+    background-color: #e8f5e9;
+    color: #28a745;
+}
+
+.status-badge.canceled {
+    background-color: #ffebee;
+    color: #dc3545;
+}
+
+.view-btn {
+    background-color: #fff;
+    border: 0.1vw solid #1a73e8;
+    color: #1a73e8;
+    padding: 0.5vw 1vw;
+    border-radius: 0.3vw;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.85vw;
+}
+
+.view-btn:hover {
+    background-color: #1a73e8;
+    color: #fff;
+}
+
+.empty-orders {
+    text-align: center !important;
+    color: #888;
+    padding: 3vw !important;
+}
+
+/* Modal Chi tiết Đơn hàng */
+.order-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.order-modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 0.5vw;
+    box-shadow: 0 1vw 3vw rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5vw 2vw;
+    border-bottom: 0.1vw solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1a73e8;
+    font-size: 1.2vw;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.5vw;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-body {
+    padding: 2vw;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.details-table th,
+.details-table td {
+    padding: 1vw;
+    border-bottom: 0.1vw solid #eee;
+    text-align: left;
+    font-size: 1vw;
+}
+
+.details-table th {
+    background-color: #f9f9f9;
+}
+
+
+/* Responsive cho Mobile */
+@media (max-width: 768px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+        gap: 5vw;
+    }
+
+    .profile-title {
+        font-size: 5vw;
+        margin-bottom: 3vw;
+    }
+
+    .info-group {
+        font-size: 4vw;
+    }
+
+    .info-label {
+        width: 35vw;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 3.5vw;
+        padding: 2vw;
+    }
+
+    .order-search-box input {
+        font-size: 4vw;
+        padding: 2.5vw 2.5vw 2.5vw 8vw;
+    }
+
+    .search-icon {
+        font-size: 4vw;
+        left: 3vw;
+    }
+
+    .view-btn {
+        font-size: 3vw;
+        padding: 1.5vw 3vw;
+    }
+
+    .modal-header h3 {
+        font-size: 4vw;
+    }
+
+    .close-modal-btn {
+        font-size: 5vw;
+    }
+
+    .details-table th,
+    .details-table td {
+        font-size: 3.5vw;
+        padding: 2vw;
+    }
+}

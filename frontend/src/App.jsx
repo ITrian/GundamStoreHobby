@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import HomePage from './pages/Home/HomePage';
@@ -8,25 +8,24 @@ import Register from './pages/Auth/Register';
 
 import AdminLayout from './layouts/AdminLayout/AdminLayout';
 import AdminProducts from './pages/Admin/AdminProducts';
+import AdminInvoices from './pages/Admin/AdminInvoices';
 import AdminCategories from './pages/Admin/AdminCategories';
 import ProductDetail from './pages/Product/ProductDetail';
+import UserProfile from './pages/User/UserProfile';
 
 import './App.css';
 
 const AdminRoute = ({ children }) => {
   const userStr = localStorage.getItem('user');
   
-  // Nếu chưa đăng nhập -> Đá về trang đăng nhập
-  if (!userStr) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!userStr) return <Navigate to="/login" replace />;
 
   try {
     const user = JSON.parse(userStr);
-    // Nếu đã đăng nhập nhưng KHÔNG phải Admin -> Báo lỗi & Đá về trang chủ
     if (user.isAdmin === true) {
       return children;
     } else {
+      alert("Truy cập bị từ chối! Bạn không có quyền quản trị viên.");
       return <Navigate to="/" replace />;
     }
   } catch (e) {
@@ -34,45 +33,33 @@ const AdminRoute = ({ children }) => {
   }
 };
 
+const Logout = () => {
+  useEffect(() => {
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  }, []);
+  return null;
+};
+
 function App() {
   return (
     <Router>
       <Routes>
-
-        {/* CÁC ROUTE PUBLIC (Ai cũng vào được) */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/profile" element={<UserProfile />} />
 
-        {/* CÁC ROUTE ADMIN (Đã được bọc bởi <AdminRoute>) */}
-        <Route
-          path="/admin/products"
-          element={
-            <AdminRoute>
-              <AdminLayout><AdminProducts /></AdminLayout>
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/categories"
-          element={
-            <AdminRoute>
-              <AdminLayout><AdminCategories /></AdminLayout>
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/users"
-          element={
-            <AdminRoute>
-              <AdminLayout><UserManagement /></AdminLayout>
-            </AdminRoute>
-          }
-        />
-
+        <Route path="/admin/products" element={<AdminRoute><AdminLayout><AdminProducts /></AdminLayout></AdminRoute>} />
+        <Route path="/admin/categories" element={<AdminRoute><AdminLayout><AdminCategories /></AdminLayout></AdminRoute>} />
+        <Route path="/admin/users" element={<AdminRoute><AdminLayout><UserManagement /></AdminLayout></AdminRoute>} />
+        <Route path="/admin/invoices" element={<AdminRoute><AdminLayout><AdminInvoices /></AdminLayout>
+    </AdminRoute>
+  }
+/>
         <Route path="/admin" element={<Navigate to="/admin/products" replace />} />
-        
       </Routes>
     </Router>
   );

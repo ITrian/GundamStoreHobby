@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Thêm import này
 import './UserManagement.css'; 
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate(); // Khởi tạo navigate
 
   const [formData, setFormData] = useState({
     id: null,
@@ -109,10 +112,15 @@ const UserManagement = () => {
     });
   };
 
+  // Hàm chuyển hướng sang trang Hóa đơn và truyền Tên user để Search
+  const handleGoToInvoices = (userName) => {
+    navigate('/admin/invoices', { state: { searchStr: userName } });
+  };
+
   return (
-    <div>
+    <div className="UserManagement">
       <h2>Quản lý Tài khoản (Users)</h2>
-      <button className="btn-add" onClick={() => handleOpenModal()}>+ Thêm Tài Khoản</button>
+      <button className="btn-add" onClick={() => handleOpenModal()}><i className="bi bi-plus-circle" style={{ marginRight: '0.5vw' }}></i>Thêm Tài Khoản</button>
       
       <table className="admin-table">
         <thead>
@@ -129,7 +137,14 @@ const UserManagement = () => {
         <tbody>
           {users.map(u => (
             <tr key={u.id}>
-              <td>{u.id}</td>
+              {/* ĐÃ SỬA: Click vào ID sẽ bay sang trang hóa đơn */}
+              <td 
+                className="clickable-id" 
+                onClick={() => handleGoToInvoices(u.name)}
+                title="Xem đơn hàng của user này"
+              >
+                #{u.id}
+              </td>
               <td className="text-bold">{u.name}</td>
               <td>{u.email || 'Chưa cập nhật'}</td>
               <td>{u.dateofbirth ? new Date(u.dateofbirth).toLocaleDateString('vi-VN') : 'Chưa cập nhật'}</td>
@@ -141,10 +156,7 @@ const UserManagement = () => {
               </td>
               <td>
                 <button className="btn-edit" onClick={() => handleOpenModal(u)}>Sửa</button>
-                {/* Đã xóa thuộc tính disabled={u.isadmin} ở đây */}
-                <button className="btn-delete" onClick={() => handleDeleteUser(u.id)}>
-                  Xóa
-                </button>
+                <button className="btn-delete" onClick={() => handleDeleteUser(u.id)}>Xóa</button>
               </td>
             </tr>
           ))}
