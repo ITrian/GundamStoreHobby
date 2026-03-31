@@ -1,6 +1,5 @@
 const express = require("express");
 const pool = require("./db");
-//test
 
 const {
   addCategory,
@@ -140,6 +139,7 @@ app.patch("/category/update", updateCategory);
 app.get("/user/getallUser", userController.getAllUsers);
 app.post("/user/registerUser", userController.registerUser);
 app.put("/user/updateUser/:id", userController.updateUser);
+app.patch("/user/updateAdmin/:id", userController.updateUserAdmin);
 
 app.post("/invoice/insert", addInvoice);
 app.get("/invoice/all", getAllInvoice);
