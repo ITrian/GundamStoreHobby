@@ -11,21 +11,21 @@ const initUser = require("./user");
 const initPhone = require("./phone");
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-        host: process.env.DB_HOST,
-        port: Number(process.env.DB_PORT),
-        dialect: "postgres",
-        logging: false,
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false,
-            },
-        },
-    }
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  },
 );
 
 const account = initAccount(sequelize);
@@ -53,13 +53,13 @@ user.hasMany(phone, { foreignKey: "userId" });
 phone.belongsTo(user, { foreignKey: "userId" });
 
 module.exports = {
-    sequelize,
-    account,
-    category,
-    image,
-    invoice,
-    invoiceDetail,
-    product,
-    user,
-    phone,
+  sequelize,
+  account,
+  Category: category,
+  image,
+  invoice,
+  invoiceDetail,
+  product,
+  user,
+  phone,
 };
