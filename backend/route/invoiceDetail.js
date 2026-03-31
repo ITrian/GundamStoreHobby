@@ -37,7 +37,7 @@ async function deleteInvoiceDetail(req, res) {
 async function getInvoiceDetailById(req, res) {
     try {
         const { id } = req.params;
-        const result = await pool.query("SELECT * FROM invoicedetail WHERE invoiceid=$1", [invoiceId]);
+        const result = await pool.query("SELECT * FROM invoicedetail WHERE invoiceid=$1", [id]);
         res.status(200).json(result.rows);
     } catch (err) {
         console.error(err);
