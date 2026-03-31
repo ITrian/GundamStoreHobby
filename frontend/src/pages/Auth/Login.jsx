@@ -31,8 +31,6 @@ const Login = () => {
         setIsLoading(false);
         return;
       }
-
-      alert('Đăng nhập thành công!');
       // Có thể lưu thông tin user vào localStorage ở đây
       localStorage.setItem('user', JSON.stringify(data));
       navigate('/'); // Chuyển về trang chủ

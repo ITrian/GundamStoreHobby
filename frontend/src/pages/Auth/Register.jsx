@@ -109,8 +109,6 @@ const Register = () => {
         setIsLoading(false);
         return;
       }
-
-      alert('Đăng ký thành công! Vui lòng đăng nhập.');
       navigate('/login');
 
     } catch (error) {

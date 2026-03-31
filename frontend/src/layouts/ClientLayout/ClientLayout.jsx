@@ -41,7 +41,6 @@ const ClientLayout = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem('user'); // Xóa thông tin lưu trữ
     setUser(null); // Xóa state
-    alert("Đã đăng xuất thành công!");
     navigate('/'); // Đá về trang chủ
   };
 
