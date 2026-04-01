@@ -27,13 +27,13 @@ const ProductDetail = () => {
     const fetchProductData = async () => {
       try {
         setLoading(true);
-        const prodRes = await fetch(`${API_URL}/product/${id}`);
+        const prodRes = await fetch(`${API_URL}/products/${id}`);
         if (!prodRes.ok) throw new Error("Không tìm thấy sản phẩm");
         
         const prodData = await prodRes.json();
         setProduct(prodData);
 
-        const imgRes = await fetch(`${API_URL}/image/product/${id}`);
+        const imgRes = await fetch(`${API_URL}/images/product/${id}`);
         const imgData = imgRes.ok ? await imgRes.json() : [];
 
         if (imgData.length > 0) {

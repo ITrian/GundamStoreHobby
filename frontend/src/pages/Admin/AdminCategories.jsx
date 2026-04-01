@@ -13,7 +13,7 @@ const AdminCategories = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch(`${API_URL}/category/all`);
+      const res = await fetch(`${API_URL}/categories`);
       if (!res.ok) throw new Error('Lỗi tải danh mục');
       const data = await res.json();
       setCategories(data);
@@ -35,7 +35,7 @@ const AdminCategories = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = formData.id ? `${API_URL}/category/update` : `${API_URL}/category/add`;
+    const url = formData.id ? `${API_URL}/categories/${formData.id}` : `${API_URL}/categories`;
     const method = formData.id ? 'PATCH' : 'POST';
 
     try {
@@ -54,7 +54,7 @@ const AdminCategories = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa danh mục này? LƯU Ý: Nếu danh mục này đang có sản phẩm, thao tác có thể bị lỗi từ database.')) {
       try {
-        await fetch(`${API_URL}/category/delete/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/categories/${id}`, { method: 'DELETE' });
         fetchCategories(); // Load lại data sau khi xóa
       } catch (error) {
         console.error("Lỗi khi xóa danh mục:", error);

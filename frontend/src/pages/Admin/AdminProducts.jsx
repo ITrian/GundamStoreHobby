@@ -12,18 +12,15 @@ const AdminProducts = () => {
   const [previewUrls, setPreviewUrls] = useState([]); 
   const [existingImages, setExistingImages] = useState([]); 
 
-  // --- STATE TÌM KIẾM, LỌC VÀ SẮP XẾP ---
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(''); // State mới cho Bộ lọc Danh mục
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [sortOption, setSortOption] = useState('');
 
-  // --- STATE CHO POPUP XEM/XÓA ẢNH ---
   const [isImageViewModalOpen, setIsImageViewModalOpen] = useState(false);
   const [viewingImages, setViewingImages] = useState([]);
   const [viewingProductName, setViewingProductName] = useState('');
   const [isDeletingImage, setIsDeletingImage] = useState(false); 
 
-  // --- STATE CHO CUSTOM CONFIRM & ALERT POPUP ---
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
   const [alertDialog, setAlertDialog] = useState({ isOpen: false, message: '' });
 
@@ -38,7 +35,7 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/product/getAllProducts`);
+      const res = await fetch(`${API_URL}/products`);
       const data = await res.json();
       setProducts(data);
     } catch (e) { console.error(e); }
@@ -46,7 +43,7 @@ const AdminProducts = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch(`${API_URL}/category/all`);
+      const res = await fetch(`${API_URL}/categories`);
       const data = await res.json();
       setCategories(data);
     } catch (e) { console.error(e); }
@@ -54,7 +51,8 @@ const AdminProducts = () => {
 
   const fetchAllImages = async () => {
     try {
-      const res = await fetch(`${API_URL}/image/getAllImages`);
+      // ĐÃ SỬA
+      const res = await fetch(`${API_URL}/images`);
       const data = await res.json();
       setAllImages(data);
     } catch (e) { console.error(e); }
@@ -62,30 +60,23 @@ const AdminProducts = () => {
 
   const getCategoryName = (id) => categories.find(c => String(c.id) === String(id))?.name || 'Không xác định';
 
-  // --- XỬ LÝ LỌC & SẮP XẾP SẢN PHẨM KẾT HỢP ---
   const filteredAndSortedProducts = [...products]
     .filter(p => {
       const query = searchQuery.toLowerCase();
-      // Điều kiện 1: Khớp Tên hoặc ID
-      const matchSearch = p.id.toString().includes(query) || p.name.toLowerCase().includes(query);
-      // Điều kiện 2: Khớp Danh mục (Nếu selectedCategory rỗng thì bỏ qua lọc danh mục)
+      const matchSearch = p.id?.toString().includes(query) || p.name?.toLowerCase().includes(query);
       const matchCategory = selectedCategory === '' || String(p.categoryid) === String(selectedCategory);
-      
       return matchSearch && matchCategory;
     })
     .sort((a, b) => {
-      // Chỉ còn sắp xếp theo giá
       if (sortOption === 'price_asc') return parseFloat(a.price) - parseFloat(b.price);
       if (sortOption === 'price_desc') return parseFloat(b.price) - parseFloat(a.price);
-      return 0; // Mặc định giữ nguyên theo DB (ID)
+      return 0; 
     });
 
-  // --- HÀM TIỆN ÍCH GỌI POPUP ---
   const showAlert = (message) => setAlertDialog({ isOpen: true, message });
   const showConfirm = (message, onConfirmCallback) => setConfirmDialog({ isOpen: true, message, onConfirm: onConfirmCallback });
   const closeConfirm = () => setConfirmDialog({ isOpen: false, message: '', onConfirm: null });
 
-  // --- MỞ POPUP ẢNH ---
   const handleViewImages = (product) => {
     const productImages = allImages.filter(img => String(img.productid) === String(product.id));
     setViewingImages(productImages);
@@ -93,12 +84,12 @@ const AdminProducts = () => {
     setIsImageViewModalOpen(true);
   };
 
-  // --- HÀM XÓA 1 ẢNH ---
   const handleDeleteSingleImage = (imageToDelete) => {
     showConfirm("Bạn có chắc muốn xóa ảnh này khỏi sản phẩm?", async () => {
       setIsDeletingImage(true);
       try {
-        const res = await fetch(`${API_URL}/image/deleteSingleImage/${imageToDelete.productid}/${imageToDelete.detail}`, { method: 'DELETE' });
+        // ĐÃ SỬA URL DELETE SINGLE IMAGE
+        const res = await fetch(`${API_URL}/images/${imageToDelete.productid}/${imageToDelete.detail}`, { method: 'DELETE' });
         if (!res.ok) {
           showAlert("Lỗi từ server: Không thể xóa ảnh này!");
           setIsDeletingImage(false);
@@ -117,7 +108,6 @@ const AdminProducts = () => {
     });
   };
 
-  // --- MỞ MODAL THÊM / SỬA SP ---
   const handleOpenModal = async (product = null) => {
     setSelectedFiles([]); 
     setPreviewUrls([]);
@@ -126,7 +116,7 @@ const AdminProducts = () => {
     if (product) {
       setFormData(product);
       try {
-        const res = await fetch(`${API_URL}/image/product/${product.id}`);
+        const res = await fetch(`${API_URL}/images/product/${product.id}`);
         const data = await res.json();
         setExistingImages(data);
       } catch(e) { console.error(e); }
@@ -146,7 +136,8 @@ const AdminProducts = () => {
   const handleDeleteAllOldImages = () => {
     showConfirm("Bạn có chắc muốn xóa TOÀN BỘ ảnh cũ của sản phẩm này không?", async () => {
       try {
-        const res = await fetch(`${API_URL}/image/deleteImage/${formData.id}`, { method: 'DELETE' });
+        // ĐÃ SỬA URL DELETE TẤT CẢ ẢNH CỦA SP
+        const res = await fetch(`${API_URL}/images/${formData.id}`, { method: 'DELETE' });
         if (!res.ok) {
            showAlert("Lỗi từ server: Không thể xóa toàn bộ ảnh!");
            return;
@@ -165,7 +156,7 @@ const AdminProducts = () => {
     e.preventDefault();
     setIsUploading(true); 
     
-    const productUrl = formData.id ? `${API_URL}/product/updateProduct` : `${API_URL}/product/insertProduct`;
+    const productUrl = `${API_URL}/products`;
     const productMethod = formData.id ? 'PATCH' : 'POST';
 
     try {
@@ -199,7 +190,8 @@ const AdminProducts = () => {
 
           if (imgbbData.success) {
             const imageUrl = imgbbData.data.url; 
-            await fetch(`${API_URL}/image/insertImage`, {
+            // ĐÃ SỬA URL INSERT ẢNH
+            await fetch(`${API_URL}/images`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -230,8 +222,8 @@ const AdminProducts = () => {
   const handleDeleteProduct = (id) => {
     showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này?', async () => {
       try {
-        await fetch(`${API_URL}/image/deleteImage/${id}`, { method: 'DELETE' });
-        const res = await fetch(`${API_URL}/product/deleteProduct/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/images/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' });
         
         if (!res.ok) {
           showAlert("Lỗi từ server: Không thể xóa sản phẩm!");
@@ -251,15 +243,13 @@ const AdminProducts = () => {
     <div>
       <h2>Quản lý Sản phẩm</h2>
       
-      {/* THANH CÔNG CỤ (Thêm SP, Search, Lọc Danh Mục, Sort Giá) */}
+      {/* THANH CÔNG CỤ */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5vw', flexWrap: 'wrap', gap: '1vw' }}>
         <button className="btn-add" style={{ margin: 0 }} onClick={() => handleOpenModal()}>
           <i className="bi bi-plus-circle" style={{ marginRight: '0.5vw' }}></i>Thêm Sản phẩm
         </button>
         
         <div style={{ display: 'flex', gap: '1vw', flexWrap: 'wrap' }}>
-          
-          {/* Ô Tìm Kiếm */}
           <div style={{ position: 'relative' }}>
             <i className="bi bi-search" style={{ position: 'absolute', left: '0.8vw', top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: '1vw' }}></i>
             <input 
@@ -271,7 +261,6 @@ const AdminProducts = () => {
             />
           </div>
           
-          {/* Select Bộ lọc Danh Mục */}
           <div style={{ position: 'relative' }}>
             <i className="bi bi-funnel" style={{ position: 'absolute', left: '0.8vw', top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: '1vw' }}></i>
             <select 
@@ -284,7 +273,6 @@ const AdminProducts = () => {
             </select>
           </div>
 
-          {/* Select Sắp xếp Giá */}
           <div style={{ position: 'relative' }}>
             <i className="bi bi-sort-down" style={{ position: 'absolute', left: '0.8vw', top: '50%', transform: 'translateY(-50%)', color: '#888', fontSize: '1vw' }}></i>
             <select 
@@ -350,7 +338,7 @@ const AdminProducts = () => {
         </tbody>
       </table>
 
-      {/* POPUP XEM & XÓA HÌNH ẢNH (Đã quy đổi ra vw) */}
+      {/* POPUP XEM & XÓA HÌNH ẢNH */}
       {isImageViewModalOpen && (
         <div className="admin-modal">
           <div className="modal-content" style={{ maxWidth: '50vw', width: '90%', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -491,7 +479,7 @@ const AdminProducts = () => {
 
               <div style={{ display: 'flex', justifyContent: 'center', gap: '1vw', marginTop: '1.5vw' }}>
                 <button type="submit" className="btn-save" disabled={isUploading}>
-                  {isUploading ? 'Đang tải ảnh lên...' : 'Lưu Sản Phẩm'}
+                  {isUploading ? 'Đang tải...' : 'Lưu Sản Phẩm'}
                 </button>
                 <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)} disabled={isUploading}>Hủy</button>
               </div>
@@ -500,7 +488,7 @@ const AdminProducts = () => {
         </div>
       )}
 
-      {/* MODAL XÁC NHẬN (CUSTOM CONFIRM) */}
+      {/* MODAL XÁC NHẬN */}
       {confirmDialog.isOpen && (
         <div className="admin-modal" style={{ zIndex: 9999 }}>
           <div className="modal-content" style={{ maxWidth: '30vw', textAlign: 'center' }}>
@@ -529,7 +517,7 @@ const AdminProducts = () => {
         </div>
       )}
 
-      {/* MODAL THÔNG BÁO (CUSTOM ALERT) */}
+      {/* MODAL THÔNG BÁO */}
       {alertDialog.isOpen && (
         <div className="admin-modal" style={{ zIndex: 9999 }}>
           <div className="modal-content" style={{ maxWidth: '30vw', textAlign: 'center' }}>

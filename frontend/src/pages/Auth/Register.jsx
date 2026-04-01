@@ -28,7 +28,7 @@ const Register = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await fetch(`${API_URL}/user/getallUser`);
+        const res = await fetch(`${API_URL}/users`);
         if (res.ok) {
           const users = await res.json();
           // Trích xuất ra mảng chỉ chứa các email để check
@@ -91,10 +91,18 @@ const Register = () => {
     const { confirmPassword, ...payload } = formData;
 
     try {
-      const response = await fetch(`${API_URL}/user/registerUser`, {
+      const registerPayload = {
+        name: formData.name,
+        dateofbirth: formData.dateOfBirth || null,
+        email: formData.email,
+        address: formData.address,
+        isadmin: false
+      };
+
+      const response = await fetch(`${API_URL}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(registerPayload)
       });
 
       const data = await response.json();

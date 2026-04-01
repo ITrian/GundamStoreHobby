@@ -18,23 +18,26 @@ const Login = () => {
     setErrorMsg(''); // Xóa lỗi cũ nếu có
 
     try {
-      const response = await fetch(`${API_URL}/account/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }) // Truyền đúng key backend cần
-      });
-
-      const data = await response.json();
-
+      const response = await fetch(`${API_URL}/users`);
       if (!response.ok) {
-        setErrorMsg(data.error || 'Đăng nhập thất bại!');
+        throw new Error('Không thể lấy danh sách người dùng');
+      }
+      const users = await response.json();
+
+      const matchedUser = users.find(
+        (u) => u.email === username || u.name?.toLowerCase() === username.toLowerCase()
+      );
+
+      if (!matchedUser) {
+        setErrorMsg('Tên đăng nhập không tồn tại');
         setIsLoading(false);
         return;
       }
-      // Có thể lưu thông tin user vào localStorage ở đây
-      localStorage.setItem('user', JSON.stringify(data));
-      navigate('/'); // Chuyển về trang chủ
-      
+
+      // Backend mới không lưu password, đăng nhập dựa trên email/name
+      localStorage.setItem('user', JSON.stringify(matchedUser));
+      navigate('/');
+
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
       setErrorMsg('Lỗi kết nối đến máy chủ!');
