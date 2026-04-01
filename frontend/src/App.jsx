@@ -6,6 +6,7 @@ import HomePage from './pages/Home/HomePage';
 import UserManagement from './pages/Admin/UserManagement'; 
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 
 import AdminLayout from './layouts/AdminLayout/AdminLayout';
 import AdminProducts from './pages/Admin/AdminProducts';
@@ -52,6 +53,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/profile" element={<UserProfile />} />
