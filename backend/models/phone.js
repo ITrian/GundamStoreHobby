@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('.');
 
 module.exports = (sequelize) => {
     const Phone = sequelize.define(
@@ -7,7 +6,9 @@ module.exports = (sequelize) => {
         {
             userId: {
                 type: DataTypes.INTEGER,
+                primaryKey: true,
                 allowNull: false,
+                field: "userid",
                 references: {
                     model: "user",
                     key: "id",
@@ -16,14 +17,16 @@ module.exports = (sequelize) => {
             },
             phoneNumber: {
                 type: DataTypes.STRING(10),
+                primaryKey: true,
                 allowNull: false,
+                field: "phonenumber",
             }
         },
         {
             tableName: "phone",
             timestamps: false,
-            freezeTAbleName: true,
+            freezeTableName: true,
         }
-    )
+    );
     return Phone;
-}
+};
