@@ -35,14 +35,15 @@ async function deleteInvoice(req, res) {
 
 async function getInvoiceById(req, res) {
     try {
+        console.log("getInvoiceById called with id:", req.params.id);
         const result = await pool.query("SELECT * FROM invoice WHERE id=$1", [req.params.id]);
         if (result.rows.length === 0) {
             return res.status(404).json({error: "Hóa đơn không tồn tại"});
         }
         res.status(200).json(result.rows[0]);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({error: "Lỗi lấy thông tin hóa đơn"});
+        console.error("getInvoiceById error:", err.message);
+        res.status(500).json({error: err.message});
     }
 }
 
