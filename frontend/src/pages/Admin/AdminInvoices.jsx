@@ -33,7 +33,8 @@ const AdminInvoices = () => {
 
   const fetchInvoices = async () => {
     try {
-      const res = await fetch(`${API_URL}/invoice/all`);
+      // ĐÃ SỬA: `/invoice/all` -> `/invoices`
+      const res = await fetch(`${API_URL}/invoices`);
       if (res.ok) {
         const data = await res.json();
         setInvoices(data.reverse());
@@ -45,7 +46,8 @@ const AdminInvoices = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_URL}/user/getallUser`);
+      // ĐÃ SỬA: `/user/getallUser` -> `/users`
+      const res = await fetch(`${API_URL}/users`);
       if (res.ok) {
         const data = await res.json();
         setUsers(data);
@@ -57,7 +59,8 @@ const AdminInvoices = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/product/getAllProducts`);
+      // ĐÃ SỬA: `/product/getAllProducts` -> `/products`
+      const res = await fetch(`${API_URL}/products`);
       if (res.ok) {
         const data = await res.json();
         setProducts(data);
@@ -86,16 +89,13 @@ const AdminInvoices = () => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price || 0);
   };
 
-  // --- HÀM XỬ LÝ NGÀY THÁNG CHUẨN (KHÔNG BỊ LỆCH TIMEZONE) ---
   const formatOrderDate = (dateString) => {
     if (!dateString) return 'N/A';
     try {
-      // Cắt bỏ phần giờ (T00:00:00.000Z), chỉ lấy phần ngày (YYYY-MM-DD)
       const datePart = dateString.split('T')[0]; 
       const [year, month, day] = datePart.split('-');
       return `${day}/${month}/${year}`;
     } catch (error) {
-      // Fallback nếu format không như dự kiến
       return new Date(dateString).toLocaleDateString('vi-VN');
     }
   };
@@ -110,7 +110,8 @@ const AdminInvoices = () => {
     setSelectedInvoice(invoice);
     setIsLoadingDetails(true);
     try {
-      const res = await fetch(`${API_URL}/invoiceDetail/getById/${invoice.id}`);
+      // ĐÃ SỬA: `/invoiceDetail/getById/:id` -> `/invoiceDetails/:id`
+      const res = await fetch(`${API_URL}/invoiceDetails/${invoice.id}`);
       if (res.ok) {
         const data = await res.json();
         setInvoiceDetails(Array.isArray(data) ? data : [data]);
@@ -130,31 +131,35 @@ const AdminInvoices = () => {
     setInvoiceDetails([]);
   };
 
+  // --- CẬP NHẬT TRẠNG THÁI ---
   const handleStatusChange = async (invoice, newStatus) => {
     try {
       const payload = {
-        id: invoice.id,
+        id: invoice.id, 
         date: invoice.date,
-        customerId: invoice.customerid,
+        customerId: invoice.customerid, // Gửi đúng customerId chữ Hoa chữ Thường
+        totalPrice: invoice.totalprice,
         status: newStatus,
-        isPaid: invoice.ispaid,
         paymentMethod: invoice.paymentmethod,
-        totalPrice: invoice.totalprice
+        isPaid: invoice.ispaid
       };
 
-      const res = await fetch(`${API_URL}/invoice/update`, {
+      // ĐÃ SỬA: `/invoice/update` -> `/invoices` (Khớp 100% với router.patch("/") trong invoiceRoutes.js)
+      const res = await fetch(`${API_URL}/invoices`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
 
-      if (res.ok) {
-        showAlert(`Đã cập nhật trạng thái đơn #${invoice.id} thành "${newStatus}"!`, "success");
-        fetchInvoices(); 
-      } else {
+      if (!res.ok) {
         showAlert("Lỗi cập nhật trạng thái từ Server!", "error");
+        return;
       }
+
+      showAlert(`Đã cập nhật trạng thái đơn #${invoice.id} thành công!`, "success");
+      fetchInvoices(); 
     } catch (error) {
+      console.error(error);
       showAlert("Lỗi kết nối đến máy chủ!", "error");
     }
   };
@@ -162,7 +167,8 @@ const AdminInvoices = () => {
   const handleDeleteInvoice = (id) => {
     showConfirm(`Bạn có chắc chắn muốn xóa Đơn hàng #${id}?`, async () => {
       try {
-        const res = await fetch(`${API_URL}/invoice/delete/${id}`, { method: 'DELETE' });
+        // ĐÃ SỬA: `/invoice/delete/:id` -> `/invoices/:id`
+        const res = await fetch(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
         if (res.ok) {
           showAlert("Đã xóa đơn hàng thành công!", "success");
           fetchInvoices();
@@ -216,20 +222,18 @@ const AdminInvoices = () => {
                 #{inv.id}
               </td>
               <td style={{ fontWeight: 'bold' }}>{getUserName(inv.customerid)}</td>
-              {/* ĐÃ CẬP NHẬT: Dùng hàm formatOrderDate */}
               <td>{formatOrderDate(inv.date)}</td>
               <td style={{ color: '#e50000', fontWeight: 'bold' }}>{formatPrice(inv.totalprice)}</td>
               
               <td>
                 <select 
-                  className={`status-select ${inv.status === 'Đã hủy' ? 'canceled' : inv.status === 'Hoàn tất' ? 'success' : 'pending'}`}
-                  value={inv.status || 'Chờ xác nhận'}
+                  className={`status-select ${inv.status === 'Cancelled' ? 'canceled' : inv.status === 'Completed' ? 'success' : 'pending'}`}
+                  value={inv.status || 'Pending'}
                   onChange={(e) => handleStatusChange(inv, e.target.value)}
                 >
-                  <option value="Chờ xác nhận">Chờ xác nhận</option>
-                  <option value="Đang giao hàng">Đang giao hàng</option>
-                  <option value="Hoàn tất">Hoàn tất</option>
-                  <option value="Đã hủy">Đã hủy</option>
+                  <option value="Pending">Pending (Chờ xác nhận)</option>
+                  <option value="Completed">Completed (Hoàn tất)</option>
+                  <option value="Cancelled">Cancelled (Đã hủy)</option>
                 </select>
               </td>
 
@@ -262,7 +266,6 @@ const AdminInvoices = () => {
             <div className="modal-body">
               <div className="invoice-meta">
                 <p><strong>Khách hàng:</strong> {getUserName(selectedInvoice.customerid)}</p>
-                {/* ĐÃ CẬP NHẬT: Dùng hàm formatOrderDate */}
                 <p><strong>Ngày đặt:</strong> {formatOrderDate(selectedInvoice.date)}</p>
                 <p><strong>Thanh toán:</strong> {selectedInvoice.ispaid ? <span style={{color: '#28a745'}}><i className="bi bi-check-circle-fill"></i> Đã thanh toán</span> : <span style={{color: '#dc3545'}}><i className="bi bi-x-circle-fill"></i> Chưa thanh toán</span>} ({selectedInvoice.paymentmethod})</p>
                 <p><strong>Tổng tiền:</strong> <span style={{ color: 'red', fontWeight: 'bold' }}>{formatPrice(selectedInvoice.totalprice)}</span></p>

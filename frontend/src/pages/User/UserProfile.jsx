@@ -6,6 +6,7 @@ import './UserProfile.css';
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]); // State để lưu danh sách SP (hiển thị tên)
   const [searchQuery, setSearchQuery] = useState('');
   
   // Dành cho Modal Chi tiết Đơn hàng
@@ -21,18 +22,30 @@ const UserProfile = () => {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       fetchUserOrders(parsedUser.userId);
+      fetchProducts(); // Gọi API lấy sản phẩm
     }
   }, []);
 
-  const fetchUserOrders = async (userId) => {
+  const fetchProducts = async () => {
     try {
-      // Gọi API lấy TẤT CẢ hóa đơn, sau đó Frontend tự lọc theo userId của người đang đăng nhập
-      const res = await fetch(`${API_URL}/invoice/all`);
+      const res = await fetch(`${API_URL}/products`);
       if (res.ok) {
         const data = await res.json();
-        // Lưu ý: Đảm bảo trường chứa id user từ API là userid hoặc userId
-        const myOrders = data.filter(order => order.userid === userId || order.userId === userId);
-        setOrders(myOrders);
+        setProducts(data);
+      }
+    } catch (error) {
+      console.error('Lỗi tải sản phẩm:', error);
+    }
+  };
+
+  const fetchUserOrders = async (userId) => {
+    try {
+      const res = await fetch(`${API_URL}/invoices`);
+      if (res.ok) {
+        const data = await res.json();
+        // ĐÃ SỬA: Lọc đúng trường customerid theo Backend
+        const myOrders = data.filter(order => String(order.customerid) === String(userId));
+        setOrders(myOrders.reverse()); // Đơn mới lên đầu
       }
     } catch (error) {
       console.error("Lỗi lấy đơn hàng:", error);
@@ -43,11 +56,9 @@ const UserProfile = () => {
     setSelectedOrder(order);
     setIsLoadingDetails(true);
     try {
-      // Gọi API lấy chi tiết của hóa đơn này
-      const res = await fetch(`${API_URL}/invoiceDetail/getById/${order.id}`);
+      const res = await fetch(`${API_URL}/invoiceDetails/${order.id}`);
       if (res.ok) {
         const data = await res.json();
-        // Nếu API trả về 1 object (1 món) thì biến thành mảng, nếu trả về mảng thì giữ nguyên
         setOrderDetails(Array.isArray(data) ? data : [data]);
       } else {
         setOrderDetails([]);
@@ -64,7 +75,30 @@ const UserProfile = () => {
     setOrderDetails([]);
   };
 
-  // Logic Search: Lọc danh sách Order theo ID
+  // --- CÁC HÀM TIỆN ÍCH ---
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price || 0);
+  };
+
+  // ĐÃ THÊM: Xử lý hiển thị ngày chuẩn xác, không bị lệch giờ
+  const formatOrderDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      const datePart = dateString.split('T')[0]; 
+      const [year, month, day] = datePart.split('-');
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      return new Date(dateString).toLocaleDateString('vi-VN');
+    }
+  };
+
+  // ĐÃ THÊM: Hiển thị tên SP
+  const getProductName = (productId) => {
+    const product = products.find(p => String(p.id) === String(productId));
+    return product ? product.name : `Sản phẩm #${productId}`;
+  };
+
+  // Logic Search
   const filteredOrders = orders.filter(order => 
     order.id.toString().includes(searchQuery)
   );
@@ -128,9 +162,11 @@ const UserProfile = () => {
                   filteredOrders.map((order) => (
                     <tr key={order.id}>
                       <td className="order-id" onClick={() => handleViewOrderDetails(order)}>#{order.id}</td>
-                      <td>{order.createat ? new Date(order.createat).toLocaleDateString('vi-VN') : 'N/A'}</td>
+                      {/* ĐÃ SỬA: order.date thay vì order.createat */}
+                      <td>{formatOrderDate(order.date)}</td>
+                      {/* ĐÃ SỬA: order.totalprice thay vì order.total */}
                       <td className="order-price">
-                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total || 0)}
+                        {formatPrice(order.totalprice)}
                       </td>
                       <td>
                         <span className={`status-badge ${order.status === 'Đã hủy' ? 'canceled' : 'success'}`}>
@@ -170,26 +206,32 @@ const UserProfile = () => {
                 <table className="details-table">
                   <thead>
                     <tr>
-                      <th>Mã SP</th>
-                      <th>Số lượng</th>
+                      <th>Sản phẩm</th>
                       <th>Đơn giá</th>
+                      <th>Số lượng</th>
+                      <th>Giảm giá</th>
+                      <th>Thành tiền</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orderDetails.map((item, index) => (
                       <tr key={index}>
-                        {/* Lưu ý: Nếu DB của bạn có join lấy Tên SP thì đổi item.productid thành item.name */}
-                        <td><strong>#{item.productid}</strong></td>
+                        {/* ĐÃ THÊM: Hiện tên SP thay vì ID */}
+                        <td><strong style={{ color: '#1a73e8' }}>{getProductName(item.productid)}</strong></td>
+                        {/* ĐÃ SỬA: Dùng unitprice thay vì price */}
+                        <td>{formatPrice(item.unitprice)}</td>
                         <td>x{item.quantity}</td>
+                        <td>{item.discount}%</td>
+                        {/* ĐÃ THÊM: Tính toán thành tiền có kèm discount */}
                         <td style={{ color: '#e50000', fontWeight: 'bold' }}>
-                          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price || 0)}
+                          {formatPrice(item.quantity * item.unitprice * (1 - (item.discount || 0)/100))}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <p style={{ textAlign: 'center', padding: '2vw', color: 'red' }}>Đơn hàng này bị lỗi rỗng sản phẩm hoặc chưa có dữ liệu chi tiết.</p>
+                <p style={{ textAlign: 'center', padding: '2vw', color: 'red' }}>Đơn hàng này hiện chưa có sản phẩm nào!</p>
               )}
             </div>
           </div>

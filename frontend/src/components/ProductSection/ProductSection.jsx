@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        const res = await fetch(`${API_URL}/image/product/${product.id}`);
+        const res = await fetch(`${API_URL}/images/product/${product.id}`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {
@@ -91,7 +91,7 @@ const ProductSection = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_URL}/product/getAllProducts`);
+        const response = await fetch(`${API_URL}/products`);
         if (!response.ok) throw new Error('Lỗi khi tải dữ liệu');
         const data = await response.json();
         setProducts(data);

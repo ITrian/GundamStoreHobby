@@ -16,7 +16,7 @@ const ClientLayout = ({ children }) => {
     // 1. Fetch Categories
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${API_URL}/category/all`); 
+        const response = await fetch(`${API_URL}/categories`); 
         if (!response.ok) throw new Error('Lỗi tải danh mục');
         const data = await response.json();
         setCategories(data);

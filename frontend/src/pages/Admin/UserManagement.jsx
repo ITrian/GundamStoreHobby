@@ -31,7 +31,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_URL}/user/getallUser`);
+      const res = await fetch(`${API_URL}/users`);
       if (!res.ok) throw new Error("Lỗi tải danh sách người dùng");
       const data = await res.json();
       setUsers(data);
@@ -71,8 +71,8 @@ const UserManagement = () => {
 
     const isEditMode = !!formData.id;
     const url = isEditMode 
-      ? `${API_URL}/user/updateUser/${formData.id}` 
-      : `${API_URL}/user/registerUser`;
+      ? `${API_URL}/users/${formData.id}` 
+      : `${API_URL}/users`;
     
     const method = isEditMode ? 'PUT' : 'POST';
 
