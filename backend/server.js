@@ -8,10 +8,23 @@ const {
   updateCategory,
 } = require("./route/category");
 
+const {
+  addInvoice,
+  updateInvoice,
+  deleteInvoice,
+  getInvoiceById,
+  getAllInvoice,
+} = require("./route/invoice");
+
+const {
+  addInvoiceDetail,
+  updateInvoiceDetail,
+  deleteInvoiceDetail,
+  getInvoiceDetailById,
+} = require("./route/invoiceDetail");
+
 const productRoutes = require("./routes/productRoutes");
 const imageRoutes = require("./routes/imageRoutes");
-const invoiceRoutes = require("./routes/invoiceRoutes");
-const invoiceDetailRoutes = require("./routes/invoiceDetailRoutes");
 
 const userController = require("./route/user");
 
@@ -113,10 +126,19 @@ app.get("/user/getallUser", userController.getAllUsers);
 app.post("/user/registerUser", userController.registerUser);
 app.put("/user/updateUser/:id", userController.updateUser);
 
+app.post("/invoice/insert", addInvoice);
+app.get("/invoice/all", getAllInvoice);
+app.get("/invoice/:id", getInvoiceById);
+app.delete("/invoice/delete/:id", deleteInvoice);
+app.patch("/invoice/update", updateInvoice);
+
+app.post("/invoiceDetail/add", addInvoiceDetail);
+app.patch("/invoiceDetail/update", updateInvoiceDetail);
+app.delete("/invoiceDetail/delete/:id", deleteInvoiceDetail);
+app.get("/invoiceDetail/getById/:id", getInvoiceDetailById);
+
 app.use("/product", productRoutes);
 app.use("/image", imageRoutes);
-app.use("/invoice", invoiceRoutes);
-app.use("/invoiceDetail", invoiceDetailRoutes);
 
 app.post("/account/login", accountController.login);
 app.post("/account/logout", accountController.logout);
