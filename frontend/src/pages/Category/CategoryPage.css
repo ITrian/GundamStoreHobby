@@ -52,6 +52,13 @@
   font-size: 14px;
   background: white;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn.active, .filter-btn:hover {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
 }
 
 .cat-product-grid {

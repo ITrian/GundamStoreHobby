@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import './CategoryPage.css';
@@ -61,6 +61,13 @@ const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // States for filter and sort
+  const [sortOption, setSortOption] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+
+  // Common brands to display in sidebar
+  const brandList = ['Bandai', 'emperor', 'Nuke Matrix', 'WOLF MODEL', 'LUNAVOR', 'Form Owner'];
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -96,6 +103,42 @@ const CategoryPage = () => {
     ? { name: 'Tất cả sản phẩm' } 
     : categories.find(c => c.id.toString() === categoryId);
 
+  // Xử lý logic sắp xếp và lọc ngay tại Frontend
+  const processedProducts = useMemo(() => {
+    let result = [...products];
+
+    // Lọc theo Hãng sản xuất bằng cách match chuỗi tên (do DB có thể chưa tách riêng trường brand)
+    if (selectedBrands.length > 0) {
+      result = result.filter(p => {
+        const pName = (p.name || '').toLowerCase();
+        return selectedBrands.some(brand => pName.includes(brand.toLowerCase()));
+      });
+    }
+
+    // Sắp xếp
+    switch (sortOption) {
+      case 'name_asc':
+        result.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name_desc':
+        result.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'price_asc':
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_desc':
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        // Giả sử id lớn hơn là mới hơn
+        result.sort((a, b) => b.id - a.id);
+        break;
+      default:
+        break;
+    }
+    return result;
+  }, [products, sortOption, selectedBrands]);
+
   return (
     <ClientLayout>
       <div className="category-page-container">
@@ -108,11 +151,11 @@ const CategoryPage = () => {
             <div className="category-header">
               <h2>{currentCategory ? currentCategory.name : 'Sản phẩm'}</h2>
               <div className="category-filters">
-                <span className="filter-btn">Tên A &rarr; Z</span>
-                <span className="filter-btn">Tên Z &rarr; A</span>
-                <span className="filter-btn">Giá tăng dần</span>
-                <span className="filter-btn">Giá giảm dần</span>
-                <span className="filter-btn">Mới nhất</span>
+                <span className={`filter-btn ${sortOption === 'name_asc' ? 'active' : ''}`} onClick={() => setSortOption('name_asc')}>Tên A &rarr; Z</span>
+                <span className={`filter-btn ${sortOption === 'name_desc' ? 'active' : ''}`} onClick={() => setSortOption('name_desc')}>Tên Z &rarr; A</span>
+                <span className={`filter-btn ${sortOption === 'price_asc' ? 'active' : ''}`} onClick={() => setSortOption('price_asc')}>Giá tăng dần</span>
+                <span className={`filter-btn ${sortOption === 'price_desc' ? 'active' : ''}`} onClick={() => setSortOption('price_desc')}>Giá giảm dần</span>
+                <span className={`filter-btn ${sortOption === 'newest' ? 'active' : ''}`} onClick={() => setSortOption('newest')}>Mới nhất</span>
               </div>
             </div>
 
@@ -120,10 +163,10 @@ const CategoryPage = () => {
               <p>Đang tải...</p>
             ) : (
               <div className="cat-product-grid">
-                {products.length > 0 ? (
-                  products.map(p => <CategoryProductCard key={p.id} product={p} />)
+                {processedProducts.length > 0 ? (
+                  processedProducts.map(p => <CategoryProductCard key={p.id} product={p} />)
                 ) : (
-                  <p>Không có sản phẩm nào trong danh mục này.</p>
+                  <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '20px' }}>Không tìm thấy sản phẩm phù hợp với bộ lọc.</p>
                 )}
               </div>
             )}
@@ -133,10 +176,20 @@ const CategoryPage = () => {
             <div className="sidebar-box">
               <h3>Hãng sản xuất</h3>
               <ul className="brand-list">
-                {['emperor', 'Nuke Matrix', 'WOLF MODEL', 'LUNAVOR', 'Form Owner'].map(brand => (
+                {brandList.map(brand => (
                   <li key={brand}>
                     <label>
-                      <input type="checkbox" /> {brand}
+                      <input 
+                        type="checkbox" 
+                        checked={selectedBrands.includes(brand)}
+                        onChange={() => {
+                          setSelectedBrands(prev => 
+                            prev.includes(brand)
+                              ? prev.filter(b => b !== brand)
+                              : [...prev, brand]
+                          );
+                        }}
+                      /> {brand}
                     </label>
                   </li>
                 ))}
