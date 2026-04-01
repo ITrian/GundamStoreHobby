@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProductSection.css';
+import { useCart } from '../../contexts/CartContext';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate(); 
+  const { addToCart } = useCart();
   const defaultPlaceholder = `https://via.placeholder.com/400x400/f0f0f0/333333?text=${product.name.replace(/ /g, '+')}`;
   
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
@@ -49,8 +51,7 @@ const ProductCard = ({ product }) => {
   // --- HÀM XỬ LÝ NÚT MUA NGAY ---
   const handleBuyNow = (e) => {
     e.stopPropagation(); // QUAN TRỌNG: Ngăn không cho sự kiện click lan ra thẻ cha, tránh bị chuyển trang
-    alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
-    // Sau này sẽ viết logic gọi API giỏ hàng ở đây
+    addToCart(product, 1);
   };
 
   return (

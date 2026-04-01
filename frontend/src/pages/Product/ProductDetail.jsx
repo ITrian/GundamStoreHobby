@@ -6,10 +6,12 @@ import 'swiper/css';
 import 'swiper/css/autoplay';
 import { Autoplay } from 'swiper/modules';
 import './ProductDetail.css';
+import { useCart } from '../../contexts/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
@@ -210,7 +212,7 @@ const ProductDetail = () => {
             <button 
               className={`action-btn ${isOutOfStock ? 'out-of-stock' : 'add-to-cart'}`}
               disabled={isOutOfStock}
-              onClick={() => alert(`Đã thêm ${product.name} vào giỏ hàng!`)}
+              onClick={() => addToCart(product, 1)}
             >
               {isOutOfStock ? 'HẾT HÀNG' : 'THÊM VÀO GIỎ HÀNG'}
             </button>

@@ -2,7 +2,7 @@
    BASE LAYOUT & MOBILE FIRST
    ========================================= */
 #root {
-  theme-color: white;
+  background-color: white;
   padding: 0 !important;
   max-width: 100vw;
 }

@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../../pages/Home/HomePage.css';
+import { useCart } from '../../contexts/CartContext';
+import SideCart from '../../components/SideCart/SideCart';
 
 import logoImg from '../../assets/Theliems.jpg';
 
 const ClientLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [user, setUser] = useState(null); // State lưu thông tin user đăng nhập
+  const [user, setUser] = useState(null); 
+  const { cartCount, setIsSideCartOpen } = useCart();
   
   const navigate = useNavigate();
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
   useEffect(() => {
-    // 1. Fetch Categories
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${API_URL}/categories`); 
@@ -26,7 +28,6 @@ const ClientLayout = ({ children }) => {
     };
     fetchCategories();
 
-    // 2. Lấy thông tin user từ localStorage nếu đã đăng nhập
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
@@ -37,11 +38,10 @@ const ClientLayout = ({ children }) => {
     }
   }, []);
 
-  // Hàm xử lý Đăng xuất
   const handleLogout = () => {
-    localStorage.removeItem('user'); // Xóa thông tin lưu trữ
-    setUser(null); // Xóa state
-    navigate('/'); // Đá về trang chủ
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/');
   };
 
   return (
@@ -58,24 +58,20 @@ const ClientLayout = ({ children }) => {
           <div className="header-actions">
             
             {user ? (
-              // ĐÃ SỬA: Bọc bằng thẻ Link thay vì thẻ Div
               <div className="action-item hide-on-mobile no-underline">
                 <Link to="/profile" className="icon" style={{ color: '#e50000', textDecoration: 'none' }}>
                   <i className="bi bi-person-check-fill"></i>
                 </Link>
                 <div className="action-text">
-                  {/* Link dẫn đến Profile */}
                   <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '0.2vw' }}>
                     {user.name || user.username}
                   </Link>
-                  {/* Link dẫn đến Logout */}
                   <Link to="/logout" style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none' }}>
                     Đăng xuất
                   </Link>
                 </div>
               </div>
             ) : (
-              // Nếu CHƯA đăng nhập -> Hiện nút Đăng nhập
               <Link to="/login" className="action-item hide-on-mobile no-underline">
                 <span className="icon"><i className="bi bi-person-circle"></i></span>
                 <div className="action-text">
@@ -85,9 +81,9 @@ const ClientLayout = ({ children }) => {
               </Link>
             )}
 
-            <div className="action-item cart-item">
+            <div className="action-item cart-item" onClick={() => setIsSideCartOpen(true)} style={{ cursor: 'pointer' }}>
               <span className="icon"><i className="bi bi-cart3"></i></span>
-              <span className="cart-count">0</span>
+              <span className="cart-count">{cartCount}</span>
             </div>
           </div>
         </div>
@@ -105,11 +101,12 @@ const ClientLayout = ({ children }) => {
           </button>
           
           <ul className="nav-links hide-on-mobile">
-            <li><Link to="#" >TẤT CẢ SẢN PHẨM</Link></li>
+            <li><Link to="/collections/all" >TẤT CẢ SẢN PHẨM</Link></li>
             {categories.map((cat) => (
-              <li key={cat.id}>{cat.name.toUpperCase()}</li>
+              <li key={cat.id}>
+                <Link to={`/collections/${cat.id}`} style={{color: 'inherit', textDecoration: 'none'}}>{cat.name.toUpperCase()}</Link>
+              </li>
             ))}
-            {/* Nút ẩn: Nếu là Admin mới hiện link vào trang Quản trị */}
             {user && user.isAdmin && (
               <li><Link to="/admin" >VÀO TRANG ADMIN</Link></li>
             )}
@@ -122,12 +119,10 @@ const ClientLayout = ({ children }) => {
         </div>
       </nav>
 
-      {/* --- SIDEBAR CHO MOBILE --- */}
       <div className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           
-          {/* KIỂM TRA ĐĂNG NHẬP Ở SIDEBAR */}
           {user ? (
              <div className="action-text">
                 <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '1vw' }}>
@@ -149,15 +144,15 @@ const ClientLayout = ({ children }) => {
           </button>
         </div>
         <ul className="sidebar-menu">
-          <li>TẤT CẢ SẢN PHẨM</li>
+          <li><Link to="/collections/all" style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>TẤT CẢ SẢN PHẨM</Link></li>
           {categories.map((cat) => (
             <li key={`side-${cat.id}`}>
-              {cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i>
+              <Link to={`/collections/${cat.id}`} style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
             </li>
           ))}
           <li>KIỂM TRA ĐƠN HÀNG</li>
           {user && user.isAdmin && (
-            <li><Link to="/admin" style={{ color: '#e50000', textDecoration: 'none' }}>→ QUẢN TRỊ ADMIN</Link></li>
+            <li><Link to="/admin" style={{ color: '#e50000', textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>→ QUẢN TRỊ ADMIN</Link></li>
           )}
         </ul>
       </aside>
@@ -165,6 +160,8 @@ const ClientLayout = ({ children }) => {
       <main className="main-content layout-bg">
         {children}
       </main>
+      
+      <SideCart />
 
       <footer className="main-footer">
         <div className="footer-columns">
