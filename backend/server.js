@@ -2,7 +2,7 @@ const express = require('express');
 
 const pool = require("./db");
 
-pool.connect();
+const PORT = process.env.PORT || 3000;
 
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
@@ -16,6 +16,7 @@ app.use("/categories", categoryRoutes);
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
+
 
 
 app.listen(PORT, () => {
