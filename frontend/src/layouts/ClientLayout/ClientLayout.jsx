@@ -11,8 +11,17 @@ const ClientLayout = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState(null); 
   const { cartCount, setIsSideCartOpen } = useCart();
+  const [searchQuery, setSearchQuery] = useState('');
   
   const navigate = useNavigate();
+  
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/collections/all?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
   useEffect(() => {
@@ -88,10 +97,15 @@ const ClientLayout = ({ children }) => {
           </div>
         </div>
 
-        <div className="search-bar">
-          <input type="text" placeholder="Tìm theo tên sản phẩm..." />
-          <button className="search-btn"><i className="bi bi-search"></i></button>
-        </div>
+        <form className="search-bar" onSubmit={handleSearchSubmit}>
+          <input 
+            type="text" 
+            placeholder="Tìm theo tên sản phẩm..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="submit" className="search-btn"><i className="bi bi-search"></i></button>
+        </form>
       </header>
 
       <nav className="main-nav">

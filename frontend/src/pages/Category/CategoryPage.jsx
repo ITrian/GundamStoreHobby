@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import './CategoryPage.css';
 import { useCart } from '../../contexts/CartContext';
@@ -65,6 +65,11 @@ const CategoryPage = () => {
   const [sortOption, setSortOption] = useState('');
   const [selectedBrands, setSelectedBrands] = useState([]);
 
+  // Lấy parameter search từ URL
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchKeyword = searchParams.get('search') || '';
+
   // Common brands to display in sidebar
   const brandList = ['Bandai', 'emperor', 'Nuke Matrix', 'WOLF MODEL', 'LUNAVOR', 'Form Owner'];
 
@@ -99,13 +104,19 @@ const CategoryPage = () => {
     fetchData();
   }, [categoryId]);
 
-  const currentCategory = categoryId === 'all' 
-    ? { name: 'Tất cả sản phẩm' } 
-    : categories.find(c => c.id.toString() === categoryId);
+  const currentCategoryName = searchKeyword 
+    ? `Kết quả tìm kiếm cho: "${searchKeyword}"`
+    : (currentCategory ? currentCategory.name : 'Sản phẩm');
 
   // Xử lý logic sắp xếp và lọc ngay tại Frontend
   const processedProducts = useMemo(() => {
     let result = [...products];
+
+    // Lọc theo keyword text (từ thanh search)
+    if (searchKeyword) {
+      const keywordLower = searchKeyword.toLowerCase();
+      result = result.filter(p => (p.name || '').toLowerCase().includes(keywordLower));
+    }
 
     // Lọc theo Hãng sản xuất bằng cách match chuỗi tên (do DB có thể chưa tách riêng trường brand)
     if (selectedBrands.length > 0) {
@@ -137,7 +148,7 @@ const CategoryPage = () => {
         break;
     }
     return result;
-  }, [products, sortOption, selectedBrands]);
+  }, [products, sortOption, selectedBrands, searchKeyword]);
 
   return (
     <ClientLayout>
@@ -149,7 +160,7 @@ const CategoryPage = () => {
         <div className="category-content-wrapper">
           <div className="category-main">
             <div className="category-header">
-              <h2>{currentCategory ? currentCategory.name : 'Sản phẩm'}</h2>
+              <h2>{currentCategoryName}</h2>
               <div className="category-filters">
                 <span className={`filter-btn ${sortOption === 'name_asc' ? 'active' : ''}`} onClick={() => setSortOption('name_asc')}>Tên A &rarr; Z</span>
                 <span className={`filter-btn ${sortOption === 'name_desc' ? 'active' : ''}`} onClick={() => setSortOption('name_desc')}>Tên Z &rarr; A</span>
