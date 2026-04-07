@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import bcrypt from 'bcryptjs'; // ĐÃ THÊM: Thư viện so sánh mật khẩu mã hóa
 import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import './Login.css';
 
@@ -15,28 +16,60 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrorMsg(''); // Xóa lỗi cũ nếu có
+    setErrorMsg(''); 
 
     try {
-      const response = await fetch(`${API_URL}/users`);
-      if (!response.ok) {
-        throw new Error('Không thể lấy danh sách người dùng');
+      // 1. Gọi API kiểm tra Tên đăng nhập
+      const accountRes = await fetch(`${API_URL}/accounts/${username}`);
+      
+      if (accountRes.status === 404) {
+        setErrorMsg('Tên đăng nhập không tồn tại!');
+        setIsLoading(false);
+        return;
       }
-      const users = await response.json();
+      
+      if (!accountRes.ok) throw new Error('Lỗi máy chủ khi xác thực');
+      
+      const rawData = await accountRes.json();
+      const accountInfo = Array.isArray(rawData) ? rawData[0] : rawData;
 
-      const matchedUser = users.find(
-        (u) => u.email === username || u.name?.toLowerCase() === username.toLowerCase()
-      );
-
-      if (!matchedUser) {
-        setErrorMsg('Tên đăng nhập không tồn tại');
+      if (!accountInfo) {
+        setErrorMsg('Tên đăng nhập không tồn tại!');
         setIsLoading(false);
         return;
       }
 
-      // Backend mới không lưu password, đăng nhập dựa trên email/name
-      localStorage.setItem('user', JSON.stringify(matchedUser));
-      navigate('/');
+      // ĐÃ SỬA CHÍNH TẠI ĐÂY: Dùng bcrypt để so sánh mật khẩu thường và mật khẩu mã hóa (hash)
+      const isPasswordMatch = bcrypt.compareSync(password, accountInfo.password);
+
+      if (!isPasswordMatch) {
+        setErrorMsg('Sai mật khẩu! Vui lòng thử lại.');
+        setIsLoading(false);
+        return;
+      }
+
+      // 3. Mật khẩu ĐÚNG -> Lấy thông tin chi tiết User
+      const userRes = await fetch(`${API_URL}/users`);
+      if (!userRes.ok) throw new Error('Không thể lấy danh sách hồ sơ người dùng');
+      
+      const usersData = await userRes.json();
+      const matchedUser = usersData.find(u => String(u.id) === String(accountInfo.userid));
+
+      if (!matchedUser) {
+        setErrorMsg('Lỗi dữ liệu: Tài khoản chưa được liên kết với hồ sơ người dùng!');
+        setIsLoading(false);
+        return;
+      }
+
+      // 4. Lưu vào localStorage và đá về trang chủ
+      const userInfoToSave = {
+        ...matchedUser,
+        userId: matchedUser.id, 
+        username: accountInfo.username 
+      };
+
+      localStorage.setItem('user', JSON.stringify(userInfoToSave));
+      navigate('/'); 
 
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
@@ -56,7 +89,6 @@ const Login = () => {
               Bạn chưa có tài khoản ? <br/><Link to="/register" className="register-link">Đăng ký tại đây</Link>
             </p>
 
-            {/* Hiển thị lỗi từ API */}
             {errorMsg && <div className="error-message">{errorMsg}</div>}
 
             <form onSubmit={handleLogin} className="login-form">

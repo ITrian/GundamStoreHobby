@@ -65,6 +65,7 @@
 
 .login-container .form-group {
   margin-bottom: 1.5vw;
+  display: unset!important;
 }
 
 .login-container .form-group label {

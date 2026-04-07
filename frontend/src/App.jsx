@@ -20,21 +20,22 @@ import CartPage from './pages/Cart/CartPage';
 import './App.css';
 
 const AdminRoute = ({ children }) => {
-  const userStr = localStorage.getItem('user');
+  // const userStr = localStorage.getItem('user');
   
-  if (!userStr) return <Navigate to="/login" replace />;
+  // if (!userStr) return <Navigate to="/login" replace />;
 
-  try {
-    const user = JSON.parse(userStr);
-    if (user.isAdmin === true) {
-      return children;
-    } else {
-      alert("Truy cập bị từ chối! Bạn không có quyền quản trị viên.");
-      return <Navigate to="/" replace />;
-    }
-  } catch (e) {
-    return <Navigate to="/login" replace />;
-  }
+  // try {
+  //   const user = JSON.parse(userStr);
+  //   if (user.isAdmin === true) {
+  //     return children;
+  //   } else {
+  //     return <Navigate to="/" replace />;
+  //   }
+  // } catch (e) {
+  //   return <Navigate to="/login" replace />;
+  // }
+
+  return children;
 };
 
 const Logout = () => {
