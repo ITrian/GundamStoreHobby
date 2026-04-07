@@ -9,6 +9,7 @@ const initInvoiceDetail = require("./invoiceDetail");
 const initProduct = require("./product");
 const initUser = require("./user");
 const initPhone = require("./phone");
+const initToken = require("./token");
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -36,6 +37,7 @@ const invoiceDetail = initInvoiceDetail(sequelize);
 const product = initProduct(sequelize);
 const user = initUser(sequelize);
 const phone = initPhone(sequelize);
+const token = initToken(sequelize);
 
 invoice.hasMany(invoiceDetail, { foreignKey: "invoiceid" });
 invoiceDetail.belongsTo(invoice, { foreignKey: "invoiceid" });
@@ -62,4 +64,5 @@ module.exports = {
   product,
   user,
   phone,
+  token,
 };

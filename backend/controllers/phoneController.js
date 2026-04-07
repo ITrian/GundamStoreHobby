@@ -1,4 +1,4 @@
-﻿const phoneService = require('../services/phoneService');
+const phoneService = require('../services/phoneService');
 
 const getAll = async (req, res) => {
     try {
@@ -12,7 +12,7 @@ const getAll = async (req, res) => {
 const getById = async (req, res) => {
     try {
         const phone = await phoneService.getById(req.params.id);
-        if (!phone) return res.status(404).json({ error: 'Khong tim thay so dien thoai' });
+        if (!phone) return res.status(404).json({ error: "Không tìm thấy số điện thoại" });
         res.json(phone);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ const edit = async (req, res) => {
         const { userId } = req.params;
         const { phoneNumber } = req.body;
         const updatedPhone = await phoneService.edit(userId, phoneNumber);
-        if (!updatedPhone) return res.status(404).json({ error: 'Khong tim thay so dien thoai' });
+        if (!updatedPhone) return res.status(404).json({ error: "Không tìm thấy số điện thoại" });
         res.json(updatedPhone);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -46,8 +46,8 @@ const deleteNumber = async (req, res) => {
         const { userId } = req.params;
         const { phoneNumber } = req.body;
         const deletedPhone = await phoneService.deleteNumber(userId, phoneNumber);
-        if (!deletedPhone) return res.status(404).json({ error: 'Khong tim thay so dien thoai' });
-        res.json({ message: 'Xoa so dien thoai thanh cong' });
+        if (!deletedPhone) return res.status(404).json({ error: "Không tìm thấy số điện thoại" });
+        res.json({ message: "Xóa số điện thoại thành công" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
