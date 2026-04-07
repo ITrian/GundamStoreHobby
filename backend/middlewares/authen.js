@@ -20,7 +20,7 @@ const authenticateToken = async (req, res, next) => {
         if (!storedToken || storedToken.isrevoked) return res.sendStatus(403);
 
         const newPayload = { userid: payload.userid, username: payload.username, isactived: payload.isactived };
-        const accessToken = jwt.sign(newPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1m" });
+        const accessToken = jwt.sign(newPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
         res.setHeader("Authorization", "Bearer " + accessToken);
         req.payload = payload;
         console.log("Token đã được làm mới");
