@@ -28,7 +28,7 @@ const SessionManager = ({ children }) => {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        const isExpired = payload.exp * 15000 < Date.now();
+        const isExpired = payload.exp * 1000 < Date.now();
         
         if (isExpired) {
           alert('Phiên đăng nhập của bạn đã hết hạn. Hệ thống sẽ tự động đăng xuất để bảo mật!'+ payload.exp * 1000);
