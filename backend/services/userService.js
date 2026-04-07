@@ -4,6 +4,11 @@ const getAll = async () => {
     return await userRepository.findAll();
 };
 
+const getById = async (id) => {
+    if (!id) throw new Error("Thiếu ID người dùng");
+    return await userRepository.findById(id);
+}
+
 const add = async (name, dateofbirth, email, address, isadmin) => {
     if (!name || !dateofbirth || !email || !address || isadmin === undefined) {
         throw new Error("Thiếu dữ liệu người dùng");
@@ -23,4 +28,4 @@ const deleteById = async (id) => {
     return await userRepository.remove(id);
 };
 
-module.exports = { getAll, add, update, deleteById };
+module.exports = { getAll, getById, add, update, deleteById };

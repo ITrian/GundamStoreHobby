@@ -4,6 +4,10 @@ const findAll = async () => {
     return await User.findAll();
 };
 
+const findById = async (id) => {
+    return await User.findByPk(id);
+};
+
 const create = async ( name, dateofbirth, email, address, isadmin ) => {
     return await User.create({ name, dateofbirth, email, address, isadmin });
 };
@@ -30,4 +34,4 @@ const remove = async (id) => {
     return user;
 }
 
-module.exports = { findAll, create, update, remove };
+module.exports = { findAll, findById, create, update, remove };
