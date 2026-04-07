@@ -66,9 +66,10 @@ const login = async (req, res) => {
     try {
         if (await bcrypt.compare(password, account.password)) {
             const payload = { userid: account.userid, username: account.username, isactived: account.isactived };
-            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m" });
-            const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-            await tokenService.create(account.userid, refreshToken, new Date(), new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), false);
+            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1m" });
+            const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "5m" });
+            await tokenService.create(account.userid, refreshToken, new Date(), new Date(Date.now() + 5 * 60 * 1000), false);
+            //7 * 24 * 60 * 60 * 1000
             res.json({ accessToken: accessToken, refreshToken: refreshToken});
         } else {
             res.json({ error: "Sai mật khẩu"});
