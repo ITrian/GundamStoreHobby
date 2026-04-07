@@ -1,8 +1,8 @@
 const tokenRepository = require("../repositories/tokenRepository");
 
-const create = async (userid, token, issuedAt, expiresAt, isRevoke) => {
-    if (!userid || !token || !issuedAt || !expiresAt) throw new Error("Thiếu thông tin cần thiết để tạo token");
-    return await tokenRepository.create(userid, token, issuedAt, expiresAt, isRevoke);
+const create = async (username, token, issuedAt, expiresAt, isRevoke) => {
+    if (!username || !token || !issuedAt || !expiresAt) throw new Error("Thiếu thông tin cần thiết để tạo token");
+    return await tokenRepository.create(username, token, issuedAt, expiresAt, isRevoke);
 };
 
 const findByToken = async (token) => {

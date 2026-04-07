@@ -1,7 +1,7 @@
 const { token : Token } = require("../models");
 
-const create = async (userid, token, issuedat, expiresat, isrevoked) => {
-    return await Token.create({ userid, token, issuedat, expiresat, isrevoked });
+const create = async (username, token, issuedat, expiresat, isrevoked) => {
+    return await Token.create({ username, token, issuedat, expiresat, isrevoked });
 };
 
 const findByToken = async (token) => {

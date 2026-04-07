@@ -3,7 +3,7 @@ const router = express.Router();
 const categoryController = require("../controllers/categoryController");
 const authenticate = require("../middlewares/authen");
 
-router.get("/", authenticate.authenticateToken, categoryController.getAllCategories);
+router.get("/", categoryController.getAllCategories);
 router.post("/", authenticate.authenticateToken, categoryController.addCategory);
 router.put("/:id", authenticate.authenticateToken, categoryController.updateCategory);
 router.delete("/:id", authenticate.authenticateToken, categoryController.deleteCategory);
