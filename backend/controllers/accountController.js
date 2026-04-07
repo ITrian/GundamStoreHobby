@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const getAll = async (req, res) => {
-    console.log(req.account);
     try {
         const accounts = await accountService.getAll();
         res.json(accounts);
