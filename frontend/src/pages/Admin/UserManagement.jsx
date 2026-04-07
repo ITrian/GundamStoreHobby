@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Thêm import này
+import { useNavigate } from 'react-router-dom';
 import './UserManagement.css'; 
 
 const UserManagement = () => {
@@ -7,7 +7,7 @@ const UserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const navigate = useNavigate(); // Khởi tạo navigate
+  const navigate = useNavigate(); 
 
   const [formData, setFormData] = useState({
     id: null,
@@ -31,7 +31,10 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_URL}/users`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (!res.ok) throw new Error("Lỗi tải danh sách người dùng");
       const data = await res.json();
       setUsers(data);
@@ -75,21 +78,45 @@ const UserManagement = () => {
       : `${API_URL}/users`;
     
     const method = isEditMode ? 'PUT' : 'POST';
+    const token = localStorage.getItem('accessToken');
 
     const payload = isEditMode 
-      ? { name: formData.name, dateofbirth: formData.dateOfBirth, email: formData.email, address: formData.address, isadmin: formData.isAdmin }
-      : { name: formData.name, dateOfBirth: formData.dateOfBirth, email: formData.email, address: formData.address, username: formData.username, password: formData.password, isadmin: formData.isAdmin };
+      ? { 
+          id: formData.id, 
+          name: formData.name, 
+          dateofbirth: formData.dateOfBirth, 
+          email: formData.email, 
+          address: formData.address, 
+          isadmin: formData.isAdmin 
+        }
+      : { 
+          name: formData.name, 
+          dateofbirth: formData.dateOfBirth, 
+          email: formData.email, 
+          address: formData.address, 
+          username: formData.username, 
+          password: formData.password, 
+          isadmin: formData.isAdmin 
+        };
 
     try {
       const res = await fetch(url, {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          showAlert("Phiên đăng nhập hết hạn hoặc không đủ quyền!");
+          setIsSubmitting(false);
+          return;
+        }
         showAlert(data.error || "Có lỗi xảy ra khi lưu!");
         setIsSubmitting(false);
         return;
@@ -106,13 +133,36 @@ const UserManagement = () => {
     }
   };
 
+  // ĐÃ SỬA: Cập nhật hàm Xóa thực tế gọi API
   const handleDeleteUser = (id) => {
-    showConfirm('Bạn có chắc chắn muốn xóa người dùng này? (Cần cập nhật API Backend để hoạt động)', async () => {
-      showAlert("Chức năng Xóa đang chờ Backend cập nhật API xóa liên kết (Account + User).");
+    showConfirm('Bạn có chắc chắn muốn xóa người dùng này? Mọi dữ liệu liên quan có thể bị ảnh hưởng.', async () => {
+      const token = localStorage.getItem('accessToken');
+      
+      try {
+        const res = await fetch(`${API_URL}/users/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            showAlert("Phiên đăng nhập hết hạn hoặc bạn không đủ quyền!");
+            return;
+          }
+          // Backend có thể chặn xóa nếu dính khóa ngoại (Foreign Key) ở bảng Account hoặc Invoice
+          showAlert("Lỗi từ server: Không thể xóa người dùng! (Có thể do người này đang có hóa đơn hoặc tài khoản liên kết)");
+          return;
+        }
+
+        showAlert("Đã xóa người dùng thành công!");
+        fetchUsers();
+      } catch (error) {
+        console.error("Lỗi khi xóa user:", error);
+        showAlert("Lỗi kết nối khi xóa người dùng!");
+      }
     });
   };
 
-  // Hàm chuyển hướng sang trang Hóa đơn và truyền Tên user để Search
   const handleGoToInvoices = (userName) => {
     navigate('/admin/invoices', { state: { searchStr: userName } });
   };
@@ -137,7 +187,6 @@ const UserManagement = () => {
         <tbody>
           {users.map(u => (
             <tr key={u.id}>
-              {/* ĐÃ SỬA: Click vào ID sẽ bay sang trang hóa đơn */}
               <td 
                 className="clickable-id" 
                 onClick={() => handleGoToInvoices(u.name)}
@@ -206,6 +255,7 @@ const UserManagement = () => {
                 <input type="text" placeholder="Nhập địa chỉ" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} disabled={isSubmitting} />
               </div>
 
+              {/* Chỉ hiện trường Nhập Username / Password nếu là Thêm Mới */}
               {!formData.id && (
                 <>
                   <hr className="modal-divider"/>

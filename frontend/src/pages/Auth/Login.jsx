@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import bcrypt from 'bcryptjs'; // ĐÃ THÊM: Thư viện so sánh mật khẩu mã hóa
+// Xóa bỏ hoàn toàn bcryptjs khỏi Frontend nhé!
 import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import './Login.css';
 
@@ -19,53 +19,63 @@ const Login = () => {
     setErrorMsg(''); 
 
     try {
-      // 1. Gọi API kiểm tra Tên đăng nhập
-      const accountRes = await fetch(`${API_URL}/accounts/${username}`);
+      const loginRes = await fetch(`${API_URL}/accounts/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
       
-      if (accountRes.status === 404) {
-        setErrorMsg('Tên đăng nhập không tồn tại!');
-        setIsLoading(false);
-        return;
-      }
-      
-      if (!accountRes.ok) throw new Error('Lỗi máy chủ khi xác thực');
-      
-      const rawData = await accountRes.json();
-      const accountInfo = Array.isArray(rawData) ? rawData[0] : rawData;
+      const loginData = await loginRes.json();
 
-      if (!accountInfo) {
-        setErrorMsg('Tên đăng nhập không tồn tại!');
+      if (!loginRes.ok) {
+        setErrorMsg(loginData.error || loginData.message || 'Sai tên đăng nhập hoặc mật khẩu!');
         setIsLoading(false);
         return;
       }
 
-      // ĐÃ SỬA CHÍNH TẠI ĐÂY: Dùng bcrypt để so sánh mật khẩu thường và mật khẩu mã hóa (hash)
-      const isPasswordMatch = bcrypt.compareSync(password, accountInfo.password);
-
-      if (!isPasswordMatch) {
-        setErrorMsg('Sai mật khẩu! Vui lòng thử lại.');
+      const token = loginData.accessToken || loginData.Authorization || loginData.token;
+      
+      if (!token) {
+        setErrorMsg('Lỗi Server: Đăng nhập thành công nhưng không nhận được Token!');
         setIsLoading(false);
         return;
       }
 
-      // 3. Mật khẩu ĐÚNG -> Lấy thông tin chi tiết User
-      const userRes = await fetch(`${API_URL}/users`);
-      if (!userRes.ok) throw new Error('Không thể lấy danh sách hồ sơ người dùng');
+      localStorage.setItem('accessToken', token);
+
+      let userIdFromToken = loginData.userid; 
+      try {
+         const payload = JSON.parse(atob(token.split('.')[1]));
+         userIdFromToken = payload.userid || userIdFromToken;
+      } catch (err) {
+         console.warn("Lưu ý: Không thể giải mã Token bằng Base64 trên Frontend.");
+      }
+      const userRes = await fetch(`${API_URL}/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!userRes.ok) throw new Error('Không thể tải danh sách hồ sơ người dùng');
       
       const usersData = await userRes.json();
-      const matchedUser = usersData.find(u => String(u.id) === String(accountInfo.userid));
+      
+      let matchedUser = usersData.find(u => String(u.id) === String(userIdFromToken));
+      
+      if (!matchedUser) {
+        matchedUser = usersData.find(u => u.username === username || u.email === username);
+      }
 
       if (!matchedUser) {
-        setErrorMsg('Lỗi dữ liệu: Tài khoản chưa được liên kết với hồ sơ người dùng!');
+        setErrorMsg('Tài khoản này chưa được liên kết với hồ sơ cá nhân!');
         setIsLoading(false);
         return;
       }
 
-      // 4. Lưu vào localStorage và đá về trang chủ
       const userInfoToSave = {
         ...matchedUser,
         userId: matchedUser.id, 
-        username: accountInfo.username 
+        username: username 
       };
 
       localStorage.setItem('user', JSON.stringify(userInfoToSave));

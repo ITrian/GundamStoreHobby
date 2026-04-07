@@ -35,7 +35,10 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/products`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/products`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       setProducts(data);
     } catch (e) { console.error(e); }
@@ -43,7 +46,10 @@ const AdminProducts = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch(`${API_URL}/categories`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/categories`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       setCategories(data);
     } catch (e) { console.error(e); }
@@ -51,8 +57,10 @@ const AdminProducts = () => {
 
   const fetchAllImages = async () => {
     try {
-      // ĐÃ SỬA
-      const res = await fetch(`${API_URL}/images`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/images`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       const data = await res.json();
       setAllImages(data);
     } catch (e) { console.error(e); }
@@ -87,9 +95,12 @@ const AdminProducts = () => {
   const handleDeleteSingleImage = (imageToDelete) => {
     showConfirm("Bạn có chắc muốn xóa ảnh này khỏi sản phẩm?", async () => {
       setIsDeletingImage(true);
+      const token = localStorage.getItem('accessToken');
       try {
-        // ĐÃ SỬA URL DELETE SINGLE IMAGE
-        const res = await fetch(`${API_URL}/images/${imageToDelete.productid}/${imageToDelete.detail}`, { method: 'DELETE' });
+        const res = await fetch(`${API_URL}/images/${imageToDelete.productid}/${imageToDelete.detail}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (!res.ok) {
           showAlert("Lỗi từ server: Không thể xóa ảnh này!");
           setIsDeletingImage(false);
@@ -112,11 +123,14 @@ const AdminProducts = () => {
     setSelectedFiles([]); 
     setPreviewUrls([]);
     setExistingImages([]); 
+    const token = localStorage.getItem('accessToken');
 
     if (product) {
       setFormData(product);
       try {
-        const res = await fetch(`${API_URL}/images/product/${product.id}`);
+        const res = await fetch(`${API_URL}/images/product/${product.id}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         const data = await res.json();
         setExistingImages(data);
       } catch(e) { console.error(e); }
@@ -135,9 +149,12 @@ const AdminProducts = () => {
 
   const handleDeleteAllOldImages = () => {
     showConfirm("Bạn có chắc muốn xóa TOÀN BỘ ảnh cũ của sản phẩm này không?", async () => {
+      const token = localStorage.getItem('accessToken');
       try {
-        // ĐÃ SỬA URL DELETE TẤT CẢ ẢNH CỦA SP
-        const res = await fetch(`${API_URL}/images/${formData.id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_URL}/images/${formData.id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (!res.ok) {
            showAlert("Lỗi từ server: Không thể xóa toàn bộ ảnh!");
            return;
@@ -155,6 +172,7 @@ const AdminProducts = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true); 
+    const token = localStorage.getItem('accessToken');
     
     const productUrl = `${API_URL}/products`;
     const productMethod = formData.id ? 'PATCH' : 'POST';
@@ -162,11 +180,19 @@ const AdminProducts = () => {
     try {
       const res = await fetch(productUrl, {
         method: productMethod,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
         body: JSON.stringify(formData)
       });
 
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          showAlert("Phiên đăng nhập hết hạn hoặc bạn không có quyền!");
+          setIsUploading(false);
+          return;
+        }
         showAlert("Lỗi khi lưu thông tin sản phẩm!");
         setIsUploading(false);
         return;
@@ -182,6 +208,7 @@ const AdminProducts = () => {
           imgbbFormData.append('image', file);
           imgbbFormData.append('name', file.name.split('.')[0]); 
 
+          // KHÔNG GẮN TOKEN Ở ĐÂY VÌ ĐÂY LÀ API CỦA IMGBB
           const imgbbRes = await fetch('https://api.imgbb.com/1/upload', {
             method: 'POST',
             body: imgbbFormData
@@ -190,10 +217,12 @@ const AdminProducts = () => {
 
           if (imgbbData.success) {
             const imageUrl = imgbbData.data.url; 
-            // ĐÃ SỬA URL INSERT ẢNH
             await fetch(`${API_URL}/images`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
               body: JSON.stringify({
                 productid: productId,
                 detail: file.name, 
@@ -221,9 +250,16 @@ const AdminProducts = () => {
 
   const handleDeleteProduct = (id) => {
     showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này?', async () => {
+      const token = localStorage.getItem('accessToken');
       try {
-        await fetch(`${API_URL}/images/${id}`, { method: 'DELETE' });
-        const res = await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/images/${id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const res = await fetch(`${API_URL}/products/${id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         
         if (!res.ok) {
           showAlert("Lỗi từ server: Không thể xóa sản phẩm!");

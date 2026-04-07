@@ -65,7 +65,6 @@ const ProductCard = ({ product }) => {
           onError={(e) => { e.target.onerror = null; e.target.src = defaultPlaceholder; }}
         />
 
-        {/* ẢNH HOVER (Mặc định ẩn, sẽ Fade in khi rẽ chuột) */}
         <img
           src={hoverImg}
           alt={`${product.name} hover`}

@@ -158,10 +158,10 @@ const ClientLayout = ({ children }) => {
           </button>
         </div>
         <ul className="sidebar-menu">
-          <li><Link to="/collections/all" style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>TẤT CẢ SẢN PHẨM</Link></li>
+          <li><Link to="/collections/all" style={{textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>TẤT CẢ SẢN PHẨM</Link></li>
           {categories.map((cat) => (
             <li key={`side-${cat.id}`}>
-              <Link to={`/collections/${cat.id}`} style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
+              <Link to={`/collections/${cat.id}`} style={{textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
             </li>
           ))}
           <li>KIỂM TRA ĐƠN HÀNG</li>
