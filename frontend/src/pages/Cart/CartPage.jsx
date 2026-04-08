@@ -46,7 +46,7 @@ const CartPage = () => {
                   <div key={item.id} className="cart-item-row">
                     <div className="col-product item-details-col">
                       <img 
-                        src={`https://via.placeholder.com/80/f0f0f0/333333?text=${(item.name || 'Sản phẩm').replace(/ /g, '+')}`} 
+                        src={`https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(item.name || 'Sản phẩm')}`} 
                         alt={item.name || 'Sản phẩm'} 
                       />
                       <span className="item-name">{item.name || 'Sản phẩm'}</span>
