@@ -104,6 +104,10 @@ const CategoryPage = () => {
     fetchData();
   }, [categoryId]);
 
+  const currentCategory = useMemo(() => {
+    return categories.find(c => c.id.toString() === categoryId);
+  }, [categories, categoryId]);
+
   const currentCategoryName = searchKeyword 
     ? `Kết quả tìm kiếm cho: "${searchKeyword}"`
     : (currentCategory ? currentCategory.name : 'Sản phẩm');

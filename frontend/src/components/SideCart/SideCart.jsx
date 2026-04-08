@@ -5,7 +5,8 @@ import './SideCart.css';
 
 // --- Component phụ: Hiển thị từng dòng sản phẩm và tự động load ảnh ---
 const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
-  const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${item.name.replace(/ /g, '+')}`;
+  const itemName = item?.name || 'Sản phẩm';
+  const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${itemName.replace(/ /g, '+')}`;
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
 
   const API_URL = 'https://gundamstorehobby.onrender.com';

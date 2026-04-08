@@ -46,10 +46,10 @@ const CartPage = () => {
                   <div key={item.id} className="cart-item-row">
                     <div className="col-product item-details-col">
                       <img 
-                        src={`https://via.placeholder.com/80/f0f0f0/333333?text=${item.name.replace(/ /g, '+')}`} 
-                        alt={item.name} 
+                        src={`https://via.placeholder.com/80/f0f0f0/333333?text=${(item.name || 'Sản phẩm').replace(/ /g, '+')}`} 
+                        alt={item.name || 'Sản phẩm'} 
                       />
-                      <span className="item-name">{item.name}</span>
+                      <span className="item-name">{item.name || 'Sản phẩm'}</span>
                     </div>
                     <div className="col-price item-price">
                       {formatPrice(item.price)}
