@@ -1,4 +1,4 @@
-﻿const accountService = require("../services/accountService");
+const accountService = require("../services/accountService");
 const tokenService = require("../services/tokenService");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");

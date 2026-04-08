@@ -27,7 +27,7 @@ const Login = () => {
       
       const loginData = await loginRes.json();
 
-      if (!loginRes.ok) {
+      if (!loginRes.ok || loginData.error) {
         setErrorMsg(loginData.error || loginData.message || 'Sai tên đăng nhập hoặc mật khẩu!');
         setIsLoading(false);
         return;
