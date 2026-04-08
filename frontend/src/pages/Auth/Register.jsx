@@ -87,8 +87,7 @@ const Register = () => {
       return;
     }
 
-    // Tách confirmPassword ra, chỉ gửi những dữ liệu Backend cần
-    const { confirmPassword, ...payload } = formData;
+    // Chỉ lấy dữ liệu Backend cần
 
     try {
       const registerPayload = {

@@ -75,9 +75,9 @@ const ClientLayout = ({ children }) => {
                   <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '0.2vw' }}>
                     {user.name || user.username}
                   </Link>
-                  <Link to="/logout" style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none' }}>
+                  <span onClick={handleLogout} style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none', cursor: 'pointer' }}>
                     Đăng xuất
-                  </Link>
+                  </span>
                 </div>
               </div>
             ) : (
@@ -142,9 +142,9 @@ const ClientLayout = ({ children }) => {
                 <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '1vw' }}>
                   <i className="bi bi-person-circle icon-mr-sm"></i> {user.name || user.username}
                 </Link>
-                <Link to="/logout" style={{ fontWeight: 'bold', color: '#e50000', textDecoration: 'none' }}>
+                <span onClick={handleLogout} style={{ fontWeight: 'bold', color: '#e50000', textDecoration: 'none', cursor: 'pointer' }}>
                   <i className="bi bi-box-arrow-right icon-mr-sm"></i> Đăng xuất
-                </Link>
+                </span>
              </div>
           ) : (
             <Link to="/login" className="sidebar-account no-underline" onClick={() => setIsSidebarOpen(false)}>

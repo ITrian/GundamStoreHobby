@@ -47,7 +47,7 @@ const Login = () => {
       try {
          const payload = JSON.parse(atob(token.split('.')[1]));
          userIdFromToken = payload.userid || userIdFromToken;
-      } catch (err) {
+      } catch {
          console.warn("Lưu ý: Không thể giải mã Token bằng Base64 trên Frontend.");
       }
       const userRes = await fetch(`${API_URL}/users`, {
