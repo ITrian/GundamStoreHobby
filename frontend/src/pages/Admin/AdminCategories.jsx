@@ -4,7 +4,7 @@ const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ id: null, name: '' });
-  
+
   const [alertDialog, setAlertDialog] = useState({ isOpen: false, message: '', type: 'info' });
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
 
@@ -50,17 +50,17 @@ const AdminCategories = () => {
     try {
       const res = await fetch(url, {
         method,
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
 
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-           showAlert("Phiên đăng nhập hết hạn hoặc bạn không có quyền thực hiện!", "error");
-           return;
+          showAlert("Phiên đăng nhập hết hạn hoặc bạn không có quyền thực hiện!", "error");
+          return;
         }
         showAlert(isEdit ? "Lỗi cập nhật danh mục từ Server!" : "Lỗi thêm danh mục từ Server!", "error");
         return;
@@ -68,7 +68,7 @@ const AdminCategories = () => {
 
       showAlert(isEdit ? "Cập nhật danh mục thành công!" : "Thêm danh mục mới thành công!", "success");
       setIsModalOpen(false);
-      fetchCategories(); 
+      fetchCategories();
     } catch (error) {
       console.error("Lỗi khi lưu danh mục:", error);
       showAlert("Lỗi kết nối đến máy chủ!", "error");
@@ -77,29 +77,29 @@ const AdminCategories = () => {
 
   const handleDelete = (id) => {
     showConfirm('Bạn có chắc chắn muốn xóa danh mục này? LƯU Ý: Nếu danh mục này đang chứa sản phẩm, hệ thống sẽ chặn không cho xóa để bảo vệ dữ liệu.', async () => {
-      
+
       // Lấy Token từ kho lưu trữ
       const token = localStorage.getItem('accessToken');
 
       try {
-        const res = await fetch(`${API_URL}/categories/${id}`, { 
+        const res = await fetch(`${API_URL}/categories/${id}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}` 
+            'Authorization': `Bearer ${token}`
           }
         });
-        
+
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
-             showAlert("Bạn không có quyền xóa hoặc phiên đăng nhập đã hết hạn!", "error");
-             return;
+            showAlert("Bạn không có quyền xóa hoặc phiên đăng nhập đã hết hạn!", "error");
+            return;
           }
           showAlert("Không thể xóa danh mục! Có thể danh mục này đang chứa sản phẩm.", "error");
           return;
         }
 
         showAlert("Đã xóa danh mục thành công!", "success");
-        fetchCategories(); 
+        fetchCategories();
       } catch (error) {
         console.error("Lỗi khi xóa danh mục:", error);
         showAlert("Lỗi kết nối khi xóa!", "error");
@@ -113,7 +113,7 @@ const AdminCategories = () => {
       <button className="btn-add" onClick={() => handleOpenModal()} style={{ marginBottom: '1.5vw' }}>
         <i className="bi bi-plus-circle" style={{ marginRight: '0.5vw' }}></i>Thêm Danh mục
       </button>
-      
+
       <table className="admin-table">
         <thead>
           <tr>
@@ -153,12 +153,12 @@ const AdminCategories = () => {
             <form onSubmit={handleSubmit}>
               <div className="form-group" style={{ marginBottom: '1.5vw' }}>
                 <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '0.5vw' }}>Tên danh mục:</label>
-                <input 
-                  type="text" 
-                  placeholder="Nhập tên danh mục (vd: MODEL KIT TRUNG)" 
-                  value={formData.name} 
-                  onChange={e => setFormData({...formData, name: e.target.value})} 
-                  required 
+                <input
+                  type="text"
+                  placeholder="Nhập tên danh mục (vd: MODEL KIT TRUNG)"
+                  value={formData.name}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  required
                   style={{ width: '100%', padding: '0.8vw', borderRadius: '0.3vw', border: '0.1vw solid #ccc', fontSize: '1vw', boxSizing: 'border-box' }}
                 />
               </div>
