@@ -3,6 +3,53 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import './CheckoutPage.css';
 
+const CheckoutItem = ({ item, formatPrice }) => {
+  const API_URL = 'https://gundamstorehobby.onrender.com';
+  const itemName = item?.name || 'Sản phẩm';
+  
+  // Safely encode the item name so it won't break the placeholder URL
+  const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(itemName)}`;
+  const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await fetch(`${API_URL}/images/product/${item.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            const thumbData = data.find(img => img.detail && img.detail.toLowerCase().includes('thumb'));
+            const finalThumb = thumbData ? thumbData.link : data[0].link;
+            setThumbImg(finalThumb);
+          }
+        }
+      } catch (error) {
+        console.error(`Lỗi tải ảnh checkout cho SP ${item.id}:`, error);
+      }
+    };
+    if (item.id) fetchImage();
+  }, [item.id]);
+
+  return (
+    <div className="ck-item">
+      <div className="ck-item-img-wrapper">
+        <img 
+          src={thumbImg} 
+          alt={item.name} 
+          onError={(e) => { e.target.onerror = null; e.target.src = defaultPlaceholder; }}
+        />
+        <span className="ck-item-qty">{item.quantity}</span>
+      </div>
+      <div className="ck-item-info">
+        <div className="ck-item-name">{item.name}</div>
+      </div>
+      <div className="ck-item-price">
+        {formatPrice(item.price * item.quantity)}
+      </div>
+    </div>
+  );
+};
+
 const CheckoutPage = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
@@ -229,21 +276,7 @@ const CheckoutPage = () => {
         
         <div className="ck-item-list">
           {cartItems.map((item, idx) => (
-            <div className="ck-item" key={idx}>
-              <div className="ck-item-img-wrapper">
-                <img 
-                  src={`https://via.placeholder.com/80/f0f0f0/333333?text=${(item.name || '').replace(/ /g, '+')}`} 
-                  alt={item.name} 
-                />
-                <span className="ck-item-qty">{item.quantity}</span>
-              </div>
-              <div className="ck-item-info">
-                <div className="ck-item-name">{item.name}</div>
-              </div>
-              <div className="ck-item-price">
-                {formatPrice(item.price * item.quantity)}
-              </div>
-            </div>
+            <CheckoutItem key={idx} item={item} formatPrice={formatPrice} />
           ))}
         </div>
 
