@@ -12,6 +12,7 @@ import AdminLayout from './layouts/AdminLayout/AdminLayout';
 import AdminProducts from './pages/Admin/AdminProducts';
 import AdminInvoices from './pages/Admin/AdminInvoices';
 import AdminCategories from './pages/Admin/AdminCategories';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductDetail from './pages/Product/ProductDetail';
 import UserProfile from './pages/User/UserProfile';
 import CategoryPage from './pages/Category/CategoryPage';
@@ -90,11 +91,12 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
 
+            <Route path="/admin/dashboard" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
             <Route path="/admin/products" element={<AdminRoute><AdminLayout><AdminProducts /></AdminLayout></AdminRoute>} />
             <Route path="/admin/categories" element={<AdminRoute><AdminLayout><AdminCategories /></AdminLayout></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminLayout><UserManagement /></AdminLayout></AdminRoute>} />
             <Route path="/admin/invoices" element={<AdminRoute><AdminLayout><AdminInvoices /></AdminLayout></AdminRoute>} />
-            <Route path="/admin" element={<Navigate to="/admin/products" replace />} />
+            <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>
         </SessionManager>
       </Router>
