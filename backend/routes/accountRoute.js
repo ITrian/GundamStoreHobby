@@ -4,7 +4,7 @@ const accountController = require("../controllers/accountController");
 const authenticate = require("../middlewares/authen");
 
 router.get("/", accountController.getAll);
-router.post("/", authenticate.authenticateToken, accountController.add);
+router.post("/", accountController.add);
 router.get("/:username", accountController.getByUsername);
 router.put("/:userid", authenticate.authenticateToken, accountController.update);
 router.delete("/:userid", authenticate.authenticateToken, accountController.remove);
