@@ -24,10 +24,11 @@ app.use("/images", imageRoutes);
 app.use("/products", productRoutes);
 app.use("/invoices", invoiceRoutes);
 app.use("/invoiceDetails", invoiceDetailRoutes);
-
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

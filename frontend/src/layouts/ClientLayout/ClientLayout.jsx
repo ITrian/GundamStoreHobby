@@ -75,9 +75,9 @@ const ClientLayout = ({ children }) => {
                   <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '0.2vw' }}>
                     {user.name || user.username}
                   </Link>
-                  <Link to="/logout" style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none' }}>
+                  <span onClick={handleLogout} style={{ fontWeight: 'bold', color: '#555', textDecoration: 'none', cursor: 'pointer' }}>
                     Đăng xuất
-                  </Link>
+                  </span>
                 </div>
               </div>
             ) : (
@@ -142,9 +142,9 @@ const ClientLayout = ({ children }) => {
                 <Link to="/profile" style={{ fontWeight: 'bold', color: '#1a73e8', textDecoration: 'none', display: 'block', marginBottom: '1vw' }}>
                   <i className="bi bi-person-circle icon-mr-sm"></i> {user.name || user.username}
                 </Link>
-                <Link to="/logout" style={{ fontWeight: 'bold', color: '#e50000', textDecoration: 'none' }}>
+                <span onClick={handleLogout} style={{ fontWeight: 'bold', color: '#e50000', textDecoration: 'none', cursor: 'pointer' }}>
                   <i className="bi bi-box-arrow-right icon-mr-sm"></i> Đăng xuất
-                </Link>
+                </span>
              </div>
           ) : (
             <Link to="/login" className="sidebar-account no-underline" onClick={() => setIsSidebarOpen(false)}>
@@ -158,10 +158,10 @@ const ClientLayout = ({ children }) => {
           </button>
         </div>
         <ul className="sidebar-menu">
-          <li><Link to="/collections/all" style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>TẤT CẢ SẢN PHẨM</Link></li>
+          <li><Link to="/collections/all" style={{textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>TẤT CẢ SẢN PHẨM</Link></li>
           {categories.map((cat) => (
             <li key={`side-${cat.id}`}>
-              <Link to={`/collections/${cat.id}`} style={{color: 'inherit', textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
+              <Link to={`/collections/${cat.id}`} style={{textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
             </li>
           ))}
           <li>KIỂM TRA ĐƠN HÀNG</li>

@@ -1,8 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import './SideCart.css';
 
+// --- Component phụ: Hiển thị từng dòng sản phẩm và tự động load ảnh ---
+const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
+  const itemName = item?.name || 'Sản phẩm';
+  const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(itemName)}`;
+  const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
+
+  const API_URL = 'https://gundamstorehobby.onrender.com';
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await fetch(`${API_URL}/images/product/${item.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            // Ưu tiên lấy ảnh có chữ 'thumb' trong detail, nếu không có thì lấy ảnh đầu tiên
+            const thumbData = data.find(img => img.detail && img.detail.toLowerCase().includes('thumb'));
+            const finalThumb = thumbData ? thumbData.link : data[0].link;
+            setThumbImg(finalThumb);
+          }
+        }
+      } catch (error) {
+        console.error(`Lỗi tải ảnh giỏ hàng cho SP ${item.id}:`, error);
+      }
+    };
+
+    fetchImage();
+  }, [item.id]);
+
+  return (
+    <div className="cart-item-row">
+      <div className="col-product item-info">
+        <img 
+          src={thumbImg} 
+          alt={item.name} 
+          onError={(e) => { e.target.onerror = null; e.target.src = defaultPlaceholder; }}
+        />
+        <span>{item.name}</span>
+      </div>
+      <div className="col-price" style={{ color: '#e50000', fontWeight: 'bold' }}>
+        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
+      </div>
+      <div className="col-qty qty-controls">
+        <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+        <span>{item.quantity}</span>
+        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+      </div>
+      <div className="col-sub" style={{ color: '#e50000', fontWeight: 'bold' }}>
+        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}
+        <span className="remove-item" onClick={() => removeFromCart(item.id)}>&times;</span>
+      </div>
+    </div>
+  );
+};
+
+// --- Component chính: SideCart ---
 const SideCart = () => {
   const { cartItems, isSideCartOpen, setIsSideCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
   const navigate = useNavigate();
@@ -34,26 +90,17 @@ const SideCart = () => {
                 <span className="col-qty">Số lượng</span>
                 <span className="col-sub">Tạm tính</span>
               </div>
+              
+              {/* Render từng dòng sản phẩm */}
               {cartItems.map((item, index) => (
-                <div key={index} className="cart-item-row">
-                  <div className="col-product item-info">
-                    <img src={`https://via.placeholder.com/80/f0f0f0/333333?text=${item.name.replace(/ /g, '+')}`} alt={item.name} />
-                    <span>{item.name}</span>
-                  </div>
-                  <div className="col-price" style={{ color: '#e50000', fontWeight: 'bold' }}>
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                  </div>
-                  <div className="col-qty qty-controls">
-                    <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, 1)}>+</button>
-                  </div>
-                  <div className="col-sub" style={{ color: '#e50000', fontWeight: 'bold' }}>
-                    {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}
-                    <span className="remove-item" onClick={() => removeFromCart(item.id)}>&times;</span>
-                  </div>
-                </div>
+                <CartItemRow 
+                  key={index} 
+                  item={item} 
+                  updateQuantity={updateQuantity} 
+                  removeFromCart={removeFromCart} 
+                />
               ))}
+              
             </div>
           )}
         </div>

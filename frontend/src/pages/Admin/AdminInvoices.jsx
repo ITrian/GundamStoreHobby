@@ -33,8 +33,10 @@ const AdminInvoices = () => {
 
   const fetchInvoices = async () => {
     try {
-      // ĐÃ SỬA: `/invoice/all` -> `/invoices`
-      const res = await fetch(`${API_URL}/invoices`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/invoices`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (res.ok) {
         const data = await res.json();
         setInvoices(data.reverse());
@@ -46,8 +48,10 @@ const AdminInvoices = () => {
 
   const fetchUsers = async () => {
     try {
-      // ĐÃ SỬA: `/user/getallUser` -> `/users`
-      const res = await fetch(`${API_URL}/users`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (res.ok) {
         const data = await res.json();
         setUsers(data);
@@ -59,8 +63,10 @@ const AdminInvoices = () => {
 
   const fetchProducts = async () => {
     try {
-      // ĐÃ SỬA: `/product/getAllProducts` -> `/products`
-      const res = await fetch(`${API_URL}/products`);
+      const token = localStorage.getItem('accessToken');
+      const res = await fetch(`${API_URL}/products`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (res.ok) {
         const data = await res.json();
         setProducts(data);
@@ -92,9 +98,14 @@ const AdminInvoices = () => {
   const formatOrderDate = (dateString) => {
     if (!dateString) return 'N/A';
     try {
-      const datePart = dateString.split('T')[0]; 
-      const [year, month, day] = datePart.split('-');
-      return `${day}/${month}/${year}`;
+      const d = new Date(dateString);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
     } catch (error) {
       return new Date(dateString).toLocaleDateString('vi-VN');
     }
@@ -109,9 +120,12 @@ const AdminInvoices = () => {
   const handleViewDetails = async (invoice) => {
     setSelectedInvoice(invoice);
     setIsLoadingDetails(true);
+    const token = localStorage.getItem('accessToken');
+
     try {
-      // ĐÃ SỬA: `/invoiceDetail/getById/:id` -> `/invoiceDetails/:id`
-      const res = await fetch(`${API_URL}/invoiceDetails/${invoice.id}`);
+      const res = await fetch(`${API_URL}/invoiceDetails/${invoice.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (res.ok) {
         const data = await res.json();
         setInvoiceDetails(Array.isArray(data) ? data : [data]);
@@ -131,27 +145,32 @@ const AdminInvoices = () => {
     setInvoiceDetails([]);
   };
 
-  // --- CẬP NHẬT TRẠNG THÁI ---
   const handleStatusChange = async (invoice, newStatus) => {
     try {
+      const token = localStorage.getItem('accessToken');
       const payload = {
         id: invoice.id, 
         date: invoice.date,
-        customerId: invoice.customerid, // Gửi đúng customerId chữ Hoa chữ Thường
+        customerId: invoice.customerid,
         totalPrice: invoice.totalprice,
         status: newStatus,
         paymentMethod: invoice.paymentmethod,
         isPaid: invoice.ispaid
       };
-
-      // ĐÃ SỬA: `/invoice/update` -> `/invoices` (Khớp 100% với router.patch("/") trong invoiceRoutes.js)
       const res = await fetch(`${API_URL}/invoices`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 
       if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          showAlert("Phiên đăng nhập hết hạn hoặc không đủ quyền!", "error");
+          return;
+        }
         showAlert("Lỗi cập nhật trạng thái từ Server!", "error");
         return;
       }
@@ -166,13 +185,20 @@ const AdminInvoices = () => {
 
   const handleDeleteInvoice = (id) => {
     showConfirm(`Bạn có chắc chắn muốn xóa Đơn hàng #${id}?`, async () => {
+      const token = localStorage.getItem('accessToken');
       try {
-        // ĐÃ SỬA: `/invoice/delete/:id` -> `/invoices/:id`
-        const res = await fetch(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
+        const res = await fetch(`${API_URL}/invoices/${id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         if (res.ok) {
           showAlert("Đã xóa đơn hàng thành công!", "success");
           fetchInvoices();
         } else {
+          if (res.status === 401 || res.status === 403) {
+            showAlert("Phiên đăng nhập hết hạn hoặc không đủ quyền!", "error");
+            return;
+          }
           showAlert("Không thể xóa đơn hàng! Vui lòng xóa chi tiết đơn hàng trước.", "error");
         }
       } catch (error) {

@@ -8,7 +8,7 @@ const API_URL = 'https://gundamstorehobby.onrender.com';
 
 const CategoryProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const defaultPlaceholder = `https://via.placeholder.com/400x400/f0f0f0/333333?text=${product.name.replace(/ /g, '+')}`;
+  const defaultPlaceholder = `https://via.placeholder.com/400x400/f0f0f0/333333?text=${encodeURIComponent(product?.name || 'Sản phẩm')}`;
   
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
 
@@ -103,6 +103,10 @@ const CategoryPage = () => {
 
     fetchData();
   }, [categoryId]);
+
+  const currentCategory = useMemo(() => {
+    return categories.find(c => c.id.toString() === categoryId);
+  }, [categories, categoryId]);
 
   const currentCategoryName = searchKeyword 
     ? `Kết quả tìm kiếm cho: "${searchKeyword}"`

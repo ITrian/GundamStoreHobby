@@ -4,6 +4,56 @@ import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import { useCart } from '../../contexts/CartContext';
 import './CartPage.css';
 
+const CartItemRow = ({ item, updateQuantity, removeFromCart, formatPrice }) => {
+  const [thumbImg, setThumbImg] = React.useState(`https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(item.name || 'Sản phẩm')}`);
+  const API_URL = 'https://gundamstorehobby.onrender.com';
+
+  React.useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await fetch(`${API_URL}/images/product/${item.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            const thumbData = data.find(img => img.detail && img.detail.toLowerCase().includes('thumb'));
+            setThumbImg(thumbData ? thumbData.link : data[0].link);
+          }
+        }
+      } catch (err) {
+        console.error(`Lỗi tải ảnh giỏ hàng cho SP ${item.id}:`, err);
+      }
+    };
+    if (item.id) fetchImage();
+  }, [item.id]);
+
+  return (
+    <div className="cart-item-row">
+      <div className="col-product item-details-col">
+        <img 
+          src={thumbImg} 
+          alt={item.name || 'Sản phẩm'} 
+          onError={(e) => { e.target.onerror = null; e.target.src = `https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(item.name || 'Sản phẩm')}`; }}
+        />
+        <span className="item-name">{item.name || 'Sản phẩm'}</span>
+      </div>
+      <div className="col-price item-price">
+        {formatPrice(item.price)}
+      </div>
+      <div className="col-qty item-qty-controls">
+        <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+        <input type="text" value={item.quantity} readOnly />
+        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+      </div>
+      <div className="col-sub item-subtotal">
+        {formatPrice(item.price * item.quantity)}
+        <button className="item-remove-btn" onClick={() => removeFromCart(item.id)}>
+          &times;
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
   const navigate = useNavigate();
@@ -43,29 +93,13 @@ const CartPage = () => {
 
               <div className="cart-item-list">
                 {cartItems.map(item => (
-                  <div key={item.id} className="cart-item-row">
-                    <div className="col-product item-details-col">
-                      <img 
-                        src={`https://via.placeholder.com/80/f0f0f0/333333?text=${item.name.replace(/ /g, '+')}`} 
-                        alt={item.name} 
-                      />
-                      <span className="item-name">{item.name}</span>
-                    </div>
-                    <div className="col-price item-price">
-                      {formatPrice(item.price)}
-                    </div>
-                    <div className="col-qty item-qty-controls">
-                      <button onClick={() => updateQuantity(item.id, -1)}>-</button>
-                      <input type="text" value={item.quantity} readOnly />
-                      <button onClick={() => updateQuantity(item.id, 1)}>+</button>
-                    </div>
-                    <div className="col-sub item-subtotal">
-                      {formatPrice(item.price * item.quantity)}
-                      <button className="item-remove-btn" onClick={() => removeFromCart(item.id)}>
-                        &times;
-                      </button>
-                    </div>
-                  </div>
+                  <CartItemRow 
+                    key={item.id} 
+                    item={item} 
+                    updateQuantity={updateQuantity} 
+                    removeFromCart={removeFromCart} 
+                    formatPrice={formatPrice} 
+                  />
                 ))}
               </div>
             </div>
