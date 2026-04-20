@@ -8,11 +8,11 @@ const findById = async (id) => {
     return await User.findByPk(id);
 };
 
-const create = async ( name, dateofbirth, email, address, isadmin ) => {
-    return await User.create({ name, dateofbirth, email, address, isadmin });
+const create = async ( name, dateofbirth, email, address, isadmin, phone ) => {
+    return await User.create({ name, dateofbirth, email, address, isadmin, phone });
 };
 
-const update = async (id, name, dateofbirth, email, address, isadmin) => {
+const update = async (id, name, dateofbirth, email, address, isadmin, phone) => {
     const user = await User.findByPk(id);
     if (!user) return null;
 
@@ -21,6 +21,7 @@ const update = async (id, name, dateofbirth, email, address, isadmin) => {
     user.email = email;
     user.address = address;
     user.isadmin = isadmin;
+    user.phone = phone;
 
     await user.save();
     return user;

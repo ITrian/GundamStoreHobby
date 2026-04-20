@@ -31,6 +31,16 @@ module.exports = (sequelize) => {
 				allowNull: false,
 				defaultValue: false,
 			},
+			phone: {
+				type: DataTypes.STRING(10),
+				allowNull: true,
+				validate: {
+					is: /^[0-9]{10}$/,
+					len: [10, 10],
+				},
+				unique: true,
+				defaultValue: null,
+			}
 		},
 		{
 			tableName: "user",
