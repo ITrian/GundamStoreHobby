@@ -227,28 +227,6 @@ const CheckoutPage = () => {
             <div className="ck-form-group">
               <input type="text" name="address" placeholder="Địa chỉ (Số nhà, đường...)" value={formData.address} onChange={handleInputChange} />
             </div>
-            <div className="ck-form-group">
-              <select name="province" value={formData.province} onChange={handleInputChange}>
-                <option value="">Tỉnh thành</option>
-                <option value="HN">Hà Nội</option>
-                <option value="HCM">Hồ Chí Minh</option>
-                <option value="DN">Đà Nẵng</option>
-              </select>
-            </div>
-            <div className="ck-form-group">
-              <select name="district" value={formData.district} onChange={handleInputChange}>
-                <option value="">Quận huyện</option>
-                <option value="Q1">Quận 1</option>
-                <option value="Q2">Quận 2</option>
-              </select>
-            </div>
-            <div className="ck-form-group">
-              <select name="ward" value={formData.ward} onChange={handleInputChange}>
-                <option value="">Phường xã</option>
-                <option value="P1">Phường 1</option>
-                <option value="P2">Phường 2</option>
-              </select>
-            </div>
           </div>
 
           <div className="ck-payment-info">

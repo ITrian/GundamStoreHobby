@@ -119,6 +119,7 @@
   border-radius: 2vw;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-top: 1vw;
 }
 
 .login-container .login-btn:hover:not(:disabled) {

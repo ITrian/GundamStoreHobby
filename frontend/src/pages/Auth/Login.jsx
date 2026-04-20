@@ -126,10 +126,6 @@ const Login = () => {
                 />
               </div>
 
-              <div className="forgot-password">
-                <span>Quên mật khẩu? <Link to="/forgot-password">Nhấn vào đây</Link></span>
-              </div>
-
               <button type="submit" className="login-btn" disabled={isLoading}>
                 {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
               </button>

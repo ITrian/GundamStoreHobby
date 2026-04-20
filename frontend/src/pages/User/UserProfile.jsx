@@ -140,6 +140,11 @@ const UserProfile = () => {
           </div>
 
           <div className="info-group">
+            <span className="info-label" style={{ minWidth: '150px' }}><i className="bi bi-telephone-fill"></i> Số điện thoại:</span>
+            <span className="info-value">{user.phone || 'Chưa cập nhật'}</span>
+          </div>
+
+          <div className="info-group">
             <span className="info-label" style={{ minWidth: '150px' }}><i className="bi bi-calendar-event"></i> Ngày sinh:</span>
             <span className="info-value">{user.dateofbirth ? formatOrderDate(user.dateofbirth) : 'Chưa cập nhật'}</span>
           </div>
