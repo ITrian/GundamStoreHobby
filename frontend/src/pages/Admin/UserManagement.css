@@ -181,6 +181,7 @@
   margin-bottom: 0.5vw;
   font-size: 0.9vw;
   color: #555;
+  width:100%;
 }
 
 .UserManagement .form-group input,
@@ -276,11 +277,11 @@
 }
 
 .UserManagement .modal-md {
-  max-width: 500px;
+  max-width: 50%;
 }
 
 .UserManagement .modal-sm {
-  max-width: 400px;
+  max-width: 50%;
   text-align: center;
 }
 

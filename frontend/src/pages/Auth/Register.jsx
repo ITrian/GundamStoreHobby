@@ -6,9 +6,8 @@ import './Register.css';
 const Register = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState(''); // Lỗi chung (như lỗi server)
+  const [errorMsg, setErrorMsg] = useState(''); 
   
-  // State lưu lỗi của từng ô input
   const [fieldErrors, setFieldErrors] = useState({});
   const [existingEmails, setExistingEmails] = useState([]);
 
@@ -17,21 +16,20 @@ const Register = () => {
     dateOfBirth: '',
     address: '',
     email: '',
+    phone: '',
     username: '',
     password: '',
-    confirmPassword: '' // Thêm trường Nhập lại mật khẩu
+    confirmPassword: ''
   });
 
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
-  // Lấy danh sách email đã tồn tại từ Backend ngay khi mở trang
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await fetch(`${API_URL}/users`);
         if (res.ok) {
           const users = await res.json();
-          // Trích xuất ra mảng chỉ chứa các email để check
           const emails = users.map(u => u.email).filter(e => e);
           setExistingEmails(emails);
         }
@@ -48,7 +46,6 @@ const Register = () => {
       [e.target.name]: e.target.value
     });
     
-    // Tự động xóa dòng chữ lỗi màu đỏ khi người dùng bắt đầu gõ lại
     if (fieldErrors[e.target.name]) {
       setFieldErrors({
         ...fieldErrors,
@@ -63,60 +60,111 @@ const Register = () => {
     setErrorMsg('');
     setFieldErrors({});
 
-    let errors = {}; // Object chứa lỗi tạm thời
+    let errors = {}; 
 
-    // 1. VALIDATE MẬT KHẨU
+    // 1. VALIDATE
     if (formData.password.length < 6) {
       errors.password = 'Mật khẩu phải có ít nhất 6 ký tự!';
     }
     
-    // 2. VALIDATE NHẬP LẠI MẬT KHẨU
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = 'Mật khẩu nhập lại không khớp!';
     }
 
-    // 3. VALIDATE EMAIL TỒN TẠI
     if (existingEmails.includes(formData.email)) {
       errors.email = 'Email này đã được sử dụng cho một tài khoản khác!';
     }
 
-    // Nếu có bất kỳ lỗi nào ở trên -> Dừng lại và show lỗi
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       setIsLoading(false);
       return;
     }
 
-    // Chỉ lấy dữ liệu Backend cần
-
     try {
-      const registerPayload = {
+      // BƯỚC 1: TẠO HỒ SƠ NGƯỜI DÙNG (BẢNG USER)
+      const userPayload = {
         name: formData.name,
         dateofbirth: formData.dateOfBirth || null,
         email: formData.email,
+        phone: formData.phone || null,
         address: formData.address,
         isadmin: false
       };
 
-      const response = await fetch(`${API_URL}/users`, {
+      const resUser = await fetch(`${API_URL}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerPayload)
+        body: JSON.stringify(userPayload)
       });
 
-      const data = await response.json();
+      const dataUser = await resUser.json();
 
-      if (!response.ok) {
-        // 4. BẮT LỖI TÊN ĐĂNG NHẬP TỪ BACKEND TRẢ VỀ
-        if (data.error && data.error.includes('Tên đăng nhập đã tồn tại')) {
+      if (!resUser.ok) {
+        setErrorMsg(dataUser.error || 'Lỗi khi tạo hồ sơ người dùng!');
+        setIsLoading(false);
+        return;
+      }
+
+      // BƯỚC 2: TẠO TÀI KHOẢN ĐĂNG NHẬP (BẢNG ACCOUNT)
+      const accPayload = {
+        userid: dataUser.id, 
+        username: formData.username,
+        password: formData.password,
+        isactived: true
+      };
+
+      const resAcc = await fetch(`${API_URL}/accounts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(accPayload)
+      });
+
+      const dataAcc = await resAcc.json();
+
+      if (!resAcc.ok) {
+        if (dataAcc.error && dataAcc.error.includes('Username')) {
           setFieldErrors({ username: 'Tên đăng nhập này đã có người sử dụng!' });
         } else {
-          setErrorMsg(data.error || 'Đăng ký thất bại!');
+          setErrorMsg(dataAcc.error || 'Lỗi khi tạo tài khoản đăng nhập!');
         }
         setIsLoading(false);
         return;
       }
-      navigate('/login');
+
+      // BƯỚC 3: TỰ ĐỘNG ĐĂNG NHẬP
+      const loginRes = await fetch(`${API_URL}/accounts/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          username: formData.username, 
+          password: formData.password 
+        })
+      });
+
+      const loginData = await loginRes.json();
+
+      if (loginRes.ok) {
+        const token = loginData.accessToken || loginData.token || loginData.Authorization;
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
+
+        // Lưu thông tin user để dùng trên Header / Giỏ hàng
+        const userInfoToSave = {
+          ...dataUser,
+          userId: dataUser.id,
+          username: formData.username,
+          isAdmin: false
+        };
+        localStorage.setItem('user', JSON.stringify(userInfoToSave));
+
+        // Âm thầm chuyển hướng về trang chủ
+        navigate('/');
+      } else {
+        // Dự phòng nếu API login lỗi, đẩy ra trang đăng nhập
+        navigate('/login');
+      }
 
     } catch (error) {
       console.error('Lỗi đăng ký:', error);
@@ -161,6 +209,20 @@ const Register = () => {
                     type="date" 
                     name="dateOfBirth"
                     value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="form-group half">
+                  <label>Số điện thoại</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Nhập 10 chữ số..."
+                    pattern="[0-9]{10}"
+                    maxLength="10"
+                    title="Số điện thoại phải bao gồm đúng 10 chữ số"
+                    value={formData.phone}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
