@@ -16,19 +16,23 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        // ĐÃ THÊM: Lấy token để gọi API không bị lỗi 401
+        const token = localStorage.getItem('accessToken');
+        const headers = { 'Authorization': `Bearer ${token}` };
+
         const [usersRes, productsRes, invoicesRes] = await Promise.all([
-          fetch(`${API_URL}/users`),
-          fetch(`${API_URL}/products`),
-          fetch(`${API_URL}/invoices`)
+          fetch(`${API_URL}/users`, { headers }),
+          fetch(`${API_URL}/products`, { headers }),
+          fetch(`${API_URL}/invoices`, { headers })
         ]);
 
         const users = usersRes.ok ? await usersRes.json() : [];
         const products = productsRes.ok ? await productsRes.json() : [];
         const invoices = invoicesRes.ok ? await invoicesRes.json() : [];
 
-        // Tính tổng doanh thu từ tất cả hóa đơn không bị hủy
+        // ĐÃ SỬA: Tính tổng doanh thu bỏ qua các đơn 'Cancelled' chuẩn tiếng Anh
         const totalRevenue = invoices
-          .filter(inv => inv.status !== 'Đã hủy')
+          .filter(inv => inv.status !== 'Cancelled')
           .reduce((sum, inv) => sum + (Number(inv.totalprice) || 0), 0);
 
         setMetrics({
@@ -117,7 +121,7 @@ const AdminDashboard = () => {
             <i className="bi bi-currency-dollar"></i>
           </div>
           <div className="metric-info">
-            <h3>Tuyệt đối Doanh thu</h3>
+            <h3>Tổng Doanh thu</h3>
             <p className="metric-value">{formatPrice(metrics.revenue)}</p>
           </div>
         </div>
@@ -145,7 +149,7 @@ const AdminDashboard = () => {
                     <td>{formatOrderDate(order.date)}</td>
                     <td style={{ fontWeight: 'bold' }}>{formatPrice(order.totalprice)}</td>
                     <td>
-                      <span className={`status-badge ${order.status === 'Đã hủy' ? 'canceled' : (order.status?.toLowerCase().includes('hoàn') || order.status?.toLowerCase().includes('success') ? 'success' : 'pending')}`}>
+                      <span className={`status-badge ${order.status === 'Cancelled' ? 'canceled' : order.status === 'Completed' ? 'completed' : 'pending'}`}>
                         {order.status || 'Pending'}
                       </span>
                     </td>

@@ -6,8 +6,6 @@ import './CheckoutPage.css';
 const CheckoutItem = ({ item, formatPrice }) => {
   const API_URL = 'https://gundamstorehobby.onrender.com';
   const itemName = item?.name || 'Sản phẩm';
-  
-  // Safely encode the item name so it won't break the placeholder URL
   const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(itemName)}`;
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
 
@@ -72,25 +70,23 @@ const CheckoutPage = () => {
   const API_URL = 'https://gundamstorehobby.onrender.com';
 
   useEffect(() => {
-    // Check missing cart -> redirect
     if (!cartItems || cartItems.length === 0) {
       alert("Giỏ hàng của bạn đang trống!");
       navigate('/cart');
       return;
     }
-
-    // Retrieve user from localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
         
-        // Auto fill if available
         setFormData(prev => ({
           ...prev,
           email: parsedUser.email || prev.email,
-          fullName: parsedUser.username || prev.fullName
+          fullName: parsedUser.name || parsedUser.username || prev.fullName,
+          address: parsedUser.address || prev.address,
+          phone: parsedUser.phone || prev.phone
         }));
       } catch (e) {
         console.error("Lỗi parse user:", e);
@@ -117,12 +113,16 @@ const CheckoutPage = () => {
       return;
     }
 
+    if (!formData.fullName || !formData.phone || !formData.address) {
+      alert("Vui lòng điền đầy đủ Họ tên, Số điện thoại và Địa chỉ nhận hàng!");
+      return;
+    }
+
     setIsSubmitting(true);
     const token = localStorage.getItem('accessToken');
     const customerId = user.id || user.ID;
 
     try {
-      // 1. Tạo Invoice (Đơn hàng)
       const invoicePayload = {
         date: new Date().toISOString(),
         customerId: customerId,
@@ -142,6 +142,9 @@ const CheckoutPage = () => {
       });
 
       if (!resInvoice.ok) {
+        if (resInvoice.status === 401 || resInvoice.status === 403) {
+          throw new Error('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+        }
         throw new Error('Không thể tạo đơn hàng. Vui lòng thử lại sau.');
       }
 
@@ -152,7 +155,6 @@ const CheckoutPage = () => {
         throw new Error('Lưu đơn hàng thất bại (không lấy được ID).');
       }
 
-      // 2. Tạo các Invoice Details (Chi tiết đơn hàng)
       const detailPromises = cartItems.map(item => {
         const detailPayload = {
           invoiceId: newInvoiceId,
@@ -178,7 +180,6 @@ const CheckoutPage = () => {
         console.log("Cảnh báo: Có lỗi khi lưu một số chi tiết hóa đơn.");
       }
 
-      // Xử lý thành công
       alert("Đặt hàng thành công! Đơn hàng của bạn đang được xử lý.");
       clearCart();
       navigate('/');
@@ -199,11 +200,10 @@ const CheckoutPage = () => {
     <div className="checkout-wrapper">
       <div className="checkout-left">
         <div className="ck-header-logo">
-          <h1>AN HOBBY STORE</h1>
+          <h1>THE LIEMS HOBBY STORE</h1>
         </div>
 
         <div className="ck-columns">
-          {/* Thông tin nhận hàng */}
           <div className="ck-shipping-info">
             <h3 className="ck-title">
               Thông tin nhận hàng
@@ -225,7 +225,7 @@ const CheckoutPage = () => {
               <div className="phone-flag">🇻🇳</div>
             </div>
             <div className="ck-form-group">
-              <input type="text" name="address" placeholder="Địa chỉ" value={formData.address} onChange={handleInputChange} />
+              <input type="text" name="address" placeholder="Địa chỉ (Số nhà, đường...)" value={formData.address} onChange={handleInputChange} />
             </div>
             <div className="ck-form-group">
               <select name="province" value={formData.province} onChange={handleInputChange}>
@@ -249,12 +249,8 @@ const CheckoutPage = () => {
                 <option value="P2">Phường 2</option>
               </select>
             </div>
-            <div className="ck-form-group">
-              <textarea name="note" placeholder="Ghi chú (tùy chọn)" value={formData.note} onChange={handleInputChange}></textarea>
-            </div>
           </div>
 
-          {/* Thanh toán */}
           <div className="ck-payment-info">
             <h3 className="ck-title">Thanh toán</h3>
             <div className="ck-payment-box">
@@ -265,7 +261,7 @@ const CheckoutPage = () => {
 
             <div className="ck-terms">
               <input type="checkbox" id="agree" checked={isAgreed} onChange={() => setIsAgreed(!isAgreed)} />
-              <label htmlFor="agree">Tôi đã đọc và đồng ý với điều khoản giao dịch chung của website anhobbystore.com</label>
+              <label htmlFor="agree">Tôi đã đọc và đồng ý với điều khoản giao dịch chung của website</label>
             </div>
           </div>
         </div>
@@ -278,20 +274,6 @@ const CheckoutPage = () => {
           {cartItems.map((item, idx) => (
             <CheckoutItem key={idx} item={item} formatPrice={formatPrice} />
           ))}
-        </div>
-
-        <div className="ck-discount-section">
-          <input type="text" placeholder="Nhập mã giảm giá" />
-          <button className="ck-btn-apply" type="button">Áp dụng</button>
-        </div>
-
-        <div className="ck-summary-row">
-          <span>Tạm tính</span>
-          <span>{formatPrice(cartTotal)}</span>
-        </div>
-        <div className="ck-summary-row">
-          <span>Phí vận chuyển</span>
-          <span>-</span>
         </div>
 
         <div className="ck-summary-total">

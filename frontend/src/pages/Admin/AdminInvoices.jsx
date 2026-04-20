@@ -253,7 +253,7 @@ const AdminInvoices = () => {
               
               <td>
                 <select 
-                  className={`status-select ${inv.status === 'Cancelled' ? 'canceled' : inv.status === 'Completed' ? 'success' : 'pending'}`}
+                  className={`status-select ${inv.status === 'Cancelled' ? 'canceled' : inv.status === 'Completed' ? 'completed' : 'pending'}`}
                   value={inv.status || 'Pending'}
                   onChange={(e) => handleStatusChange(inv, e.target.value)}
                 >

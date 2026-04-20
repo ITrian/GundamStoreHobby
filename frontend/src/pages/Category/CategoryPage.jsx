@@ -188,7 +188,7 @@ const CategoryPage = () => {
           </div>
 
           <aside className="category-sidebar">
-            <div className="sidebar-box">
+            {/* <div className="sidebar-box">
               <h3>Hãng sản xuất</h3>
               <ul className="brand-list">
                 {brandList.map(brand => (
@@ -210,7 +210,7 @@ const CategoryPage = () => {
                 ))}
               </ul>
               <div className="sidebar-more">Xem thêm &or;</div>
-            </div>
+            </div> */}
             <div className="sidebar-box">
               <h3>Danh Mục</h3>
               <ul className="brand-list">

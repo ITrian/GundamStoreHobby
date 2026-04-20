@@ -106,18 +106,17 @@
   font-size: 0.85rem;
   font-weight: 500;
 }
-
 .status-badge.pending {
-  background-color: #fff3cd;
-  color: #856404;
+    color: #d39e00;
+    background-color: #ffeeba;
 }
 
-.status-badge.success {
-  background-color: #d4edda;
-  color: #155724;
+.status-badge.completed {
+    color: #28a745;
+    background-color: #c3e6cb;
 }
 
 .status-badge.canceled {
-  background-color: #f8d7da;
-  color: #721c24;
+    color: #dc3545;
+    background-color: #f5c6cb;
 }

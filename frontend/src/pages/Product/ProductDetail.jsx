@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, Link,useNavigate } from 'react-router-dom';
 import ClientLayout from '../../layouts/ClientLayout/ClientLayout';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -15,6 +15,7 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
+  const [categories, setCategories] = useState([]);
   
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -63,6 +64,17 @@ const ProductDetail = () => {
     };
 
     fetchProductData();
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${API_URL}/categories`); 
+        if (!response.ok) throw new Error('Lỗi tải danh mục');
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Lỗi fetch category:', error);
+      }
+    };
+    fetchCategories();
   }, [id]);
 
   const formatPrice = (price) => {
@@ -82,21 +94,19 @@ const ProductDetail = () => {
       <br/><button onClick={() => navigate('/')} style={{ marginTop: '3vw', padding: '2vw 4vw', cursor: 'pointer' }}>Về trang chủ</button>
     </div>
   );
+  const category = categories.find(cat => cat.id === product.categoryid);
 
+  console.log("Thông tin sản phẩm:", category);
   const isOutOfStock = product.quantity <= 0;
-
   return (
     <ClientLayout>
       <div className="product-detail-wrapper">
         <div className="breadcrumb">
-          Trang chủ / Tất cả sản phẩm / <span>{product.name}</span>
+          <Link to="../" >Trang chủ</Link> / <Link to="/collections/all" >Tất cả sản phẩm</Link> / <span>{product.name}</span>
         </div>
 
         <div className="product-main-layout">
           
-          {/* =======================================
-              CỘT TRÁI (Bao gồm Ảnh và Tabs/Voucher) 
-              ======================================= */}
           <div className="desktop-left-column">
             
             <div className="detail-gallery">
@@ -137,14 +147,14 @@ const ProductDetail = () => {
             </div>
 
             <div className="detail-bottom-section">
-              <div className="voucher-box">
+              {/* <div className="voucher-box">
                 <span className="voucher-title">Mã giảm giá</span>
                 <div className="voucher-list">
                   <span className="voucher-tag"><i className="bi bi-ticket-perforated"></i> GIAM30KSHIP</span>
                   <span className="voucher-tag"><i className="bi bi-ticket-perforated"></i> GIAM10KSHIP</span>
                   <span className="voucher-arrow"><i className="bi bi-chevron-right"></i></span>
                 </div>
-              </div>
+              </div> */}
 
               <div className="tabs-container">
                 <div className="tabs-header">
@@ -188,20 +198,11 @@ const ProductDetail = () => {
             </div>
 
           </div>
-
-          {/* =======================================
-              CỘT PHẢI (Thông tin sản phẩm) 
-              ======================================= */}
           <div className="detail-info sticky-sidebar">
             <h1 className="product-title">{product.name}</h1>
-            
-            <div className="product-stats">
-              <p><i className="bi bi-tag-fill" style={{ color: '#e67e22', marginRight: '1vw' }}></i> Có <strong>251</strong> lượt mua sản phẩm</p>
-              <p><i className="bi bi-eye-fill" style={{ color: '#3498db', marginRight: '1vw' }}></i> Có <strong>4878</strong> lượt xem sản phẩm</p>
-            </div>
 
             <div className="product-meta">
-              <p>Thương hiệu: <span className="meta-highlight">BANDAI</span></p>
+              <p>Thương hiệu: <span className="meta-highlight">{category.name}</span></p>
               <p>Mã sản phẩm: <span className="meta-highlight">{product.id}</span></p> 
             </div>
 

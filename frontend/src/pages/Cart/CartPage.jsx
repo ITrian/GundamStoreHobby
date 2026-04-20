@@ -106,25 +106,10 @@ const CartPage = () => {
 
             <div className="cart-sidebar">
               <div className="checkout-summary-box">
-                <div className="summary-row">
-                  <i className="bi bi-receipt"></i> Xuất hóa đơn <span className="editable-text">Thay đổi &gt;</span>
-                </div>
-                <div className="summary-row">
-                  <i className="bi bi-clock"></i> Hẹn giờ nhận hàng <span className="editable-text">Thay đổi &gt;</span>
-                </div>
-                <div className="summary-row">
-                  <i className="bi bi-pencil-square"></i> Ghi chú đơn hàng <span className="editable-text">Thay đổi &gt;</span>
-                </div>
-                <div className="summary-row">
-                  <i className="bi bi-ticket-perforated"></i> Mã giảm giá <span className="editable-text">Chọn &gt;</span>
-                </div>
-                
                 <div className="summary-total">
                   <span>TỔNG CỘNG</span>
                   <span className="total-amount">{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="summary-note">Nhập mã giảm giá ở trang thanh toán</div>
-                
                 <button className="btn-checkout-full" onClick={handleCheckout}>
                   THANH TOÁN &rarr;
                 </button>

@@ -111,7 +111,7 @@ const ProductSection = () => {
     <section className="product-section">
       <div className="section-header">
         <h2 className="section-title">SẢN PHẨM NỔI BẬT</h2>
-        <a href="#xem-them" className="view-more">Xem thêm &gt;</a>
+        <a href="/collections/all" className="view-more">Xem thêm &gt;</a>
       </div>
       
       <div className="product-grid">

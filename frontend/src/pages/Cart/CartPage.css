@@ -18,7 +18,7 @@
   padding: 50px;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .continue-shopping {
@@ -41,7 +41,7 @@
   flex: 3;
   background: white;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
 }
 
@@ -59,16 +59,32 @@
   margin-bottom: 20px;
 }
 
-.col-product { flex: 4; }
-.col-price { flex: 1.5; text-align: center; }
-.col-qty { flex: 1.5; text-align: center; }
-.col-sub { flex: 1.5; text-align: right; position: relative; }
+.col-product {
+  flex: 4;
+}
+
+.col-price {
+  flex: 1.5;
+  text-align: center;
+}
+
+.col-qty {
+  flex: 1.5;
+  text-align: center;
+}
+
+.col-sub {
+  flex: 1.5;
+  text-align: right;
+  position: relative;
+}
 
 .cart-item-row {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #eaeaea;
   padding: 20px 0;
+  gap: 5px;
 }
 
 .cart-item-row:last-child {
@@ -113,6 +129,9 @@
   border: 1px solid #ddd;
   cursor: pointer;
   font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .item-qty-controls input {
@@ -128,11 +147,12 @@
 .item-subtotal {
   color: #e50000;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .item-remove-btn {
-  position: absolute;
-  right: -25px;
   background: none;
   border: none;
   color: #aaa;
@@ -148,7 +168,7 @@
   background: white;
   border-radius: 8px;
   padding: 25px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 20px;
 }
@@ -181,6 +201,7 @@
   margin-top: 20px;
   font-size: 16px;
   font-weight: bold;
+  margin-bottom: 1vw
 }
 
 .total-amount {

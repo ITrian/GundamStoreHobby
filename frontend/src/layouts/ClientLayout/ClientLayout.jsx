@@ -121,7 +121,7 @@ const ClientLayout = ({ children }) => {
                 <Link to={`/collections/${cat.id}`} style={{color: 'inherit', textDecoration: 'none'}}>{cat.name.toUpperCase()}</Link>
               </li>
             ))}
-            {user && user.isAdmin && (
+            {user && user.isadmin && (
               <li><Link to="/admin" >VÀO TRANG ADMIN</Link></li>
             )}
           </ul>
@@ -164,8 +164,7 @@ const ClientLayout = ({ children }) => {
               <Link to={`/collections/${cat.id}`} style={{textDecoration: 'none'}} onClick={() => setIsSidebarOpen(false)}>{cat.name.toUpperCase()} <i className="bi bi-chevron-right arrow"></i></Link>
             </li>
           ))}
-          <li>KIỂM TRA ĐƠN HÀNG</li>
-          {user && user.isAdmin && (
+          {user && user.isadmin && (
             <li><Link to="/admin" style={{ color: '#e50000', textDecoration: 'none' }} onClick={() => setIsSidebarOpen(false)}>→ QUẢN TRỊ ADMIN</Link></li>
           )}
         </ul>

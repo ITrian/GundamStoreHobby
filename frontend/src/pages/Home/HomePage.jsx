@@ -14,13 +14,13 @@ const HomePage = () => {
         <div className="main-banner">
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
-            navigation
+            navigation={false}
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             loop={true}
           >
-            <SwiperSlide><img src="https://placehold.co/1200x600/1a2b4c/FFF?text=BANNER+CHINH+1+-+GUNDAM" alt="Banner 1" className="banner-img" /></SwiperSlide>
-            <SwiperSlide><img src="https://placehold.co/1200x600/8b0000/FFF?text=BANNER+CHINH+2+-+SALE" alt="Banner 2" className="banner-img" /></SwiperSlide>
+            <SwiperSlide><img src="https://bizweb.dktcdn.net/100/535/699/themes/1008357/assets/home_slider_1.jpg?1747962909005" alt="Banner 1" className="banner-img" /></SwiperSlide>
+            <SwiperSlide><img src="https://bizweb.dktcdn.net/100/535/699/themes/1008357/assets/home_side_banner_3.jpg?1747962909005" alt="Banner 2" className="banner-img" /></SwiperSlide>
           </Swiper>
         </div>
         <div className="sub-banners">
