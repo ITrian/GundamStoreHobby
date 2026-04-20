@@ -233,7 +233,7 @@ const CheckoutPage = () => {
             <h3 className="ck-title">Thanh toán</h3>
             <div className="ck-payment-box">
               <input type="radio" checked readOnly />
-              <span>Thanh toán qua Techcombank VietQR Pro</span>
+              <span>COD</span>
               <img src="https://firebasestorage.googleapis.com/v0/b/qn21-229.appspot.com/o/vietqr.png?alt=media" alt="VietQR" onError={(e) => e.target.style.display='none'} />
             </div>
 
