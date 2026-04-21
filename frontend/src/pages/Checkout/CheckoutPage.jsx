@@ -91,7 +91,7 @@ const CheckoutPage = () => {
         console.error("Lỗi parse user:", e);
       }
     } else {
-      alert("Vui lòng đăng nhập để thanh toán đơn hàng.");
+      alert("Vui lòng đăng nhập để đặt hàng.");
       navigate('/login');
     }
   }, [cartItems, navigate]);
