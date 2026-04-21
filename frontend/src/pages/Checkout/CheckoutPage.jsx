@@ -71,7 +71,6 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (!cartItems || cartItems.length === 0) {
-      alert("Giỏ hàng của bạn đang trống!");
       navigate('/cart');
       return;
     }

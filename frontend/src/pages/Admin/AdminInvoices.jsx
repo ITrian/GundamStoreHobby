@@ -293,7 +293,6 @@ const AdminInvoices = () => {
               <div className="invoice-meta">
                 <p><strong>Khách hàng:</strong> {getUserName(selectedInvoice.customerid)}</p>
                 <p><strong>Ngày đặt:</strong> {formatOrderDate(selectedInvoice.date)}</p>
-                <p><strong>Thanh toán:</strong> {selectedInvoice.ispaid ? <span style={{color: '#28a745'}}><i className="bi bi-check-circle-fill"></i> Đã thanh toán</span> : <span style={{color: '#dc3545'}}><i className="bi bi-x-circle-fill"></i> Chưa thanh toán</span>} ({selectedInvoice.paymentmethod})</p>
                 <p><strong>Tổng tiền:</strong> <span style={{ color: 'red', fontWeight: 'bold' }}>{formatPrice(selectedInvoice.totalprice)}</span></p>
               </div>
 
