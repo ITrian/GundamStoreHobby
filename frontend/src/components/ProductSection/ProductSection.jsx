@@ -5,7 +5,7 @@ import { useCart } from '../../contexts/CartContext';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate(); 
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   const defaultPlaceholder = `https://via.placeholder.com/400x400/f0f0f0/333333?text=${product.name.replace(/ /g, '+')}`;
   
   const [thumbImg, setThumbImg] = useState(defaultPlaceholder);
@@ -43,14 +43,25 @@ const ProductCard = ({ product }) => {
     currency: 'VND'
   }).format(product.price || 0);
 
-  // --- HÀM XỬ LÝ CHUYỂN TRANG ---
   const handleCardClick = () => {
     navigate(`/product/${product.id}`); 
   };
 
-  // --- HÀM XỬ LÝ NÚT MUA NGAY ---
+  const cartItem = cartItems?.find(item => item.id === product.id);
+  const currentCartQty = cartItem ? cartItem.quantity : 0;
+  
+  const isOutOfStock = product.quantity <= 0;
+  const isMaxReached = currentCartQty >= product.quantity;
+
   const handleBuyNow = (e) => {
-    e.stopPropagation(); // QUAN TRỌNG: Ngăn không cho sự kiện click lan ra thẻ cha, tránh bị chuyển trang
+    e.stopPropagation(); 
+    if (isOutOfStock) {
+      alert("Sản phẩm này đã hết hàng!");
+      return;
+    }
+    if (isMaxReached) {
+      return;
+    }
     addToCart(product, 1);
   };
 
@@ -72,7 +83,14 @@ const ProductCard = ({ product }) => {
           onError={(e) => { e.target.onerror = null; e.target.src = thumbImg; }}
         />
 
-        <button className="buy-now-btn" onClick={handleBuyNow}>MUA NGAY</button>
+        <button 
+          className="buy-now-btn" 
+          onClick={handleBuyNow}
+          disabled={isOutOfStock}
+          style={isOutOfStock ? { backgroundColor: '#ccc', cursor: 'not-allowed' } : {}}
+        >
+          {isOutOfStock ? 'HẾT HÀNG' : 'MUA NGAY'}
+        </button>
       </div>
       <div className="product-info">
         <h3 className="product-name" title={product.name}>{product.name}</h3>

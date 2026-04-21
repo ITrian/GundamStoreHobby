@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import './SideCart.css';
 
-// --- Component phụ: Hiển thị từng dòng sản phẩm và tự động load ảnh ---
 const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
   const itemName = item?.name || 'Sản phẩm';
   const defaultPlaceholder = `https://via.placeholder.com/80/f0f0f0/333333?text=${encodeURIComponent(itemName)}`;
@@ -18,7 +17,6 @@ const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {
-            // Ưu tiên lấy ảnh có chữ 'thumb' trong detail, nếu không có thì lấy ảnh đầu tiên
             const thumbData = data.find(img => img.detail && img.detail.toLowerCase().includes('thumb'));
             const finalThumb = thumbData ? thumbData.link : data[0].link;
             setThumbImg(finalThumb);
@@ -48,7 +46,14 @@ const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
       <div className="col-qty qty-controls">
         <button onClick={() => updateQuantity(item.id, -1)}>-</button>
         <span>{item.quantity}</span>
-        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+        
+        <button onClick={() => {
+          if (item.stock !== undefined && item.quantity >= item.stock) {
+            return;
+          }
+          updateQuantity(item.id, 1);
+        }}>+</button>
+
       </div>
       <div className="col-sub" style={{ color: '#e50000', fontWeight: 'bold' }}>
         {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price * item.quantity)}
@@ -58,7 +63,6 @@ const CartItemRow = ({ item, updateQuantity, removeFromCart }) => {
   );
 };
 
-// --- Component chính: SideCart ---
 const SideCart = () => {
   const { cartItems, isSideCartOpen, setIsSideCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
   const navigate = useNavigate();
@@ -91,7 +95,6 @@ const SideCart = () => {
                 <span className="col-sub">Tạm tính</span>
               </div>
               
-              {/* Render từng dòng sản phẩm */}
               {cartItems.map((item, index) => (
                 <CartItemRow 
                   key={index} 

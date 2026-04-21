@@ -26,12 +26,20 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, quantity = 1) => {
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
+      
       if (existingItem) {
-        return prevItems.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
-        );
+        return prevItems.map(item => {
+          if (item.id === product.id) {
+            const newTotal = item.quantity + quantity;
+            return { 
+              ...item, 
+              quantity: item.stock !== undefined && newTotal > item.stock ? item.stock : newTotal 
+            };
+          }
+          return item;
+        });
       } else {
-        return [...prevItems, { ...product, quantity }];
+        return [...prevItems, { ...product, quantity: quantity, stock: product.quantity }];
       }
     });
     setIsSideCartOpen(true);
@@ -42,6 +50,11 @@ export const CartProvider = ({ children }) => {
       return prevItems.map(item => {
         if (item.id === productId) {
           const newQuantity = item.quantity + amount;
+
+          if (item.stock !== undefined && newQuantity > item.stock) {
+            return { ...item, quantity: item.stock };
+          }
+          
           return { ...item, quantity: newQuantity > 0 ? newQuantity : 1 };
         }
         return item;

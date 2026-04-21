@@ -42,7 +42,13 @@ const CartItemRow = ({ item, updateQuantity, removeFromCart, formatPrice }) => {
       <div className="col-qty item-qty-controls">
         <button onClick={() => updateQuantity(item.id, -1)}>-</button>
         <input type="text" value={item.quantity} readOnly />
-        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+        <button onClick={() => {
+          if (item.stock !== undefined && item.quantity >= item.stock) {
+            return;
+          }
+          updateQuantity(item.id, 1);
+        }}>+</button>
+
       </div>
       <div className="col-sub item-subtotal">
         {formatPrice(item.price * item.quantity)}
@@ -63,7 +69,6 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    // The user requested to redirect to payment page without implementing it
     navigate('/checkout');
   };
 
