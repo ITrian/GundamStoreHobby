@@ -8,7 +8,6 @@ const authenticateToken = async (req, res, next) => {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
     if (err) {
-      console.log(err);
       const refreshToken = req.body.refreshToken;
       if (!refreshToken) return res.sendStatus(403);
 
@@ -20,10 +19,9 @@ const authenticateToken = async (req, res, next) => {
         if (!storedToken || storedToken.isrevoked) return res.sendStatus(403);
 
         const newPayload = { userid: payload.userid, username: payload.username, isactived: payload.isactived };
-        const accessToken = jwt.sign(newPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10s" });
+        const accessToken = jwt.sign(newPayload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
         res.setHeader("Authorization", "Bearer " + accessToken);
         req.payload = payload;
-        console.log("Token đã được làm mới");
         return next();
       });
     } else {
