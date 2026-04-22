@@ -26,21 +26,37 @@ const SessionManager = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
+    const refreshToken = localStorage.getItem('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (refreshToken) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload = JSON.parse(atob(refreshToken.split('.')[1]));
         const isExpired = payload.exp * 1000 < Date.now();
         
         if (isExpired) {
-          alert('Phiên đăng nhập của bạn đã hết hạn. Hệ thống sẽ tự động đăng xuất để bảo mật!'+ payload.exp * 1000);
+          alert('Phiên làm việc đã kết thúc. Hệ thống sẽ tự động đăng xuất để bảo mật!');
           localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');
-          navigate('/');
-          window.location.reload();
+          navigate('/login');
         }
       } catch (error) {
-        console.error("Lỗi giải mã token:", error);
+        console.error("Lỗi giải mã refresh token:", error);
+      }
+    } else if (accessToken) {
+      try {
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        const isExpired = payload.exp * 1000 < Date.now();
+        
+        if (isExpired) {
+          alert('Phiên đăng nhập của bạn đã hết hạn. Hệ thống sẽ tự động đăng xuất để bảo mật!');
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('user');
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error("Lỗi giải mã access token:", error);
       }
     }
   }, [location, navigate]);
@@ -69,6 +85,7 @@ const Logout = () => {
   useEffect(() => {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken'); 
+    localStorage.removeItem('refreshToken'); 
     window.location.href = '/';
   }, []);
   return null;
