@@ -116,7 +116,7 @@ const CartPage = () => {
                   <span className="total-amount">{formatPrice(cartTotal)}</span>
                 </div>
                 <button className="btn-checkout-full" onClick={handleCheckout}>
-                  THANH TOÁN &rarr;
+                  ĐẶT HÀNG &rarr;
                 </button>
               </div>
             </div>

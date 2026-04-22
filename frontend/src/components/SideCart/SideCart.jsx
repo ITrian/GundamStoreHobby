@@ -114,7 +114,7 @@ const SideCart = () => {
               <h3>TỔNG CỘNG</h3>
               <h3 style={{ color: '#e50000' }}>{formattedTotal}</h3>
             </div>
-            <p className="note">Nhập mã giảm giá ở trang thanh toán</p>
+            {/* <p className="note">Nhập mã giảm giá ở trang thanh toán</p> */}
             <button 
               className="checkout-btn" 
               onClick={() => {
@@ -122,7 +122,7 @@ const SideCart = () => {
                 navigate('/cart');
               }}
             >
-              THANH TOÁN &rarr;
+              ĐẶT HÀNG &rarr;
             </button>
           </div>
         )}
